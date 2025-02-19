@@ -1,6 +1,6 @@
-package com.app.health.controller;
+package com.app.api.health.controller;
 
-import com.app.health.dto.HealthCheckResponse;
+import com.app.api.health.dto.HealthCheckResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
