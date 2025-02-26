@@ -3,6 +3,10 @@ name: CI Workflow
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - '.github/**'
+      - 'src/**'
+      - 'build.gradle'
 
 jobs:
   build-and-test:
