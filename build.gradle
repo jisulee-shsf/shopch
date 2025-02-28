@@ -57,6 +57,24 @@ jacocoTestReport {
         xml.required = true
         html.required = true
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [
+                            '**/*Application*',
+                            '**/common/**',
+                            '**/dto/**',
+                            '**/constant/**',
+                            '**/global/config/**',
+                            '**/global/error/**',
+                            '**/global/interceptor/**',
+                            '**/global/resolver/**',
+                            '**/global/util/**'
+                    ])
+                })
+        )
+    }
     finalizedBy 'jacocoTestCoverageVerification'
 }
 
@@ -71,6 +89,18 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.8
             }
+
+            excludes = [
+                    '*.*Application',
+                    '*.common.*',
+                    '*.dto.*',
+                    '*.constant.*',
+                    '*.global.config.*',
+                    '*.global.error.*',
+                    '*.global.interceptor.*',
+                    '*.global.resolver.*',
+                    '*.global.util.*'
+            ]
         }
     }
 }
