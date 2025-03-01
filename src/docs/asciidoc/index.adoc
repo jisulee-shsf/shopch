@@ -1,0 +1,14 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Shopch API 명세 🦈
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Health-API]]
+== 1. 헬스 체크 API
+include::api/health/health-check.adoc[]
