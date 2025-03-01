@@ -1,0 +1,9 @@
+[[health-check]]
+=== 1.1. 서버 상태 체크
+
+==== HTTP Request
+include::{snippets}/health-check/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/health-check/http-response.adoc[]
+include::{snippets}/health-check/response-fields.adoc[]
