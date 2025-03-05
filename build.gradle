@@ -80,8 +80,8 @@ jacocoTestReport {
                             '**/global/config/**',
                             '**/global/error/**',
                             '**/global/interceptor/**',
-                            '**/global/resolver/**',
-                            '**/global/util/**'
+                            '**/global/resolver/**'
+//                            '**/global/util/**'
                     ])
                 })
         )
@@ -109,8 +109,8 @@ jacocoTestCoverageVerification {
                     '*.global.config.*',
                     '*.global.error.*',
                     '*.global.interceptor.*',
-                    '*.global.resolver.*',
-                    '*.global.util.*'
+                    '*.global.resolver.*'
+//                    '*.global.util.*'
             ]
         }
     }
