@@ -80,8 +80,8 @@ jacocoTestReport {
                             '**/global/config/**',
                             '**/global/error/**',
                             '**/global/interceptor/**',
-                            '**/global/resolver/**'
-//                            '**/global/util/**'
+                            '**/global/resolver/**',
+                            '**/global/util/**'
                     ])
                 })
         )
@@ -96,9 +96,15 @@ jacocoTestCoverageVerification {
             element = 'CLASS'
 
             limit {
-                counter = 'LINE'
+                counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.8
+                minimum = 1.0
+            }
+
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
             }
 
             excludes = [
@@ -109,8 +115,8 @@ jacocoTestCoverageVerification {
                     '*.global.config.*',
                     '*.global.error.*',
                     '*.global.interceptor.*',
-                    '*.global.resolver.*'
-//                    '*.global.util.*'
+                    '*.global.resolver.*',
+                    '*.global.util.*'
             ]
         }
     }
