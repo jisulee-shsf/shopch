@@ -11,5 +11,6 @@ public class NumberClassifierTest {
     @Test
     public void classifyNumber() {
         assertThat(classifier.classifyNumber(1)).isEqualTo("PositiveOrZero");
+        assertThat(classifier.classifyNumber(-1)).isEqualTo("Negative");
     }
 }
