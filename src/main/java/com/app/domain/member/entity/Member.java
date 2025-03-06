@@ -1,5 +1,6 @@
 package com.app.domain.member.entity;
 
+import com.app.domain.common.BaseEntity;
 import com.app.domain.member.constant.MemberType;
 import com.app.domain.member.constant.Role;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
