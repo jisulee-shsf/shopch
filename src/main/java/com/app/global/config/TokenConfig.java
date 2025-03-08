@@ -14,10 +14,10 @@ import static io.jsonwebtoken.io.Decoders.BASE64URL;
 public class TokenConfig {
 
     @Value("${token.access-token-expiration-duration}")
-    private String accessTokenExpirationDuration;
+    private Long accessTokenExpirationDuration;
 
     @Value("${token.refresh-token-expiration-duration}")
-    private String refreshTokenExpirationDuration;
+    private Long refreshTokenExpirationDuration;
 
     @Value("${token.secret}")
     private String tokenSecret;
