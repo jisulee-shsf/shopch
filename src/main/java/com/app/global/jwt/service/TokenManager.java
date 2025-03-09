@@ -22,22 +22,22 @@ import static io.jsonwebtoken.Jwts.SIG.HS512;
 @RequiredArgsConstructor
 public class TokenManager {
 
-    private final String accessTokenExpirationDuration;
-    private final String refreshTokenExpirationDuration;
+    private final Long accessTokenExpirationDuration;
+    private final Long refreshTokenExpirationDuration;
     private final SecretKey secretKey;
 
-    public Date createAccessTokenExpirationDate() {
-        return new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpirationDuration));
+    public Date createAccessTokenExpirationDate(Date issueDate) {
+        return new Date(issueDate.getTime() + accessTokenExpirationDuration);
     }
 
-    public Date createRefreshTokenExpirationDate() {
-        return new Date(System.currentTimeMillis() + Long.parseLong(refreshTokenExpirationDuration));
+    public Date createRefreshTokenExpirationDate(Date issueDate) {
+        return new Date(issueDate.getTime() + refreshTokenExpirationDuration);
     }
 
-    public String createAccessToken(Long memberId, Role role, Date expirationDate) {
+    public String createAccessToken(Long memberId, Role role, Date issueDate, Date expirationDate) {
         return Jwts.builder()
                 .subject(ACCESS.name())
-                .issuedAt(new Date())
+                .issuedAt(issueDate)
                 .expiration(expirationDate)
                 .claim("memberId", memberId)
                 .claim("role", role)
@@ -48,10 +48,10 @@ public class TokenManager {
                 .compact();
     }
 
-    public String createRefreshToken(Long memberId, Date expirationDate) {
+    public String createRefreshToken(Long memberId, Date issueDate, Date expirationDate) {
         return Jwts.builder()
                 .subject(REFRESH.name())
-                .issuedAt(new Date())
+                .issuedAt(issueDate)
                 .expiration(expirationDate)
                 .claim("memberId", memberId)
                 .signWith(secretKey, HS512)
@@ -61,12 +61,12 @@ public class TokenManager {
                 .compact();
     }
 
-    public TokenResponse createToken(Long memberId, Role role) {
-        Date accessTokenExpirationDate = createAccessTokenExpirationDate();
-        Date refreshTokenExpirationDate = createRefreshTokenExpirationDate();
+    public TokenResponse createToken(Long memberId, Role role, Date issueDate) {
+        Date accessTokenExpirationDate = createAccessTokenExpirationDate(issueDate);
+        Date refreshTokenExpirationDate = createRefreshTokenExpirationDate(issueDate);
 
-        String accessToken = createAccessToken(memberId, role, accessTokenExpirationDate);
-        String refreshToken = createRefreshToken(memberId, refreshTokenExpirationDate);
+        String accessToken = createAccessToken(memberId, role, issueDate, accessTokenExpirationDate);
+        String refreshToken = createRefreshToken(memberId, issueDate, refreshTokenExpirationDate);
 
         return TokenResponse.builder()
                 .grantType(BEARER.getType())
