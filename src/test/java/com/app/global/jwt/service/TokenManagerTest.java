@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.crypto.SecretKey;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 
@@ -22,25 +23,27 @@ import static com.app.global.jwt.constant.TokenType.ACCESS;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
-import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class TokenManagerTest {
 
-    private final Long accessTokenExpirationDuration = 900000L;
-    private final Long refreshTokenExpirationDuration = 1209600000L;
+    private static final Long ACCESS_TOKEN_EXPIRATION_DURATION = 900000L;
+    private static final Long REFRESH_TOKEN_EXPIRATION_DURATION = 1209600000L;
+    private static final Instant FIXED_FUTURE_INSTANT = Instant.parse("2025-12-31T01:00:00Z");
+    private static final Instant FIXED_PAST_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
+
     private final String testTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(64));
     private final SecretKey testSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(testTokenSecret));
-    private final TokenManager tokenManager = new TokenManager(accessTokenExpirationDuration, refreshTokenExpirationDuration, testSecretKey);
+    private final TokenManager tokenManager = new TokenManager(ACCESS_TOKEN_EXPIRATION_DURATION, REFRESH_TOKEN_EXPIRATION_DURATION, testSecretKey);
 
     @DisplayName("액세스 토큰을 발급한다.")
     @Test
     void createAccessToken() {
         // given
-        Date issueDate = new Date();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + accessTokenExpirationDuration);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION);
 
         // when
         String accessToken = tokenManager.createAccessToken(1L, USER, issueDate, accessTokenExpirationDate);
@@ -48,8 +51,8 @@ class TokenManagerTest {
         // then
         Claims claims = getTestTokenClaims(accessToken);
         assertThat(claims.getSubject()).isEqualTo(ACCESS.name());
-//        assertThat(claims.getIssuedAt()).isEqualTo(issueDate); todo 이슈 생성 예정
-//        assertThat(claims.getExpiration()).isEqualTo(accessTokenExpirationDate); todo 이슈 생성 예정
+        assertThat(claims.getIssuedAt()).isEqualTo(issueDate);
+        assertThat(claims.getExpiration()).isEqualTo(accessTokenExpirationDate);
         assertThat(claims.get("memberId", Long.class)).isEqualTo(1L);
         assertThat(claims.get("role", String.class)).isEqualTo(USER.name());
     }
@@ -58,8 +61,8 @@ class TokenManagerTest {
     @Test
     void createRefreshToken() {
         // given
-        Date issueDate = new Date();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + refreshTokenExpirationDuration);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
 
         // when
         String refreshToken = tokenManager.createRefreshToken(1L, issueDate, refreshTokenExpirationDate);
@@ -67,8 +70,8 @@ class TokenManagerTest {
         // then
         Claims claims = getTestTokenClaims(refreshToken);
         assertThat(claims.getSubject()).isEqualTo(REFRESH.name());
-//        assertThat(claims.getIssuedAt()).isEqualTo(issueDate); todo 이슈 생성 예정
-//        assertThat(claims.getExpiration()).isEqualTo(refreshTokenExpirationDate); todo 이슈 생성 예정
+        assertThat(claims.getIssuedAt()).isEqualTo(issueDate);
+        assertThat(claims.getExpiration()).isEqualTo(refreshTokenExpirationDate);
         assertThat(claims.get("memberId", Long.class)).isEqualTo(1L);
     }
 
@@ -76,7 +79,7 @@ class TokenManagerTest {
     @Test
     void createToken() {
         // given
-        Date issueDate = new Date();
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
 
         // when
         TokenResponse response = tokenManager.createToken(1L, USER, issueDate);
@@ -86,15 +89,15 @@ class TokenManagerTest {
 
         Claims accessTokenClaims = getTestTokenClaims(response.getAccessToken());
         assertThat(accessTokenClaims.getSubject()).isEqualTo(ACCESS.name());
-//        assertThat(accessTokenClaims.getIssuedAt()).isEqualTo(issueDate); todo 이슈 생성 예정
-//        assertThat(accessTokenClaims.getExpiration()).isEqualTo(new Date(issueDate.getTime() + accessTokenExpirationDuration)); todo 이슈 생성 예정
+        assertThat(accessTokenClaims.getIssuedAt()).isEqualTo(issueDate);
+        assertThat(accessTokenClaims.getExpiration()).isEqualTo(new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION));
         assertThat(accessTokenClaims.get("memberId", Long.class)).isEqualTo(1L);
         assertThat(accessTokenClaims.get("role", String.class)).isEqualTo(USER.name());
 
         Claims refreshTokenClaims = getTestTokenClaims(response.getRefreshToken());
         assertThat(refreshTokenClaims.getSubject()).isEqualTo(REFRESH.name());
-//        assertThat(refreshTokenClaims.getIssuedAt()).isEqualTo(issueDate); todo 이슈 생성 예정
-//        assertThat(refreshTokenClaims.getExpiration()).isEqualTo(new Date(issueDate.getTime() +refreshTokenExpirationDuration)); todo 이슈 생성 예정
+        assertThat(refreshTokenClaims.getIssuedAt()).isEqualTo(issueDate);
+        assertThat(refreshTokenClaims.getExpiration()).isEqualTo(new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION));
         assertThat(refreshTokenClaims.get("memberId", Long.class)).isEqualTo(1L);
     }
 
@@ -102,8 +105,8 @@ class TokenManagerTest {
     @Test
     void validateToken() {
         // given
-        Date issueDate = new Date();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + accessTokenExpirationDuration);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION);
         String accessToken = createTestAccessToken(1L, USER, issueDate, accessTokenExpirationDate);
 
         // when & then
@@ -114,8 +117,8 @@ class TokenManagerTest {
     @Test
     void validateToken_ExpiredToken() {
         // given
-        Date issueDate = new Date();
-        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().minus(1, DAYS));
+        Date issueDate = Date.from(FIXED_PAST_INSTANT);
+        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION);
         String expiredAccessToken = createTestAccessToken(1L, USER, issueDate, accessTokenExpirationDate);
 
         // when & then
@@ -128,11 +131,11 @@ class TokenManagerTest {
     @Test
     void validateToken_InvalidToken() {
         // given
-        String newTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(128));
+        String newTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(64));
         SecretKey newSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(newTokenSecret));
 
-        Date issueDate = new Date();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + accessTokenExpirationDuration);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION);
         String invalidAccessToken = createTestAccessToken(1L, USER, accessTokenExpirationDate, issueDate, newSecretKey);
 
         // when & then
@@ -145,8 +148,8 @@ class TokenManagerTest {
     @Test
     void getTokenClaims() {
         // given
-        Date issueDate = new Date();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + accessTokenExpirationDuration);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION);
         String accessToken = createTestAccessToken(1L, USER, issueDate, accessTokenExpirationDate);
 
         // when
@@ -161,8 +164,8 @@ class TokenManagerTest {
     @Test
     void getTokenClaims_ExpiredToken() {
         // given
-        Date issueDate = new Date();
-        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().minus(1, DAYS));
+        Date issueDate = Date.from(FIXED_PAST_INSTANT);
+        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION);
         String expiredAccessToken = createTestAccessToken(1L, USER, issueDate, accessTokenExpirationDate);
 
         // when & then
@@ -175,11 +178,11 @@ class TokenManagerTest {
     @Test
     void getTokenClaims_InvalidToken() {
         // given
-        String newTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(128));
+        String newTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(64));
         SecretKey newSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(newTokenSecret));
 
-        Date issueDate = new Date();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + accessTokenExpirationDuration);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_DURATION);
         String invalidAccessToken = createTestAccessToken(1L, USER, accessTokenExpirationDate, issueDate, newSecretKey);
 
         // when & then
