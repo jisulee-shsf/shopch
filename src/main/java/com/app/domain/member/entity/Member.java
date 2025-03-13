@@ -4,6 +4,7 @@ import com.app.domain.common.BaseEntity;
 import com.app.domain.member.constant.MemberType;
 import com.app.domain.member.constant.Role;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,4 +42,16 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
     private LocalDateTime refreshTokenExpirationDateTime;
+
+    @Builder
+    private Member(String name, String email, Role role, String profile, MemberType memberType,
+                   String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.profile = profile;
+        this.memberType = memberType;
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
+    }
 }
