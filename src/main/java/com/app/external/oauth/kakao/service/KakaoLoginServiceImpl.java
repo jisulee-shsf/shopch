@@ -6,6 +6,7 @@ import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
 import com.app.external.oauth.service.SocialLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.global.jwt.constant.GrantType.BEARER;
@@ -24,7 +25,7 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
 
         return SocialLoginUserInfoResponse.builder()
                 .name(account.getProfile().getNickname())
-                .email(email)
+                .email(!StringUtils.hasText(email) ? String.valueOf(response.getId()) : email)
                 .profile(account.getProfile().getThumbnailImageUrl())
                 .memberType(KAKAO)
                 .build();
