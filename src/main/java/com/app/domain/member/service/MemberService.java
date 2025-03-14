@@ -20,7 +20,7 @@ public class MemberService {
 
     @Transactional
     public Long registerMember(Member member) {
-        validateDuplicatedMember(member);
+        validateDuplicateMember(member);
         memberRepository.save(member);
         return member.getId();
     }
@@ -29,7 +29,7 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    private void validateDuplicatedMember(Member member) {
+    private void validateDuplicateMember(Member member) {
         Optional<Member> optionalMember = memberRepository.findByEmail(member.getEmail());
         if (optionalMember.isPresent()) {
             throw new BusinessException(ALREADY_REGISTERED_MEMBER);
