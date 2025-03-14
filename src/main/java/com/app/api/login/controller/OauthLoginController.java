@@ -3,6 +3,7 @@ package com.app.api.login.controller;
 import com.app.api.login.dto.OauthLoginRequest;
 import com.app.api.login.dto.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
+import com.app.api.login.validator.OauthValidator;
 import com.app.domain.member.constant.MemberType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
-import static com.app.api.login.validator.OauthValidator.validateAuthorizationHeader;
-import static com.app.api.login.validator.OauthValidator.validateMemberType;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
@@ -24,16 +23,17 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class OauthLoginController {
 
+    private final OauthValidator oauthValidator;
     private final OauthLoginService oauthLoginService;
 
     @PostMapping("/oauth/login")
     public ResponseEntity<OauthLoginResponse> oauthLogin(HttpServletRequest httpServletRequest,
                                                          @Valid @RequestBody OauthLoginRequest oauthLoginRequest) {
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION);
-        validateAuthorizationHeader(authorizationHeader);
+        oauthValidator.validateAuthorizationHeader(authorizationHeader);
 
         String memberType = oauthLoginRequest.getMemberType();
-        validateMemberType(memberType);
+        oauthValidator.validateMemberType(memberType);
 
         String accessToken = authorizationHeader.split(" ")[1];
         Date issueDate = new Date();

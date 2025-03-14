@@ -11,7 +11,7 @@ import static com.app.global.jwt.constant.GrantType.BEARER;
 @Service
 public class OauthValidator {
 
-    public static void validateAuthorizationHeader(String authorizationHeader) {
+    public void validateAuthorizationHeader(String authorizationHeader) {
         if (!StringUtils.hasText(authorizationHeader)) {
             throw new AuthenticationException(MISSING_AUTHORIZATION_HEADER);
         }
@@ -22,7 +22,7 @@ public class OauthValidator {
         }
     }
 
-    public static void validateMemberType(String memberType) {
+    public void validateMemberType(String memberType) {
         if (!MemberType.isMemberType(memberType)) {
             throw new AuthenticationException(INVALID_MEMBER_TYPE);
         }
