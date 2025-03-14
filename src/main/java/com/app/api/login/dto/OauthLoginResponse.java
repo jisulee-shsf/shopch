@@ -1,18 +1,23 @@
 package com.app.api.login.dto;
 
 import com.app.global.jwt.dto.TokenResponse;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
 @Getter
 public class OauthLoginResponse {
 
     private String grantType;
     private String accessToken;
+    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime accessTokenExpirationDateTime;
     private String refreshToken;
+    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime refreshTokenExpirationDateTime;
 
     @Builder
