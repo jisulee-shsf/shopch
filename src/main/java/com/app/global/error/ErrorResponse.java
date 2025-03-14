@@ -46,7 +46,7 @@ public class ErrorResponse {
             }
             sb.append("[");
             sb.append(fieldError.getField());
-            sb.append("]");
+            sb.append("] ");
             sb.append(fieldError.getDefaultMessage());
         }
         return sb.toString();
