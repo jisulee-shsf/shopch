@@ -27,21 +27,28 @@ public class OauthLoginService {
     private final TokenManager tokenManager;
 
     public OauthLoginResponse oauthLogin(MemberType memberType, String accessToken, Date issueDate) {
-        SocialLoginService service = SocialLoginServiceFactory.getSocialLoginService(memberType);
-        SocialLoginUserInfoResponse userInfoResponse = service.getUserInfo(accessToken);
+        SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(memberType, accessToken);
+        Member oauthMember = getOrRegisterMember(userInfoResponse);
 
-        TokenResponse tokenResponse;
-        Optional<Member> optionalMember = memberService.findMemberByEmail(userInfoResponse.getEmail());
-        if (optionalMember.isPresent()) {
-            Member oauthMember = optionalMember.get();
-            tokenResponse = tokenManager.createToken(oauthMember.getId(), oauthMember.getRole(), issueDate);
-            oauthMember.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
-        } else {
-            Member oauthMember = userInfoResponse.toEntity(USER);
-            memberService.registerMember(oauthMember);
-            tokenResponse = tokenManager.createToken(oauthMember.getId(), oauthMember.getRole(), issueDate);
-            oauthMember.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
-        }
+        TokenResponse tokenResponse = tokenManager.createToken(oauthMember.getId(), oauthMember.getRole(), issueDate);
+        oauthMember.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
+
         return OauthLoginResponse.of(tokenResponse);
+    }
+
+    private SocialLoginUserInfoResponse getUserInfoFromSocialLoginService(MemberType memberType, String accessToken) {
+        SocialLoginService service = SocialLoginServiceFactory.getSocialLoginService(memberType);
+        return service.getUserInfo(accessToken);
+    }
+
+    private Member getOrRegisterMember(SocialLoginUserInfoResponse response) {
+        Optional<Member> optionalMember = memberService.findMemberByEmail(response.getEmail());
+        if (optionalMember.isPresent()) {
+            return optionalMember.get();
+        } else {
+            Member member = response.toEntity(USER);
+            memberService.registerMember(member);
+            return member;
+        }
     }
 }
