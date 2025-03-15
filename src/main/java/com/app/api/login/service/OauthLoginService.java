@@ -28,7 +28,7 @@ public class OauthLoginService {
 
     public OauthLoginResponse oauthLogin(MemberType memberType, String accessToken, Date issueDate) {
         SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(memberType, accessToken);
-        Member oauthMember = findOrRegisterMember(userInfoResponse);
+        Member oauthMember = getOrRegisterMember(userInfoResponse);
 
         TokenResponse tokenResponse = tokenManager.createToken(oauthMember.getId(), oauthMember.getRole(), issueDate);
         oauthMember.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
@@ -41,7 +41,7 @@ public class OauthLoginService {
         return service.getUserInfo(accessToken);
     }
 
-    private Member findOrRegisterMember(SocialLoginUserInfoResponse response) {
+    private Member getOrRegisterMember(SocialLoginUserInfoResponse response) {
         Optional<Member> optionalMember = memberService.findMemberByEmail(response.getEmail());
         if (optionalMember.isPresent()) {
             return optionalMember.get();
