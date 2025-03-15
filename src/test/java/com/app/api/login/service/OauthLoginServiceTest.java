@@ -1,0 +1,122 @@
+package com.app.api.login.service;
+
+import com.app.api.login.dto.OauthLoginResponse;
+import com.app.domain.member.entity.Member;
+import com.app.domain.member.repository.MemberRepository;
+import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
+import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
+
+import static com.app.domain.member.constant.MemberType.KAKAO;
+import static com.app.domain.member.constant.Role.USER;
+import static com.app.global.jwt.constant.GrantType.BEARER;
+import static java.time.Duration.between;
+import static java.time.ZoneId.systemDefault;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+
+@SpringBootTest
+class OauthLoginServiceTest {
+
+    @Autowired
+    private OauthLoginService oauthLoginService;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @MockitoBean
+    private KakaoUserInfoClient kakaoUserInfoClient;
+
+    @AfterEach
+    void tearDown() {
+        memberRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("카카오로 로그인한 기존 회원의 액세스 토큰과 리프레시 토큰을 발급한다.")
+    @Test
+    void oauthLogin_AlreadyRegisteredMember() {
+        // given
+        Member member = createTestMember("member@email.com");
+        memberRepository.save(member);
+
+        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
+        Date issueDate = Date.from(fixedFutureInstant);
+
+        KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse(member.getEmail());
+        given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
+                .willReturn(userInfoResponse);
+
+        // when
+        OauthLoginResponse loginResponse =
+                oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
+
+        // then
+        assertThat(loginResponse.getGrantType()).isEqualTo(BEARER.getType());
+
+        assertThat(loginResponse.getAccessToken()).isNotNull();
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
+        assertThat(between(issueDateTime, loginResponse.getAccessTokenExpirationDateTime()).toMinutes()).isEqualTo(15);
+
+        assertThat(loginResponse.getRefreshToken()).isNotNull();
+        assertThat(between(issueDateTime, loginResponse.getRefreshTokenExpirationDateTime()).toDays()).isEqualTo(14);
+    }
+
+    @DisplayName("카카오로 로그인한 신규 회원의 액세스 토큰과 리프레시 토큰을 발급한다.")
+    @Test
+    void oauthLogin_NotRegisteredMember() {
+        // given
+        KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse("member@email.com");
+        given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
+                .willReturn(userInfoResponse);
+
+        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
+        Date issueDate = Date.from(fixedFutureInstant);
+
+        // when
+        OauthLoginResponse loginResponse =
+                oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
+
+        // then
+        assertThat(loginResponse.getGrantType()).isEqualTo(BEARER.getType());
+
+        assertThat(loginResponse.getAccessToken()).isNotNull();
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
+        assertThat(between(issueDateTime, loginResponse.getAccessTokenExpirationDateTime()).toMinutes()).isEqualTo(15);
+
+        assertThat(loginResponse.getRefreshToken()).isNotNull();
+        assertThat(between(issueDateTime, loginResponse.getRefreshTokenExpirationDateTime()).toDays()).isEqualTo(14);
+    }
+
+    private Member createTestMember(String email) {
+        return Member.builder()
+                .name("member")
+                .email(email)
+                .role(USER)
+                .profile("profile")
+                .memberType(KAKAO)
+                .build();
+    }
+
+    private KakaoUserInfoResponse createTestKakaoInfoResponse(String email) {
+        return KakaoUserInfoResponse.builder()
+                .id(1L)
+                .kakaoAccount(KakaoUserInfoResponse.KakaoAccount.builder()
+                        .email(email)
+                        .profile(KakaoUserInfoResponse.KakaoAccount.Profile.builder()
+                                .nickname("member")
+                                .thumbnailImageUrl("http://img1.kakaocdn.net/.../thumbnail.jpeg")
+                                .build())
+                        .build())
+                .build();
+    }
+}
