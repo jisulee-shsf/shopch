@@ -111,10 +111,11 @@ class AccessTokenServiceTest {
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
+        String expiredRefreshToken = member.getRefreshToken();
         Date reissueDate = Date.from(FIXED_FUTURE_INSTANT);
 
         // when & then
-        assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(member.getRefreshToken(), reissueDate))
+        assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(expiredRefreshToken, reissueDate))
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessage(EXPIRED_REFRESH_TOKEN.getErrorMessage());
     }
@@ -126,7 +127,9 @@ class AccessTokenServiceTest {
                 .expiration(expirationDate)
                 .claim("memberId", 1L)
                 .signWith(secretKey, HS512)
-                .header().add("typ", "JWT").and()
+                .header()
+                .add("typ", "JWT")
+                .and()
                 .compact();
     }
 
