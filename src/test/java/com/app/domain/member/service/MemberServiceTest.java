@@ -2,29 +2,57 @@ package com.app.domain.member.service;
 
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
+import com.app.global.error.exception.AuthenticationException;
 import com.app.global.error.exception.BusinessException;
+import com.app.global.error.exception.EntityNotFoundException;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.crypto.SecretKey;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.global.error.ErrorType.ALREADY_REGISTERED_MEMBER;
+import static com.app.global.error.ErrorType.*;
+import static com.app.global.jwt.constant.TokenType.REFRESH;
+import static io.jsonwebtoken.Jwts.SIG.HS512;
+import static io.jsonwebtoken.Jwts.builder;
+import static io.jsonwebtoken.io.Decoders.BASE64URL;
+import static java.time.Duration.ofDays;
+import static java.time.ZoneId.systemDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class MemberServiceTest {
 
+    private static final Instant FIXED_FUTURE_INSTANT = Instant.parse("2025-12-31T01:00:00Z");
+    private static final Instant FIXED_PAST_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
+
     @Autowired
     private MemberService memberService;
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Value("${token.secret}")
+    private String tokenSecret;
+
+    private SecretKey secretKey;
+
+    @BeforeEach
+    void setUp() {
+        secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
+    }
 
     @AfterEach
     void tearDown() {
@@ -82,6 +110,57 @@ class MemberServiceTest {
                 .isEqualTo(member.getEmail());
     }
 
+    @DisplayName("리프레시 토큰으로 회원을 조회한다.")
+    @Test
+    void findMemberByRefreshToken() {
+        // given
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date refreshTokenExpirationDate = Date.from(FIXED_FUTURE_INSTANT.plus(ofDays(14)));
+
+        Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
+        memberRepository.save(member);
+
+        // when
+        Member findMember = memberService.findMemberByRefreshToken(member.getRefreshToken());
+
+        // then
+        assertThat(findMember)
+                .extracting("refreshToken", "refreshTokenExpirationDateTime")
+                .containsExactly(member.getRefreshToken(), member.getRefreshTokenExpirationDateTime());
+    }
+
+    @DisplayName("리프레시 토큰을 가진 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
+    @Test
+    void findMemberByRefreshToken_MemberDoesNotExist() {
+        // given
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date refreshTokenExpirationDate = Date.from(FIXED_FUTURE_INSTANT.plus(ofDays(14)));
+        String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
+
+        // when & then
+        assertThatThrownBy(() -> memberService.findMemberByRefreshToken(refreshToken))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(MEMBER_NOT_FOUND.getErrorMessage());
+    }
+
+    @DisplayName("조회한 회원의 리프레시 토큰이 만료된 경우, 예외가 발생한다.")
+    @Test
+    void findMemberByRefreshToken_ExpiredRefreshToken() {
+        // given
+        Date issueDate = Date.from(FIXED_PAST_INSTANT);
+        Date refreshTokenExpirationDate = Date.from(FIXED_PAST_INSTANT.plus(ofDays(14)));
+
+        Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
+        memberRepository.save(member);
+
+        String expiredRefreshToken = member.getRefreshToken();
+
+        // when & then
+        assertThatThrownBy(() -> memberService.findMemberByRefreshToken(expiredRefreshToken))
+                .isInstanceOf(AuthenticationException.class)
+                .hasMessage(EXPIRED_REFRESH_TOKEN.getErrorMessage());
+    }
+
     private Member createTestMember(String email) {
         return Member.builder()
                 .name("member")
@@ -89,6 +168,34 @@ class MemberServiceTest {
                 .role(USER)
                 .profile("profile")
                 .memberType(KAKAO)
+                .build();
+    }
+
+    private String createTestRefreshToken(Date issueDate, Date expirationDate) {
+        return builder()
+                .subject(REFRESH.name())
+                .issuedAt(issueDate)
+                .expiration(expirationDate)
+                .claim("memberId", 1L)
+                .signWith(secretKey, HS512)
+                .header()
+                .add("typ", "JWT")
+                .and()
+                .compact();
+    }
+
+    private Member createTestMemberWithRefreshToken(Date issueDate, Date refreshTokenExpirationDate) {
+        String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
+        LocalDateTime refreshTokenExpirationDateTime = LocalDateTime.ofInstant(refreshTokenExpirationDate.toInstant(), systemDefault());
+
+        return Member.builder()
+                .name("member")
+                .email("member@email.com")
+                .role(USER)
+                .profile("profile")
+                .memberType(KAKAO)
+                .refreshToken(refreshToken)
+                .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
                 .build();
     }
 }
