@@ -16,7 +16,7 @@ import static com.app.global.error.ErrorType.INVALID_TOKEN;
 import static com.app.global.jwt.constant.GrantType.BEARER;
 import static com.app.global.jwt.constant.TokenType.ACCESS;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
-import static com.app.global.util.DateTimeUtils.convertToLocalDateTime;
+import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 
 @RequiredArgsConstructor
@@ -71,9 +71,9 @@ public class TokenManager {
         return TokenResponse.builder()
                 .grantType(BEARER.getType())
                 .accessToken(accessToken)
-                .accessTokenExpirationDateTime(convertToLocalDateTime(accessTokenExpirationDate))
+                .accessTokenExpirationDateTime(convertDateToLocalDateTime(accessTokenExpirationDate))
                 .refreshToken(refreshToken)
-                .refreshTokenExpirationDateTime(convertToLocalDateTime(refreshTokenExpirationDate))
+                .refreshTokenExpirationDateTime(convertDateToLocalDateTime(refreshTokenExpirationDate))
                 .build();
     }
 

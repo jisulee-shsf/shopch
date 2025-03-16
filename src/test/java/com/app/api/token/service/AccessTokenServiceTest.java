@@ -1,9 +1,9 @@
-package com.app.domain.member.service;
+package com.app.api.token.service;
 
+import com.app.api.token.dto.AccessTokenResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.global.error.exception.AuthenticationException;
-import com.app.global.error.exception.BusinessException;
 import com.app.global.error.exception.EntityNotFoundException;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.AfterEach;
@@ -18,28 +18,31 @@ import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.global.error.ErrorType.*;
+import static com.app.global.error.ErrorType.EXPIRED_REFRESH_TOKEN;
+import static com.app.global.error.ErrorType.MEMBER_NOT_FOUND;
+import static com.app.global.jwt.constant.GrantType.BEARER;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.Jwts.builder;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
+import static java.time.Duration.between;
 import static java.time.Duration.ofDays;
 import static java.time.ZoneId.systemDefault;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-class MemberServiceTest {
+class AccessTokenServiceTest {
 
     private static final Instant FIXED_FUTURE_INSTANT = Instant.parse("2025-12-31T01:00:00Z");
     private static final Instant FIXED_PAST_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
 
     @Autowired
-    private MemberService memberService;
+    private AccessTokenService accessTokenService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -59,60 +62,9 @@ class MemberServiceTest {
         memberRepository.deleteAllInBatch();
     }
 
-    @DisplayName("회원을 등록한다.")
+    @DisplayName("리프레시 토큰으로 액세스 토큰을 재발급한다.")
     @Test
-    void registerMember() {
-        // given
-        Member member = createTestMember("member@email.com");
-
-        // when
-        Long memberId = memberService.registerMember(member);
-
-        // then
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        assertThat(optionalMember)
-                .isPresent()
-                .get()
-                .extracting("email")
-                .isEqualTo(member.getEmail());
-    }
-
-    @DisplayName("이미 등록된 회원이 있을 때 회원과 같은 이메일로 등록을 시도할 경우, 예외가 발생한다.")
-    @Test
-    void registerMember_AlreadyRegisteredMember() {
-        // given
-        Member member = createTestMember("member@email.com");
-        memberRepository.save(member);
-
-        Member duplicateMember = createTestMember("member@email.com");
-
-        // when & then
-        assertThatThrownBy(() -> memberService.registerMember(duplicateMember))
-                .isInstanceOf(BusinessException.class)
-                .hasMessage(ALREADY_REGISTERED_MEMBER.getErrorMessage());
-    }
-
-    @DisplayName("이메일로 회원을 조회한다.")
-    @Test
-    void findMemberByEmail() {
-        // given
-        Member member = createTestMember("member@email.com");
-        memberRepository.save(member);
-
-        // when
-        Optional<Member> optionalMember = memberService.findMemberByEmail(member.getEmail());
-
-        // then
-        assertThat(optionalMember)
-                .isPresent()
-                .get()
-                .extracting("email")
-                .isEqualTo(member.getEmail());
-    }
-
-    @DisplayName("리프레시 토큰으로 회원을 조회한다.")
-    @Test
-    void findMemberByRefreshToken() {
+    void createAccessTokenByRefreshToken() {
         // given
         Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
         Date refreshTokenExpirationDate = Date.from(FIXED_FUTURE_INSTANT.plus(ofDays(14)));
@@ -120,32 +72,38 @@ class MemberServiceTest {
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
+        Date reissueDate = Date.from(refreshTokenExpirationDate.toInstant().plus(1, DAYS));
+
         // when
-        Member findMember = memberService.findMemberByRefreshToken(member.getRefreshToken());
+        AccessTokenResponse response = accessTokenService.createAccessTokenByRefreshToken(member.getRefreshToken(), reissueDate);
 
         // then
-        assertThat(findMember)
-                .extracting("refreshToken", "refreshTokenExpirationDateTime")
-                .containsExactly(member.getRefreshToken(), member.getRefreshTokenExpirationDateTime());
+        assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
+        assertThat(response.getAccessToken()).isNotNull();
+
+        LocalDateTime reissueDateTime = LocalDateTime.ofInstant(reissueDate.toInstant(), systemDefault());
+        assertThat(between(reissueDateTime, response.getAccessTokenExpirationDateTime()).toMinutes()).isEqualTo(15);
     }
 
-    @DisplayName("리프레시 토큰을 가진 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
+    @DisplayName("리프레시 토큰을 가진 회원이 없을 때 재발급을 시도할 경우, 예외가 발생한다.")
     @Test
-    void findMemberByRefreshToken_MemberDoesNotExist() {
+    void createAccessTokenByRefreshToken_MemberDoesNotExist() {
         // given
         Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
         Date refreshTokenExpirationDate = Date.from(FIXED_FUTURE_INSTANT.plus(ofDays(14)));
+
         String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
+        Date reissueDate = Date.from(refreshTokenExpirationDate.toInstant().plus(1, DAYS));
 
         // when & then
-        assertThatThrownBy(() -> memberService.findMemberByRefreshToken(refreshToken))
+        assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(refreshToken, reissueDate))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(MEMBER_NOT_FOUND.getErrorMessage());
     }
 
-    @DisplayName("조회한 회원의 리프레시 토큰이 만료된 경우, 예외가 발생한다.")
+    @DisplayName("만료된 리프레시 토큰으로 재발급을 시도할 경우, 예외가 발생한다.")
     @Test
-    void findMemberByRefreshToken_ExpiredRefreshToken() {
+    void createAccessTokenByRefreshToken_ExpiredRefreshToken() {
         // given
         Date issueDate = Date.from(FIXED_PAST_INSTANT);
         Date refreshTokenExpirationDate = Date.from(FIXED_PAST_INSTANT.plus(ofDays(14)));
@@ -154,21 +112,12 @@ class MemberServiceTest {
         memberRepository.save(member);
 
         String expiredRefreshToken = member.getRefreshToken();
+        Date reissueDate = Date.from(FIXED_FUTURE_INSTANT);
 
         // when & then
-        assertThatThrownBy(() -> memberService.findMemberByRefreshToken(expiredRefreshToken))
+        assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(expiredRefreshToken, reissueDate))
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessage(EXPIRED_REFRESH_TOKEN.getErrorMessage());
-    }
-
-    private Member createTestMember(String email) {
-        return Member.builder()
-                .name("member")
-                .email(email)
-                .role(USER)
-                .profile("profile")
-                .memberType(KAKAO)
-                .build();
     }
 
     private String createTestRefreshToken(Date issueDate, Date expirationDate) {

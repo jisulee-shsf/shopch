@@ -1,0 +1,25 @@
+package com.app.api.token.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+
+@Getter
+public class AccessTokenResponse {
+
+    private String grantType;
+    private String accessToken;
+    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime accessTokenExpirationDateTime;
+
+    @Builder
+    private AccessTokenResponse(String grantType, String accessToken, LocalDateTime accessTokenExpirationDateTime) {
+        this.grantType = grantType;
+        this.accessToken = accessToken;
+        this.accessTokenExpirationDateTime = accessTokenExpirationDateTime;
+    }
+}

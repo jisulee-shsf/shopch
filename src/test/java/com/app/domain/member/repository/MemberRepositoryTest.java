@@ -7,10 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static java.time.ZoneId.systemDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -42,6 +45,28 @@ class MemberRepositoryTest {
                 .isEqualTo(member.getEmail());
     }
 
+    @DisplayName("리프레시 토큰으로 회원을 조회한다.")
+    @Test
+    void findByRefreshToken() {
+        // given
+        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(fixedFutureInstant, systemDefault());
+        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plusDays(14);
+
+        Member member = createTestMember("refresh-token", refreshTokenExpirationDateTime);
+        memberRepository.save(member);
+
+        // when
+        Optional<Member> optionalMember = memberRepository.findByRefreshToken(member.getRefreshToken());
+
+        // then
+        assertThat(optionalMember)
+                .isPresent()
+                .get()
+                .extracting("refreshToken", "refreshTokenExpirationDateTime")
+                .containsExactly(member.getRefreshToken(), member.getRefreshTokenExpirationDateTime());
+    }
+
     private Member createTestMember(String email) {
         return Member.builder()
                 .name("member")
@@ -49,6 +74,18 @@ class MemberRepositoryTest {
                 .role(USER)
                 .profile("profile")
                 .memberType(KAKAO)
+                .build();
+    }
+
+    private Member createTestMember(String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
+        return Member.builder()
+                .name("member")
+                .email("member@email.com")
+                .role(USER)
+                .profile("profile")
+                .memberType(KAKAO)
+                .refreshToken(refreshToken)
+                .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
                 .build();
     }
 }

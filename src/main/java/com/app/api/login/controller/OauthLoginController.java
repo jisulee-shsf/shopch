@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
+import static com.app.global.util.AuthorizationHeaderUtils.validateAuthorizationHeader;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
@@ -30,7 +31,7 @@ public class OauthLoginController {
     public ResponseEntity<OauthLoginResponse> oauthLogin(HttpServletRequest httpServletRequest,
                                                          @Valid @RequestBody OauthLoginRequest oauthLoginRequest) {
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION);
-        oauthValidator.validateAuthorizationHeader(authorizationHeader);
+        validateAuthorizationHeader(authorizationHeader);
 
         String memberType = oauthLoginRequest.getMemberType();
         oauthValidator.validateMemberType(memberType);
