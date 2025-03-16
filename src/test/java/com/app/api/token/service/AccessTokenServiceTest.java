@@ -111,7 +111,7 @@ class AccessTokenServiceTest {
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
-        Date reissueDate = Date.from(refreshTokenExpirationDate.toInstant().plus(1, DAYS));
+        Date reissueDate = Date.from(FIXED_FUTURE_INSTANT);
 
         // when & then
         assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(member.getRefreshToken(), reissueDate))
