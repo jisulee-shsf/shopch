@@ -92,6 +92,34 @@ class MemberServiceTest {
                 .hasMessage(ALREADY_REGISTERED_MEMBER.getErrorMessage());
     }
 
+    @DisplayName("회원 아이디로 회원을 조회한다.")
+    @Test
+    void findMemberById() {
+        // given
+        Member member = createTestMember("member@email.com");
+        memberRepository.save(member);
+
+        Long memberId = member.getId();
+
+        // when
+        Member findMember = memberService.findMemberById(memberId);
+
+        // then
+        assertThat(findMember.getEmail()).isEqualTo(member.getEmail());
+    }
+
+    @DisplayName("등록된 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
+    @Test
+    void findMemberById_MemberDoesNotExist() {
+        // given
+        Long memberId = 1L;
+
+        // when & then
+        assertThatThrownBy(() -> memberService.findMemberById(memberId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(MEMBER_NOT_FOUND.getErrorMessage());
+    }
+
     @DisplayName("이메일로 회원을 조회한다.")
     @Test
     void findMemberByEmail() {
@@ -99,15 +127,17 @@ class MemberServiceTest {
         Member member = createTestMember("member@email.com");
         memberRepository.save(member);
 
+        String email = member.getEmail();
+
         // when
-        Optional<Member> optionalMember = memberService.findMemberByEmail(member.getEmail());
+        Optional<Member> optionalMember = memberService.findMemberByEmail(email);
 
         // then
         assertThat(optionalMember)
                 .isPresent()
                 .get()
                 .extracting("email")
-                .isEqualTo(member.getEmail());
+                .isEqualTo(email);
     }
 
     @DisplayName("리프레시 토큰으로 회원을 조회한다.")
@@ -120,13 +150,15 @@ class MemberServiceTest {
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
+        String refreshToken = member.getRefreshToken();
+
         // when
-        Member findMember = memberService.findMemberByRefreshToken(member.getRefreshToken());
+        Member findMember = memberService.findMemberByRefreshToken(refreshToken);
 
         // then
         assertThat(findMember)
                 .extracting("refreshToken", "refreshTokenExpirationDateTime")
-                .containsExactly(member.getRefreshToken(), member.getRefreshTokenExpirationDateTime());
+                .containsExactly(refreshToken, member.getRefreshTokenExpirationDateTime());
     }
 
     @DisplayName("리프레시 토큰을 가진 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")

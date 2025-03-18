@@ -59,4 +59,8 @@ public class Member extends BaseEntity {
         this.refreshToken = refreshToken;
         this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
     }
+
+    public void expireRefreshToken(LocalDateTime now) {
+        refreshTokenExpirationDateTime = now;
+    }
 }
