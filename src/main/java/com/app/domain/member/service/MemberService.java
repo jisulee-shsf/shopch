@@ -28,6 +28,11 @@ public class MemberService {
         return member.getId();
     }
 
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
+    }
+
     public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
