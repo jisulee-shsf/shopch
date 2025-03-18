@@ -17,6 +17,7 @@ public enum ErrorType {
     MISSING_AUTHORIZATION_HEADER(UNAUTHORIZED, "A-003", "Authorization 헤더가 없습니다."),
     INVALID_GRANT_TYPE(UNAUTHORIZED, "A-004", "Bearer 인증 타입이 아닙니다."),
     EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "A-005", "해당 리프레시 토큰은 만료되었습니다."),
+    INVALID_TOKEN_TYPE(UNAUTHORIZED, "A-006", "액세스 토큰 타입이 아닙니다."),
 
     // 회원
     INVALID_MEMBER_TYPE(BAD_REQUEST, "M-001", "잘못된 회원 타입입니다."),
