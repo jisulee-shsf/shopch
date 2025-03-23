@@ -5,14 +5,16 @@ import com.app.api.login.dto.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
 import com.app.api.login.validator.OauthValidator;
 import com.app.domain.member.constant.MemberType;
-import com.app.global.jwt.service.TokenManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -23,13 +25,23 @@ import static java.time.ZoneId.systemDefault;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OauthLoginController.class)
+@WebMvcTest(
+        value = OauthLoginController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = ASSIGNABLE_TYPE,
+                classes = {
+                        WebMvcConfigurer.class,
+                        HandlerInterceptor.class
+                }
+        )
+)
 class OauthLoginControllerTest {
 
     @Autowired
@@ -43,9 +55,6 @@ class OauthLoginControllerTest {
 
     @MockitoBean
     private OauthLoginService oauthLoginService;
-
-    @MockitoBean
-    private TokenManager tokenManager;
 
     @DisplayName("소셜 로그인한 회원의 액세스 토큰과 리프레시 토큰을 발급한다.")
     @Test

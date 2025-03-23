@@ -2,13 +2,15 @@ package com.app.api.token.controller;
 
 import com.app.api.token.dto.AccessTokenResponse;
 import com.app.api.token.service.AccessTokenService;
-import com.app.global.jwt.service.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -19,11 +21,21 @@ import static java.time.ZoneId.systemDefault;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AccessTokenController.class)
+@WebMvcTest(
+        value = AccessTokenController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = ASSIGNABLE_TYPE,
+                classes = {
+                        WebMvcConfigurer.class,
+                        HandlerInterceptor.class
+                }
+        )
+)
 class AccessTokenControllerTest {
 
     @Autowired
@@ -31,9 +43,6 @@ class AccessTokenControllerTest {
 
     @MockitoBean
     private AccessTokenService accessTokenService;
-
-    @MockitoBean
-    private TokenManager tokenManager;
 
     @DisplayName("액세스 토큰을 재발급한다.")
     @Test
