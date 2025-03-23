@@ -1,6 +1,7 @@
 package com.app.api.logout.controller;
 
 import com.app.api.logout.service.LogoutService;
+import com.app.global.jwt.service.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ class LogoutControllerTest {
 
     @MockitoBean
     private LogoutService logoutService;
+
+    @MockitoBean
+    private TokenManager tokenManager;
 
     @DisplayName("회원을 로그아웃한다.")
     @Test

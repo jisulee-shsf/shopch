@@ -1,5 +1,6 @@
 package com.app.web.controller;
 
+import com.app.global.jwt.service.TokenManager;
 import com.app.web.client.KakaoTokenClient;
 import com.app.web.dto.KakaoTokenRequest;
 import com.app.web.dto.KakaoTokenResponse;
@@ -25,6 +26,9 @@ class KakaoTokenControllerTest {
 
     @MockitoBean
     private KakaoTokenClient kakaoTokenClient;
+
+    @MockitoBean
+    private TokenManager tokenManager;
 
     @DisplayName("카카오 인가 코드로 토큰 발급을 요청한다.")
     @Test

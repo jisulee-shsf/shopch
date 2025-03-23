@@ -5,6 +5,7 @@ import com.app.api.login.dto.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
 import com.app.api.login.validator.OauthValidator;
 import com.app.domain.member.constant.MemberType;
+import com.app.global.jwt.service.TokenManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ class OauthLoginControllerTest {
 
     @MockitoBean
     private OauthLoginService oauthLoginService;
+
+    @MockitoBean
+    private TokenManager tokenManager;
 
     @DisplayName("소셜 로그인한 회원의 액세스 토큰과 리프레시 토큰을 발급한다.")
     @Test

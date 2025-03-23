@@ -2,6 +2,7 @@ package com.app.api.token.controller;
 
 import com.app.api.token.dto.AccessTokenResponse;
 import com.app.api.token.service.AccessTokenService;
+import com.app.global.jwt.service.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ class AccessTokenControllerTest {
 
     @MockitoBean
     private AccessTokenService accessTokenService;
+
+    @MockitoBean
+    private TokenManager tokenManager;
 
     @DisplayName("액세스 토큰을 재발급한다.")
     @Test
