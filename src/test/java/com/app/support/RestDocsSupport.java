@@ -1,4 +1,4 @@
-package com.app.docs;
+package com.app.support;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +22,13 @@ public abstract class RestDocsSupport {
         mockMvc = standaloneSetup(initController())
                 .apply(documentationConfiguration(provider)
                         .uris()
-                            .withScheme("https")
-                            .withHost("jisulee-shsf.com")
-                            .withPort(443)
-                            .and()
+                        .withScheme("https")
+                        .withHost("jisulee-shsf.com")
+                        .withPort(443)
+                        .and()
                         .operationPreprocessors()
-                            .withRequestDefaults(prettyPrint(), modifyHeaders().remove(CONTENT_LENGTH))
-                            .withResponseDefaults(prettyPrint(), modifyHeaders().remove(CONTENT_LENGTH))
+                        .withRequestDefaults(prettyPrint(), modifyHeaders().remove(CONTENT_LENGTH))
+                        .withResponseDefaults(prettyPrint(), modifyHeaders().remove(CONTENT_LENGTH))
                 )
                 .build();
     }
