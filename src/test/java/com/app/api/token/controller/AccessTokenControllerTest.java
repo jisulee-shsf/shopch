@@ -13,10 +13,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
 import static com.app.global.jwt.constant.GrantType.BEARER;
 import static java.time.ZoneId.systemDefault;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,8 +50,7 @@ class AccessTokenControllerTest {
     @Test
     void createAccessToken() throws Exception {
         // given
-        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(fixedFutureInstant, systemDefault());
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_FUTURE_INSTANT, systemDefault());
         LocalDateTime accessTokenExpirationDateTime = issueDateTime.plusMinutes(15);
 
         AccessTokenResponse response = AccessTokenResponse.builder()

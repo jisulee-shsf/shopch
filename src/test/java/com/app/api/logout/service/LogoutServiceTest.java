@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.crypto.SecretKey;
 import java.security.SecureRandom;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
@@ -22,6 +21,8 @@ import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
+import static com.app.fixture.TimeFixture.FIXED_PAST_INSTANT;
 import static com.app.global.error.ErrorType.*;
 import static com.app.global.jwt.constant.TokenType.ACCESS;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
@@ -37,9 +38,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class LogoutServiceTest {
-
-    private static final Instant FIXED_FUTURE_INSTANT = Instant.parse("2025-12-31T01:00:00Z");
-    private static final Instant FIXED_PAST_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
 
     @Autowired
     private LogoutService logoutService;

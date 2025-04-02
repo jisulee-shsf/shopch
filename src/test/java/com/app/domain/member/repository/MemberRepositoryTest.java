@@ -7,12 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
 import static java.time.ZoneId.systemDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,8 +49,7 @@ class MemberRepositoryTest {
     @Test
     void findByRefreshToken() {
         // given
-        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(fixedFutureInstant, systemDefault());
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_FUTURE_INSTANT, systemDefault());
         LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plusDays(14);
 
         Member member = createTestMember("refresh-token", refreshTokenExpirationDateTime);

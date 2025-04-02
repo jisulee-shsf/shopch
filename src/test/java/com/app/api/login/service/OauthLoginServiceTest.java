@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
 import static com.app.global.jwt.constant.GrantType.BEARER;
 import static java.time.Duration.between;
 import static java.time.ZoneId.systemDefault;
@@ -49,8 +49,7 @@ class OauthLoginServiceTest {
         Member member = createTestMember("member@email.com");
         memberRepository.save(member);
 
-        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
-        Date issueDate = Date.from(fixedFutureInstant);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
 
         KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse(member.getEmail());
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
@@ -79,8 +78,7 @@ class OauthLoginServiceTest {
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
                 .willReturn(userInfoResponse);
 
-        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
-        Date issueDate = Date.from(fixedFutureInstant);
+        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
 
         // when
         OauthLoginResponse loginResponse =

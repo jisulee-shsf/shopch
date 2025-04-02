@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import javax.crypto.SecretKey;
 import java.security.SecureRandom;
-import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.fixture.TimeFixture.*;
 import static com.app.global.error.ErrorType.EXPIRED_TOKEN;
 import static com.app.global.error.ErrorType.INVALID_TOKEN;
 import static com.app.global.jwt.constant.GrantType.BEARER;
@@ -28,11 +28,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class TokenManagerTest {
-
-    private static final Long ACCESS_TOKEN_EXPIRATION_DURATION = 900000L;
-    private static final Long REFRESH_TOKEN_EXPIRATION_DURATION = 1209600000L;
-    private static final Instant FIXED_FUTURE_INSTANT = Instant.parse("2025-12-31T01:00:00Z");
-    private static final Instant FIXED_PAST_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
 
     private final String testTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(64));
     private final SecretKey testSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(testTokenSecret));

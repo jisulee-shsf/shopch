@@ -3,17 +3,15 @@ package com.app.domain.member.entity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
 import static java.time.ZoneId.systemDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberTest {
-
-    private static final Instant FIXED_FUTURE_INSTANT = Instant.parse("2025-12-31T01:00:00Z");
 
     @DisplayName("회원 생성 시 리프레시 토큰과 리프레시 토큰 만료 일시는 null이다.")
     @Test

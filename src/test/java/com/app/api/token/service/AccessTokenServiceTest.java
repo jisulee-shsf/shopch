@@ -15,12 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.crypto.SecretKey;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
+import static com.app.fixture.TimeFixture.FIXED_PAST_INSTANT;
 import static com.app.global.error.ErrorType.EXPIRED_REFRESH_TOKEN;
 import static com.app.global.error.ErrorType.MEMBER_NOT_FOUND;
 import static com.app.global.jwt.constant.GrantType.BEARER;
@@ -37,9 +38,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class AccessTokenServiceTest {
-
-    private static final Instant FIXED_FUTURE_INSTANT = Instant.parse("2025-12-31T01:00:00Z");
-    private static final Instant FIXED_PAST_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
 
     @Autowired
     private AccessTokenService accessTokenService;
