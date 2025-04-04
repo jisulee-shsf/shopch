@@ -5,6 +5,7 @@ import com.app.domain.member.repository.MemberRepository;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.error.exception.BusinessException;
 import com.app.global.error.exception.EntityNotFoundException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,14 +22,12 @@ import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
 import static com.app.fixture.TimeFixture.FIXED_PAST_INSTANT;
+import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
 import static com.app.global.error.ErrorType.*;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
-import static io.jsonwebtoken.Jwts.builder;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
-import static java.time.Duration.ofDays;
 import static java.time.ZoneId.systemDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -142,9 +141,8 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken() {
         // given
-        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
-        Date refreshTokenExpirationDate = Date.from(FIXED_FUTURE_INSTANT.plus(ofDays(14)));
-
+        Date issueDate = new Date();
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
@@ -163,9 +161,9 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken_MemberDoesNotExist() {
         // given
-        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
-        Date refreshTokenExpirationDate = Date.from(FIXED_FUTURE_INSTANT.plus(ofDays(14)));
-        String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
+        Date issueDate = new Date();
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
+        String refreshToken = createTestRefreshToken(1L, issueDate, refreshTokenExpirationDate);
 
         // when & then
         assertThatThrownBy(() -> memberService.findMemberByRefreshToken(refreshToken))
@@ -178,8 +176,7 @@ class MemberServiceTest {
     void findMemberByRefreshToken_ExpiredRefreshToken() {
         // given
         Date issueDate = Date.from(FIXED_PAST_INSTANT);
-        Date refreshTokenExpirationDate = Date.from(FIXED_PAST_INSTANT.plus(ofDays(14)));
-
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
@@ -201,29 +198,22 @@ class MemberServiceTest {
                 .build();
     }
 
-    private String createTestRefreshToken(Date issueDate, Date expirationDate) {
-        return builder()
+    private String createTestRefreshToken(Long memberId, Date issueDate, Date expirationDate) {
+        return Jwts.builder()
                 .subject(REFRESH.name())
                 .issuedAt(issueDate)
                 .expiration(expirationDate)
-                .claim("memberId", 1L)
+                .claim("memberId", memberId)
                 .signWith(secretKey, HS512)
-                .header()
-                .add("typ", "JWT")
-                .and()
                 .compact();
     }
 
     private Member createTestMemberWithRefreshToken(Date issueDate, Date refreshTokenExpirationDate) {
-        String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
+        Member member = createTestMember("member@email.com");
+        String refreshToken = createTestRefreshToken(member.getId(), issueDate, refreshTokenExpirationDate);
         LocalDateTime refreshTokenExpirationDateTime = LocalDateTime.ofInstant(refreshTokenExpirationDate.toInstant(), systemDefault());
 
-        return Member.builder()
-                .name("member")
-                .email("member@email.com")
-                .role(USER)
-                .profile("profile")
-                .memberType(KAKAO)
+        return member.toBuilder()
                 .refreshToken(refreshToken)
                 .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
                 .build();
