@@ -1,7 +1,7 @@
 package com.app.external.oauth.kakao.client;
 
-import com.app.common.WireMockSupport;
 import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
+import com.app.support.WireMockSupport;
 import feign.FeignException;
 import feign.RetryableException;
 import org.junit.jupiter.api.DisplayName;

@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static java.time.ZoneId.systemDefault;
+import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -34,37 +34,39 @@ class MemberRepositoryTest {
         Member member = createTestMember("member@email.com");
         memberRepository.save(member);
 
+        String email = member.getEmail();
+
         // when
-        Optional<Member> optionalMember = memberRepository.findByEmail(member.getEmail());
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
         // then
         assertThat(optionalMember)
                 .isPresent()
                 .get()
                 .extracting("email")
-                .isEqualTo(member.getEmail());
+                .isEqualTo(email);
     }
 
     @DisplayName("리프레시 토큰으로 회원을 조회한다.")
     @Test
     void findByRefreshToken() {
         // given
-        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(fixedFutureInstant, systemDefault());
-        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plusDays(14);
-
+        LocalDateTime issueDateTime = LocalDateTime.of(2025, 1, 1, 1, 0);
+        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS);
         Member member = createTestMember("refresh-token", refreshTokenExpirationDateTime);
         memberRepository.save(member);
 
+        String refreshToken = member.getRefreshToken();
+
         // when
-        Optional<Member> optionalMember = memberRepository.findByRefreshToken(member.getRefreshToken());
+        Optional<Member> optionalMember = memberRepository.findByRefreshToken(refreshToken);
 
         // then
         assertThat(optionalMember)
                 .isPresent()
                 .get()
                 .extracting("refreshToken", "refreshTokenExpirationDateTime")
-                .containsExactly(member.getRefreshToken(), member.getRefreshTokenExpirationDateTime());
+                .containsExactly(refreshToken, member.getRefreshTokenExpirationDateTime());
     }
 
     private Member createTestMember(String email) {

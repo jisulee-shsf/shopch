@@ -43,7 +43,7 @@ public class Member extends BaseEntity {
     private String refreshToken;
     private LocalDateTime refreshTokenExpirationDateTime;
 
-    @Builder
+    @Builder(toBuilder = true)
     private Member(String name, String email, Role role, String profile, MemberType memberType,
                    String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
         this.name = name;

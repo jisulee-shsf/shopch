@@ -17,12 +17,13 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import static com.app.fixture.TimeFixture.ACCESS_TOKEN_EXPIRATION_DURATION;
+import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
 import static com.app.global.jwt.constant.GrantType.BEARER;
-import static java.time.ZoneId.systemDefault;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -64,15 +65,16 @@ class OauthLoginControllerTest {
         // given
         OauthLoginRequest request = new OauthLoginRequest("KAKAO");
 
-        Instant fixedFutureInstant = Instant.parse("2025-12-31T01:00:00Z");
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(fixedFutureInstant, systemDefault());
+        LocalDateTime issueDateTime = LocalDateTime.of(2025, 1, 1, 1, 0);
+        LocalDateTime accessTokenExpirationDateTime = issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_DURATION, MILLIS);
+        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS);
 
         OauthLoginResponse response = OauthLoginResponse.builder()
                 .grantType(BEARER.getType())
                 .accessToken("access-token")
-                .accessTokenExpirationDateTime(issueDateTime.plusMinutes(15))
+                .accessTokenExpirationDateTime(accessTokenExpirationDateTime)
                 .refreshToken("refresh-token")
-                .refreshTokenExpirationDateTime(issueDateTime.plusDays(14))
+                .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
                 .build();
 
         given(oauthLoginService.oauthLogin(any(MemberType.class), anyString(), any(Date.class)))
@@ -91,7 +93,7 @@ class OauthLoginControllerTest {
     @Test
     void oauthLogin_MissingMemberType() throws Exception {
         // given
-        OauthLoginRequest request = new OauthLoginRequest(null);
+        OauthLoginRequest request = new OauthLoginRequest("");
 
         // when & then
         mockMvc.perform(post("/api/oauth/login")

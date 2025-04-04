@@ -1,4 +1,4 @@
-package com.app.common;
+package com.app.support;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;

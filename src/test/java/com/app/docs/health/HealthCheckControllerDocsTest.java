@@ -1,7 +1,7 @@
 package com.app.docs.health;
 
 import com.app.api.health.controller.HealthCheckController;
-import com.app.docs.RestDocsSupport;
+import com.app.support.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.env.Environment;
