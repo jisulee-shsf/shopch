@@ -17,10 +17,11 @@ import java.util.Date;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.FIXED_FUTURE_INSTANT;
+import static com.app.fixture.TimeFixture.ACCESS_TOKEN_EXPIRATION_DURATION;
+import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
 import static com.app.global.jwt.constant.GrantType.BEARER;
-import static java.time.Duration.between;
 import static java.time.ZoneId.systemDefault;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -49,25 +50,24 @@ class OauthLoginServiceTest {
         Member member = createTestMember("member@email.com");
         memberRepository.save(member);
 
-        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
-
         KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse(member.getEmail());
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
                 .willReturn(userInfoResponse);
 
+        Date issueDate = new Date();
+
         // when
-        OauthLoginResponse loginResponse =
-                oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
+        OauthLoginResponse response = oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
 
         // then
-        assertThat(loginResponse.getGrantType()).isEqualTo(BEARER.getType());
+        assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
 
-        assertThat(loginResponse.getAccessToken()).isNotNull();
+        assertThat(response.getAccessToken()).isNotNull();
         LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
-        assertThat(between(issueDateTime, loginResponse.getAccessTokenExpirationDateTime()).toMinutes()).isEqualTo(15);
+        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_DURATION, MILLIS));
 
-        assertThat(loginResponse.getRefreshToken()).isNotNull();
-        assertThat(between(issueDateTime, loginResponse.getRefreshTokenExpirationDateTime()).toDays()).isEqualTo(14);
+        assertThat(response.getRefreshToken()).isNotNull();
+        assertThat(response.getRefreshTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS));
     }
 
     @DisplayName("카카오로 로그인한 신규 회원의 액세스 토큰과 리프레시 토큰을 발급한다.")
@@ -78,21 +78,20 @@ class OauthLoginServiceTest {
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
                 .willReturn(userInfoResponse);
 
-        Date issueDate = Date.from(FIXED_FUTURE_INSTANT);
+        Date issueDate = new Date();
 
         // when
-        OauthLoginResponse loginResponse =
-                oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
+        OauthLoginResponse response = oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
 
         // then
-        assertThat(loginResponse.getGrantType()).isEqualTo(BEARER.getType());
+        assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
 
-        assertThat(loginResponse.getAccessToken()).isNotNull();
+        assertThat(response.getAccessToken()).isNotNull();
         LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
-        assertThat(between(issueDateTime, loginResponse.getAccessTokenExpirationDateTime()).toMinutes()).isEqualTo(15);
+        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_DURATION, MILLIS));
 
-        assertThat(loginResponse.getRefreshToken()).isNotNull();
-        assertThat(between(issueDateTime, loginResponse.getRefreshTokenExpirationDateTime()).toDays()).isEqualTo(14);
+        assertThat(response.getRefreshToken()).isNotNull();
+        assertThat(response.getRefreshTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS));
     }
 
     private Member createTestMember(String email) {
