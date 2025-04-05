@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import static com.app.global.error.ErrorType.*;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final Clock clock;
 
     @Transactional
     public Long registerMember(Member member) {
@@ -52,7 +54,7 @@ public class MemberService {
     }
 
     private void validateRefreshTokenExpirationDateTime(LocalDateTime refreshTokenExpirationDateTime) {
-        if (refreshTokenExpirationDateTime.isBefore(LocalDateTime.now())) {
+        if (refreshTokenExpirationDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new AuthenticationException(EXPIRED_REFRESH_TOKEN);
         }
     }
