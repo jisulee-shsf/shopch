@@ -14,9 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import javax.crypto.SecretKey;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
@@ -31,6 +35,7 @@ import static io.jsonwebtoken.io.Decoders.BASE64URL;
 import static java.time.ZoneId.systemDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.doReturn;
 
 @SpringBootTest
 class MemberServiceTest {
@@ -40,6 +45,9 @@ class MemberServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @MockitoSpyBean
+    private Clock clock;
 
     @Value("${token.secret}")
     private String tokenSecret;
@@ -175,6 +183,9 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken_ExpiredRefreshToken() {
         // given
+        Clock fixedClock = Clock.fixed(Instant.parse("2025-04-01T01:00:00Z"), ZoneOffset.UTC);
+        doReturn(fixedClock.instant()).when(clock).instant();
+
         Date issueDate = Date.from(FIXED_PAST_INSTANT);
         Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
