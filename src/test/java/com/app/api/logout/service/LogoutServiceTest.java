@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.FIXED_INSTANT;
+import static com.app.fixture.TimeFixture.FIXED_CLOCK;
 import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.error.ErrorType.*;
@@ -57,7 +57,7 @@ class LogoutServiceTest {
 
     @BeforeEach
     void setUp() {
-        doReturn(Date.from(FIXED_INSTANT)).when(clock).now();
+        doReturn(Date.from(FIXED_CLOCK.instant())).when(clock).now();
         secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
     }
 

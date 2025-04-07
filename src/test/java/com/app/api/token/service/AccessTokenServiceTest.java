@@ -18,7 +18,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import javax.crypto.SecretKey;
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -58,7 +57,7 @@ class AccessTokenServiceTest {
 
     @BeforeEach
     void setUp() {
-        doReturn(Instant.now(FIXED_CLOCK)).when(clock).instant();
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
         secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
     }
 

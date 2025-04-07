@@ -18,7 +18,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import javax.crypto.SecretKey;
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
@@ -149,7 +148,7 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken() {
         // given
-        doReturn(Instant.now(FIXED_CLOCK)).when(clock).instant();
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
 
         Date issueDate = Date.from(clock.instant());
         Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
@@ -171,7 +170,7 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken_MemberDoesNotExist() {
         // given
-        doReturn(Instant.now(FIXED_CLOCK)).when(clock).instant();
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
 
         Date issueDate = Date.from(clock.instant());
         Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
@@ -187,7 +186,7 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken_ExpiredRefreshToken() {
         // given
-        doReturn(Instant.now(FIXED_CLOCK)).when(clock).instant();
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
 
         Date issueDate = Date.from(clock.instant().minus(REFRESH_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
         Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
