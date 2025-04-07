@@ -18,21 +18,20 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import javax.crypto.SecretKey;
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.FIXED_PAST_INSTANT;
-import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
+import static com.app.fixture.TimeFixture.FIXED_CLOCK;
+import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.error.ErrorType.*;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
 import static java.time.ZoneId.systemDefault;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.doReturn;
@@ -149,8 +148,10 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken() {
         // given
-        Date issueDate = new Date();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
+
+        Date issueDate = Date.from(clock.instant());
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
@@ -169,8 +170,10 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken_MemberDoesNotExist() {
         // given
-        Date issueDate = new Date();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
+
+        Date issueDate = Date.from(clock.instant());
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         String refreshToken = createTestRefreshToken(1L, issueDate, refreshTokenExpirationDate);
 
         // when & then
@@ -183,17 +186,17 @@ class MemberServiceTest {
     @Test
     void findMemberByRefreshToken_ExpiredRefreshToken() {
         // given
-        Clock fixedClock = Clock.fixed(Instant.parse("2025-04-01T01:00:00Z"), ZoneOffset.UTC);
-        doReturn(fixedClock.instant()).when(clock).instant();
+        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
 
-        Date issueDate = Date.from(FIXED_PAST_INSTANT);
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
+        Date issueDate = Date.from(clock.instant().minus(REFRESH_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
         String expiredRefreshToken = member.getRefreshToken();
 
         // when & then
+        assertThat(member.getRefreshTokenExpirationDateTime()).isBefore(LocalDateTime.now(clock));
         assertThatThrownBy(() -> memberService.findMemberByRefreshToken(expiredRefreshToken))
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessage(EXPIRED_REFRESH_TOKEN.getErrorMessage());

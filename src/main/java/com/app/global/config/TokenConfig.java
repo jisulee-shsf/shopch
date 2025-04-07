@@ -1,6 +1,7 @@
 package com.app.global.config;
 
 import com.app.global.jwt.service.TokenManager;
+import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +24,8 @@ public class TokenConfig {
     private String tokenSecret;
 
     @Bean
-    public TokenManager tokenManager() {
+    public TokenManager tokenManager(Clock clock) {
         SecretKey secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
-        return new TokenManager(accessTokenExpirationDuration, refreshTokenExpirationDuration, secretKey);
+        return new TokenManager(accessTokenExpirationDuration, refreshTokenExpirationDuration, secretKey, clock);
     }
 }

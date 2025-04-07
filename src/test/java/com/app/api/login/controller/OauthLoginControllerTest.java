@@ -20,9 +20,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import static com.app.fixture.TimeFixture.ACCESS_TOKEN_EXPIRATION_DURATION;
-import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
+import static com.app.fixture.TimeFixture.FIXED_INSTANT;
+import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
+import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.jwt.constant.GrantType.BEARER;
+import static java.time.ZoneId.systemDefault;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -65,9 +67,9 @@ class OauthLoginControllerTest {
         // given
         OauthLoginRequest request = new OauthLoginRequest("KAKAO");
 
-        LocalDateTime issueDateTime = LocalDateTime.of(2025, 1, 1, 1, 0);
-        LocalDateTime accessTokenExpirationDateTime = issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_DURATION, MILLIS);
-        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS);
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, systemDefault());
+        LocalDateTime accessTokenExpirationDateTime = issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS);
+        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_TIME, MILLIS);
 
         OauthLoginResponse response = OauthLoginResponse.builder()
                 .grantType(BEARER.getType())

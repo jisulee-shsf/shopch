@@ -4,6 +4,7 @@ import com.app.domain.member.constant.Role;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.dto.TokenResponse;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class TokenManager {
     private final Long accessTokenExpirationDuration;
     private final Long refreshTokenExpirationDuration;
     private final SecretKey secretKey;
+    private final Clock clock;
 
     public Date createAccessTokenExpirationDate(Date issueDate) {
         return new Date(issueDate.getTime() + accessTokenExpirationDuration);
@@ -79,7 +81,7 @@ public class TokenManager {
 
     public void validateToken(String token) {
         try {
-            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            Jwts.parser().clock(clock).verifyWith(secretKey).build().parseSignedClaims(token);
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException(EXPIRED_TOKEN);
         } catch (Exception e) {
@@ -90,7 +92,7 @@ public class TokenManager {
     public Claims getTokenClaims(String token) {
         Claims claims;
         try {
-            claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+            claims = Jwts.parser().clock(clock).verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException(EXPIRED_TOKEN);
         } catch (Exception e) {

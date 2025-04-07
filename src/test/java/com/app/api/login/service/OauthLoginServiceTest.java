@@ -17,8 +17,9 @@ import java.util.Date;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.ACCESS_TOKEN_EXPIRATION_DURATION;
-import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
+import static com.app.fixture.TimeFixture.FIXED_INSTANT;
+import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
+import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.jwt.constant.GrantType.BEARER;
 import static java.time.ZoneId.systemDefault;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -54,7 +55,7 @@ class OauthLoginServiceTest {
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
                 .willReturn(userInfoResponse);
 
-        Date issueDate = new Date();
+        Date issueDate = Date.from(FIXED_INSTANT);
 
         // when
         OauthLoginResponse response = oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
@@ -64,10 +65,10 @@ class OauthLoginServiceTest {
 
         assertThat(response.getAccessToken()).isNotNull();
         LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
-        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_DURATION, MILLIS));
+        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS));
 
         assertThat(response.getRefreshToken()).isNotNull();
-        assertThat(response.getRefreshTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS));
+        assertThat(response.getRefreshTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_TIME, MILLIS));
     }
 
     @DisplayName("카카오로 로그인한 신규 회원의 액세스 토큰과 리프레시 토큰을 발급한다.")
@@ -78,7 +79,7 @@ class OauthLoginServiceTest {
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
                 .willReturn(userInfoResponse);
 
-        Date issueDate = new Date();
+        Date issueDate = Date.from(FIXED_INSTANT);
 
         // when
         OauthLoginResponse response = oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
@@ -88,10 +89,10 @@ class OauthLoginServiceTest {
 
         assertThat(response.getAccessToken()).isNotNull();
         LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
-        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_DURATION, MILLIS));
+        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS));
 
         assertThat(response.getRefreshToken()).isNotNull();
-        assertThat(response.getRefreshTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS));
+        assertThat(response.getRefreshTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_TIME, MILLIS));
     }
 
     private Member createTestMember(String email) {

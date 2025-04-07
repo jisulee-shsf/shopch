@@ -1,10 +1,12 @@
 package com.app.fixture;
 
+import java.time.Clock;
 import java.time.Instant;
+
+import static java.time.ZoneId.systemDefault;
 
 public class TimeFixture {
 
-    public static final Instant FIXED_PAST_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
-    public static final long ACCESS_TOKEN_EXPIRATION_DURATION = 1000 * 60 * 15;
-    public static final long REFRESH_TOKEN_EXPIRATION_DURATION = 1000 * 60 * 60 * 24 * 14;
+    public static final Instant FIXED_INSTANT = Instant.parse("2025-01-01T01:00:00Z");
+    public static final Clock FIXED_CLOCK = Clock.fixed(FIXED_INSTANT, systemDefault());
 }
