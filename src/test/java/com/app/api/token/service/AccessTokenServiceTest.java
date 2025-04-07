@@ -14,14 +14,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import javax.crypto.SecretKey;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.*;
+import static com.app.fixture.TimeFixture.FIXED_CLOCK;
+import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
+import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.error.ErrorType.EXPIRED_REFRESH_TOKEN;
 import static com.app.global.error.ErrorType.MEMBER_NOT_FOUND;
 import static com.app.global.jwt.constant.GrantType.BEARER;
@@ -29,10 +34,10 @@ import static com.app.global.jwt.constant.TokenType.REFRESH;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
 import static java.time.ZoneId.systemDefault;
-import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.doReturn;
 
 @SpringBootTest
 class AccessTokenServiceTest {
@@ -43,6 +48,9 @@ class AccessTokenServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @MockitoSpyBean
+    private Clock clock;
+
     @Value("${token.secret}")
     private String tokenSecret;
 
@@ -50,6 +58,7 @@ class AccessTokenServiceTest {
 
     @BeforeEach
     void setUp() {
+        doReturn(Instant.now(FIXED_CLOCK)).when(clock).instant();
         secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
     }
 
@@ -62,12 +71,12 @@ class AccessTokenServiceTest {
     @Test
     void createAccessTokenByRefreshToken() {
         // given
-        Date issueDate = new Date();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
+        Date issueDate = Date.from(clock.instant());
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
-        Date reissueDate = Date.from(issueDate.toInstant().plus(1, DAYS));
+        Date reissueDate = Date.from(clock.instant());
 
         // when
         AccessTokenResponse response = accessTokenService.createAccessTokenByRefreshToken(member.getRefreshToken(), reissueDate);
@@ -77,18 +86,18 @@ class AccessTokenServiceTest {
 
         assertThat(response.getAccessToken()).isNotNull();
         LocalDateTime reissueDateTime = LocalDateTime.ofInstant(reissueDate.toInstant(), systemDefault());
-        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(reissueDateTime.plus(ACCESS_TOKEN_EXPIRATION_DURATION, MILLIS));
+        assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(reissueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS));
     }
 
     @DisplayName("리프레시 토큰을 가진 회원이 없을 때 재발급을 시도할 경우, 예외가 발생한다.")
     @Test
     void createAccessTokenByRefreshToken_MemberDoesNotExist() {
         // given
-        Date issueDate = new Date();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
+        Date issueDate = Date.from(clock.instant());
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         String refreshToken = createTestRefreshToken(1L, issueDate, refreshTokenExpirationDate);
 
-        Date reissueDate = Date.from(issueDate.toInstant().plus(1, DAYS));
+        Date reissueDate = Date.from(clock.instant());
 
         // when & then
         assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(refreshToken, reissueDate))
@@ -100,14 +109,13 @@ class AccessTokenServiceTest {
     @Test
     void createAccessTokenByRefreshToken_ExpiredRefreshToken() {
         // given
-        Date issueDate = Date.from(FIXED_PAST_INSTANT);
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_DURATION);
+        Date issueDate = Date.from(clock.instant().minus(REFRESH_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
+        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
         String expiredRefreshToken = member.getRefreshToken();
-
-        Date reissueDate = Date.from(issueDate.toInstant().plus(1, DAYS));
+        Date reissueDate = Date.from(clock.instant());
 
         // when & then
         assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(expiredRefreshToken, reissueDate))
