@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.REFRESH_TOKEN_EXPIRATION_DURATION;
+import static com.app.fixture.TimeFixture.FIXED_INSTANT;
+import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
+import static java.time.ZoneId.systemDefault;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,8 +38,8 @@ class MemberTest {
     void updateRefreshToken() {
         // given
         Member member = createTestMember(null, null);
-        LocalDateTime issueDateTime = LocalDateTime.of(2025, 1, 1, 1, 0);
-        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS);
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, systemDefault());
+        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_TIME, MILLIS);
 
         // when
         member.updateRefreshToken("refresh-token", refreshTokenExpirationDateTime);
@@ -51,8 +53,8 @@ class MemberTest {
     @Test
     void expireRefreshToken() {
         // given
-        LocalDateTime issueDateTime = LocalDateTime.of(2025, 1, 1, 1, 0);
-        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_DURATION, MILLIS);
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, systemDefault());
+        LocalDateTime refreshTokenExpirationDateTime = issueDateTime.plus(REFRESH_TOKEN_EXPIRATION_TIME, MILLIS);
         Member member = createTestMember("refresh-token", refreshTokenExpirationDateTime);
 
         LocalDateTime now = issueDateTime.plusDays(1);
