@@ -12,3 +12,10 @@ endif::[]
 [[Health-API]]
 == 1. 헬스 체크 API
 include::api/health/health-check.adoc[]
+
+[[Member-API]]
+== 2. 회원 API
+include::api/login/login.adoc[]
+include::api/member/member-info.adoc[]
+include::api/token/token-issue.adoc[]
+include::api/logout/logout.adoc[]
