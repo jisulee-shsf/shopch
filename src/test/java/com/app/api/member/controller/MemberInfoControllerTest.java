@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static com.app.domain.member.constant.Role.USER;
 import static com.app.global.jwt.constant.GrantType.BEARER;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -53,7 +53,7 @@ class MemberInfoControllerTest {
                 .role(USER)
                 .build();
 
-        given(memberInfoService.getMemberInfo(anyLong()))
+        given(memberInfoService.getMemberInfo(any()))
                 .willReturn(response);
 
         // when & then
