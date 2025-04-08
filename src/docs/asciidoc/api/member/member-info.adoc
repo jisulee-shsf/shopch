@@ -1,0 +1,9 @@
+[[member-info]]
+=== 2.2. 회원 정보 조회
+
+==== HTTP Request
+include::{snippets}/member-info/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/member-info/http-response.adoc[]
+include::{snippets}/member-info/response-fields.adoc[]

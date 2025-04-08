@@ -1,0 +1,9 @@
+[[token-issue]]
+=== 2.3. 액세스 토큰 재발급
+
+==== HTTP Request
+include::{snippets}/token-issue/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/token-issue/http-response.adoc[]
+include::{snippets}/token-issue/response-fields.adoc[]
