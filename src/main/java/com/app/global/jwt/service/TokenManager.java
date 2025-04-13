@@ -23,17 +23,17 @@ import static io.jsonwebtoken.Jwts.SIG.HS512;
 @RequiredArgsConstructor
 public class TokenManager {
 
-    private final Long accessTokenExpirationDuration;
-    private final Long refreshTokenExpirationDuration;
+    private final Long accessTokenExpirationTime;
+    private final Long refreshTokenExpirationTime;
     private final SecretKey secretKey;
     private final Clock clock;
 
     public Date createAccessTokenExpirationDate(Date issueDate) {
-        return new Date(issueDate.getTime() + accessTokenExpirationDuration);
+        return new Date(issueDate.getTime() + accessTokenExpirationTime);
     }
 
     public Date createRefreshTokenExpirationDate(Date issueDate) {
-        return new Date(issueDate.getTime() + refreshTokenExpirationDuration);
+        return new Date(issueDate.getTime() + refreshTokenExpirationTime);
     }
 
     public String createAccessToken(Long memberId, Role role, Date issueDate, Date expirationDate) {

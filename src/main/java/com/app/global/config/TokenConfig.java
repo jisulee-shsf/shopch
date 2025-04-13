@@ -15,10 +15,10 @@ import static io.jsonwebtoken.io.Decoders.BASE64URL;
 public class TokenConfig {
 
     @Value("${token.access-token-expiration-duration}")
-    private Long accessTokenExpirationDuration;
+    private Long accessTokenExpirationTime;
 
     @Value("${token.refresh-token-expiration-duration}")
-    private Long refreshTokenExpirationDuration;
+    private Long refreshTokenExpirationTime;
 
     @Value("${token.secret}")
     private String tokenSecret;
@@ -26,6 +26,6 @@ public class TokenConfig {
     @Bean
     public TokenManager tokenManager(Clock clock) {
         SecretKey secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
-        return new TokenManager(accessTokenExpirationDuration, refreshTokenExpirationDuration, secretKey, clock);
+        return new TokenManager(accessTokenExpirationTime, refreshTokenExpirationTime, secretKey, clock);
     }
 }
