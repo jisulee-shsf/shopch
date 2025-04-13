@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import static com.app.fixture.TimeFixture.FIXED_INSTANT;
+import static com.app.fixture.TimeFixture.FIXED_TIME_ZONE;
 import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.app.global.jwt.constant.GrantType.BEARER;
-import static java.time.ZoneId.systemDefault;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -52,7 +52,7 @@ class AccessTokenControllerTest {
     @Test
     void createAccessToken() throws Exception {
         // given
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, systemDefault());
+        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
         LocalDateTime accessTokenExpirationDateTime = issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS);
 
         AccessTokenResponse response = AccessTokenResponse.builder()

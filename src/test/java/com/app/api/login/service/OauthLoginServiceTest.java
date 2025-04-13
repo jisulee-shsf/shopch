@@ -21,7 +21,7 @@ import static com.app.fixture.TimeFixture.FIXED_INSTANT;
 import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.jwt.constant.GrantType.BEARER;
-import static java.time.ZoneId.systemDefault;
+import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -64,7 +64,7 @@ class OauthLoginServiceTest {
         assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
 
         assertThat(response.getAccessToken()).isNotNull();
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
+        LocalDateTime issueDateTime = convertDateToLocalDateTime(issueDate);
         assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS));
 
         assertThat(response.getRefreshToken()).isNotNull();
@@ -88,7 +88,7 @@ class OauthLoginServiceTest {
         assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
 
         assertThat(response.getAccessToken()).isNotNull();
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(issueDate.toInstant(), systemDefault());
+        LocalDateTime issueDateTime = convertDateToLocalDateTime(issueDate);
         assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS));
 
         assertThat(response.getRefreshToken()).isNotNull();

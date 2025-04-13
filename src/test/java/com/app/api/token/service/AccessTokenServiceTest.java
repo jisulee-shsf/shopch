@@ -30,9 +30,9 @@ import static com.app.global.error.ErrorType.EXPIRED_REFRESH_TOKEN;
 import static com.app.global.error.ErrorType.MEMBER_NOT_FOUND;
 import static com.app.global.jwt.constant.GrantType.BEARER;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
+import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
-import static java.time.ZoneId.systemDefault;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -84,7 +84,7 @@ class AccessTokenServiceTest {
         assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
 
         assertThat(response.getAccessToken()).isNotNull();
-        LocalDateTime reissueDateTime = LocalDateTime.ofInstant(reissueDate.toInstant(), systemDefault());
+        LocalDateTime reissueDateTime = convertDateToLocalDateTime(reissueDate);
         assertThat(response.getAccessTokenExpirationDateTime()).isEqualTo(reissueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS));
     }
 
@@ -108,7 +108,7 @@ class AccessTokenServiceTest {
     @Test
     void createAccessTokenByRefreshToken_ExpiredRefreshToken() {
         // given
-        Date issueDate = Date.from(clock.instant().minus(REFRESH_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
+        Date issueDate = Date.from(clock.instant().minusMillis(REFRESH_TOKEN_EXPIRATION_TIME + 1000));
         Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
@@ -145,7 +145,7 @@ class AccessTokenServiceTest {
     private Member createTestMemberWithRefreshToken(Date issueDate, Date refreshTokenExpirationDate) {
         Member member = createTestMember();
         String refreshToken = createTestRefreshToken(member.getId(), issueDate, refreshTokenExpirationDate);
-        LocalDateTime refreshTokenExpirationDateTime = LocalDateTime.ofInstant(refreshTokenExpirationDate.toInstant(), systemDefault());
+        LocalDateTime refreshTokenExpirationDateTime = convertDateToLocalDateTime(refreshTokenExpirationDate);
 
         return member.toBuilder()
                 .refreshToken(refreshToken)

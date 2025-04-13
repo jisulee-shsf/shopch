@@ -1,6 +1,6 @@
 package com.app.global.jwt.service;
 
-import com.app.global.config.clock.JwtClock;
+import com.app.global.config.time.JwtClock;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.dto.TokenResponse;
 import io.jsonwebtoken.Claims;
@@ -27,7 +27,6 @@ import static com.app.global.jwt.constant.TokenType.ACCESS;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
-import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -130,7 +129,7 @@ class TokenManagerTest {
     @Test
     void validateToken_ExpiredToken() {
         // given
-        Date issueDate = Date.from(clock.now().toInstant().minus(ACCESS_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
+        Date issueDate = Date.from(clock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
         Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
         String expiredAccessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
@@ -178,7 +177,7 @@ class TokenManagerTest {
     @Test
     void getTokenClaims_ExpiredToken() {
         // given
-        Date issueDate = Date.from(clock.now().toInstant().minus(ACCESS_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
+        Date issueDate = Date.from(clock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
         Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
         String expiredAccessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
