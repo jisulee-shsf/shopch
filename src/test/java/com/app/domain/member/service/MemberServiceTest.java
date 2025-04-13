@@ -28,10 +28,9 @@ import static com.app.fixture.TimeFixture.FIXED_CLOCK;
 import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.error.ErrorType.*;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
+import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
-import static java.time.ZoneId.systemDefault;
-import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.doReturn;
@@ -188,7 +187,7 @@ class MemberServiceTest {
         // given
         doReturn(FIXED_CLOCK.instant()).when(clock).instant();
 
-        Date issueDate = Date.from(clock.instant().minus(REFRESH_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
+        Date issueDate = Date.from(clock.instant().minusMillis(REFRESH_TOKEN_EXPIRATION_TIME + 1000));
         Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
@@ -225,7 +224,7 @@ class MemberServiceTest {
     private Member createTestMemberWithRefreshToken(Date issueDate, Date refreshTokenExpirationDate) {
         Member member = createTestMember("member@email.com");
         String refreshToken = createTestRefreshToken(member.getId(), issueDate, refreshTokenExpirationDate);
-        LocalDateTime refreshTokenExpirationDateTime = LocalDateTime.ofInstant(refreshTokenExpirationDate.toInstant(), systemDefault());
+        LocalDateTime refreshTokenExpirationDateTime = convertDateToLocalDateTime(refreshTokenExpirationDate);
 
         return member.toBuilder()
                 .refreshToken(refreshToken)

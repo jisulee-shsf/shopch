@@ -30,10 +30,9 @@ import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.error.ErrorType.*;
 import static com.app.global.jwt.constant.TokenType.ACCESS;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
+import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
-import static java.time.ZoneId.systemDefault;
-import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.doReturn;
@@ -96,7 +95,7 @@ class LogoutServiceTest {
     @Test
     void logout_ExpiredAccessToken() {
         // given
-        Date issueDate = Date.from(clock.now().toInstant().minus(ACCESS_TOKEN_EXPIRATION_TIME + 1000, MILLIS));
+        Date issueDate = Date.from(clock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
         Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
         String expiredAccessToken = createTestAccessToken(1L, issueDate, accessTokenExpirationDate);
 
@@ -186,9 +185,5 @@ class LogoutServiceTest {
                 .claim("role", USER)
                 .signWith(secretKey, HS512)
                 .compact();
-    }
-
-    private LocalDateTime convertDateToLocalDateTime(Date date) {
-        return LocalDateTime.ofInstant(date.toInstant(), systemDefault());
     }
 }
