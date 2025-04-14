@@ -29,11 +29,11 @@ public class TokenManager {
     private final Clock clock;
 
     public Date createAccessTokenExpirationDate(Date issueDate) {
-        return new Date(issueDate.getTime() + accessTokenExpirationTime);
+        return Date.from(issueDate.toInstant().plusMillis(accessTokenExpirationTime));
     }
 
     public Date createRefreshTokenExpirationDate(Date issueDate) {
-        return new Date(issueDate.getTime() + refreshTokenExpirationTime);
+        return Date.from(issueDate.toInstant().plusMillis(refreshTokenExpirationTime));
     }
 
     public String createAccessToken(Long memberId, Role role, Date issueDate, Date expirationDate) {

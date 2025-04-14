@@ -71,7 +71,7 @@ class AccessTokenServiceTest {
     void createAccessTokenByRefreshToken() {
         // given
         Date issueDate = Date.from(clock.instant());
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
+        Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
@@ -93,7 +93,7 @@ class AccessTokenServiceTest {
     void createAccessTokenByRefreshToken_MemberDoesNotExist() {
         // given
         Date issueDate = Date.from(clock.instant());
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
+        Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         String refreshToken = createTestRefreshToken(1L, issueDate, refreshTokenExpirationDate);
 
         Date reissueDate = Date.from(clock.instant());
@@ -109,7 +109,7 @@ class AccessTokenServiceTest {
     void createAccessTokenByRefreshToken_ExpiredRefreshToken() {
         // given
         Date issueDate = Date.from(clock.instant().minusMillis(REFRESH_TOKEN_EXPIRATION_TIME + 1000));
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
+        Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
