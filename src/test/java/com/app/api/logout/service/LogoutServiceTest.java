@@ -70,11 +70,11 @@ class LogoutServiceTest {
     void logout() {
         // given
         Date issueDate = clock.now();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
+        Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String accessToken = createTestAccessToken(member.getId(), issueDate, accessTokenExpirationDate);
 
         LocalDateTime now = convertDateToLocalDateTime(clock.now());
@@ -96,7 +96,7 @@ class LogoutServiceTest {
     void logout_ExpiredAccessToken() {
         // given
         Date issueDate = Date.from(clock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String expiredAccessToken = createTestAccessToken(1L, issueDate, accessTokenExpirationDate);
 
         LocalDateTime now = convertDateToLocalDateTime(clock.now());
@@ -112,7 +112,7 @@ class LogoutServiceTest {
     void logout_InvalidAccessToken() {
         // given
         Date issueDate = clock.now();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
 
         String newTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(64));
         SecretKey newSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(newTokenSecret));
@@ -130,7 +130,7 @@ class LogoutServiceTest {
     @Test
     void logout_InvalidTokenType() {
         Date issueDate = clock.now();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
+        Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         String refreshToken = createTestRefreshToken(1L, issueDate, refreshTokenExpirationDate);
 
         LocalDateTime now = convertDateToLocalDateTime(clock.now());

@@ -38,8 +38,7 @@ public class OauthLoginController {
 
         String accessToken = authorizationHeader.split(" ")[1];
         Date issueDate = new Date();
-        OauthLoginResponse response = oauthLoginService.oauthLogin(MemberType.from(memberType), accessToken, issueDate);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(oauthLoginService.oauthLogin(MemberType.from(memberType), accessToken, issueDate));
     }
 }

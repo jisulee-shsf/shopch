@@ -27,6 +27,7 @@ import static com.app.global.jwt.constant.TokenType.ACCESS;
 import static com.app.global.jwt.constant.TokenType.REFRESH;
 import static io.jsonwebtoken.Jwts.SIG.HS512;
 import static io.jsonwebtoken.io.Decoders.BASE64URL;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -53,7 +54,7 @@ class TokenManagerTest {
     void createAccessToken() {
         // given
         Date issueDate = clock.now();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
 
         // when
         String accessToken = tokenManager.createAccessToken(1L, USER, issueDate, accessTokenExpirationDate);
@@ -72,7 +73,7 @@ class TokenManagerTest {
     void createRefreshToken() {
         // given
         Date issueDate = clock.now();
-        Date refreshTokenExpirationDate = new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
+        Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
 
         // when
         String refreshToken = tokenManager.createRefreshToken(1L, issueDate, refreshTokenExpirationDate);
@@ -101,7 +102,7 @@ class TokenManagerTest {
         assertThat(accessTokenClaims.getSubject()).isEqualTo(ACCESS.name());
         assertThat(accessTokenClaims.getIssuedAt()).isEqualTo(roundOffMillis(issueDate));
         assertThat(accessTokenClaims.getExpiration()).isEqualTo(
-                roundOffMillis(new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME)));
+                roundOffMillis(Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME))));
         assertThat(accessTokenClaims.get("memberId", Long.class)).isEqualTo(1L);
         assertThat(accessTokenClaims.get("role", String.class)).isEqualTo(USER.name());
 
@@ -109,7 +110,7 @@ class TokenManagerTest {
         assertThat(refreshTokenClaims.getSubject()).isEqualTo(REFRESH.name());
         assertThat(refreshTokenClaims.getIssuedAt()).isEqualTo(roundOffMillis(issueDate));
         assertThat(refreshTokenClaims.getExpiration()).isEqualTo(
-                roundOffMillis(new Date(issueDate.getTime() + REFRESH_TOKEN_EXPIRATION_TIME)));
+                roundOffMillis(Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME))));
         assertThat(refreshTokenClaims.get("memberId", Long.class)).isEqualTo(1L);
     }
 
@@ -118,7 +119,7 @@ class TokenManagerTest {
     void validateToken() {
         // given
         Date issueDate = clock.now();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String accessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
         // when & then
@@ -130,7 +131,7 @@ class TokenManagerTest {
     void validateToken_ExpiredToken() {
         // given
         Date issueDate = Date.from(clock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String expiredAccessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
         // when & then
@@ -148,7 +149,7 @@ class TokenManagerTest {
         SecretKey newSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(newTokenSecret));
 
         Date issueDate = clock.now();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String invalidAccessToken = createTestAccessToken(accessTokenExpirationDate, issueDate, newSecretKey);
 
         // when & then
@@ -162,7 +163,7 @@ class TokenManagerTest {
     void getTokenClaims() {
         // given
         Date issueDate = clock.now();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String accessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
         // when
@@ -178,7 +179,7 @@ class TokenManagerTest {
     void getTokenClaims_ExpiredToken() {
         // given
         Date issueDate = Date.from(clock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String expiredAccessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
         // when & then
@@ -196,7 +197,7 @@ class TokenManagerTest {
         SecretKey newSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(newTokenSecret));
 
         Date issueDate = clock.now();
-        Date accessTokenExpirationDate = new Date(issueDate.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+        Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String invalidAccessToken = createTestAccessToken(accessTokenExpirationDate, issueDate, newSecretKey);
 
         // when & then
@@ -225,6 +226,6 @@ class TokenManagerTest {
     }
 
     private Date roundOffMillis(Date date) {
-        return new Date(date.getTime() / 1000 * 1000);
+        return Date.from(date.toInstant().truncatedTo(SECONDS));
     }
 }
