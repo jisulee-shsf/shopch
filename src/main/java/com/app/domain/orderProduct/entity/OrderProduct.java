@@ -1,6 +1,7 @@
 package com.app.domain.orderProduct.entity;
 
 import com.app.domain.common.BaseEntity;
+import com.app.domain.order.entity.Order;
 import com.app.domain.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,6 +23,10 @@ public class OrderProduct extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     private int orderPrice;
     private int orderQuantity;
