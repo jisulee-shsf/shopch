@@ -1,6 +1,7 @@
 package com.app.domain.order.entity;
 
 import com.app.domain.common.BaseEntity;
+import com.app.domain.member.entity.Member;
 import com.app.domain.order.constant.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,6 +22,10 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "order_id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false)
     private LocalDateTime orderDateTime;
