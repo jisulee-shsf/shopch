@@ -4,6 +4,7 @@ import com.app.domain.common.BaseEntity;
 import com.app.domain.order.entity.Order;
 import com.app.domain.product.entity.Product;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,4 +32,24 @@ public class OrderProduct extends BaseEntity {
 
     private int orderPrice;
     private int orderQuantity;
+
+    @Builder
+    private OrderProduct(Product product, Order order, int orderQuantity) {
+        this.product = product;
+        this.order = order;
+        this.orderPrice = product.getPrice();
+        this.orderQuantity = orderQuantity;
+    }
+
+    public static OrderProduct create(Product product, Order order, int orderQuantity) {
+        return OrderProduct.builder()
+                .product(product)
+                .order(order)
+                .orderQuantity(orderQuantity)
+                .build();
+    }
+
+    public int calculateTotalPrice() {
+        return orderPrice * orderQuantity;
+    }
 }

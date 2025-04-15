@@ -4,9 +4,11 @@ import com.app.domain.common.BaseEntity;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.constant.ProductType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -34,4 +36,23 @@ public class Product extends BaseEntity {
 
     private int price;
     private int stockQuantity;
+
+    @Builder
+    private Product(String name, ProductType type, ProductSellingStatus sellingStatus, int price, int stockQuantity) {
+        this.name = name;
+        this.type = type;
+        this.sellingStatus = sellingStatus;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
+
+    public static Product create(String name, ProductType type, int price, int stockQuantity) {
+        return Product.builder()
+                .name(name)
+                .type(type)
+                .sellingStatus(SELLING)
+                .price(price)
+                .stockQuantity(stockQuantity)
+                .build();
+    }
 }
