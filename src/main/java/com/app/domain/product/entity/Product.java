@@ -28,29 +28,29 @@ public class Product extends BaseEntity {
 
     @Enumerated(value = STRING)
     @Column(nullable = false)
-    private ProductType type;
+    private ProductType productType;
 
     @Enumerated(value = STRING)
     @Column(nullable = false)
-    private ProductSellingStatus sellingStatus;
+    private ProductSellingStatus productSellingStatus;
 
     private int price;
     private int stockQuantity;
 
     @Builder
-    private Product(String name, ProductType type, ProductSellingStatus sellingStatus, int price, int stockQuantity) {
+    private Product(String name, ProductType productType, ProductSellingStatus productSellingStatus, int price, int stockQuantity) {
         this.name = name;
-        this.type = type;
-        this.sellingStatus = sellingStatus;
+        this.productType = productType;
+        this.productSellingStatus = productSellingStatus;
         this.price = price;
         this.stockQuantity = stockQuantity;
     }
 
-    public static Product create(String name, ProductType type, int price, int stockQuantity) {
+    public static Product create(String name, ProductType productType, int price, int stockQuantity) {
         return Product.builder()
                 .name(name)
-                .type(type)
-                .sellingStatus(SELLING)
+                .productType(productType)
+                .productSellingStatus(SELLING)
                 .price(price)
                 .stockQuantity(stockQuantity)
                 .build();
