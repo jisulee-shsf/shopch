@@ -1,10 +1,8 @@
 package com.app.domain.orderProduct.entity;
 
 import com.app.domain.common.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.app.domain.product.entity.Product;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +18,10 @@ public class OrderProduct extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "order_product_id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     private int orderPrice;
     private int orderQuantity;
