@@ -51,8 +51,8 @@ public class Order extends BaseEntity {
         this.member = member;
         this.orderDateTime = orderDateTime;
         this.orderStatus = orderStatus;
-        this.orderProducts = orderProducts;
         this.totalPrice = getTotalPrice(orderProducts);
+        orderProducts.forEach(this::changeOrderProduct);
     }
 
     public static Order create(Member member, LocalDateTime orderDateTime, List<OrderProduct> orderProducts) {
@@ -62,6 +62,11 @@ public class Order extends BaseEntity {
                 .orderStatus(INIT)
                 .orderProducts(orderProducts)
                 .build();
+    }
+
+    private void changeOrderProduct(OrderProduct orderProduct) {
+        orderProducts.add(orderProduct);
+        orderProduct.changeOrder(this);
     }
 
     private int getTotalPrice(List<OrderProduct> orderProducts) {

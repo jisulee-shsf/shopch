@@ -34,19 +34,21 @@ public class OrderProduct extends BaseEntity {
     private int orderQuantity;
 
     @Builder
-    private OrderProduct(Product product, Order order, int orderQuantity) {
+    private OrderProduct(Product product, int orderQuantity) {
         this.product = product;
-        this.order = order;
         this.orderPrice = product.getPrice();
         this.orderQuantity = orderQuantity;
     }
 
-    public static OrderProduct create(Product product, Order order, int orderQuantity) {
+    public static OrderProduct create(Product product, int orderQuantity) {
         return OrderProduct.builder()
                 .product(product)
-                .order(order)
                 .orderQuantity(orderQuantity)
                 .build();
+    }
+
+    public void changeOrder(Order order) {
+        this.order = order;
     }
 
     public int calculateTotalPrice() {
