@@ -1,0 +1,172 @@
+package com.app.api.product.controller;
+
+import com.app.api.product.dto.request.ProductCreateRequest;
+import com.app.api.product.dto.response.ProductResponse;
+import com.app.api.product.service.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
+import static com.app.domain.product.constant.ProductType.PRODUCT_A;
+import static com.app.global.jwt.constant.GrantType.BEARER;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(
+        value = ProductController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = ASSIGNABLE_TYPE,
+                classes = {
+                        WebMvcConfigurer.class,
+                        HandlerInterceptor.class,
+                        HandlerMethodArgumentResolver.class
+                }
+        )
+)
+class ProductControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private ProductService productService;
+
+    @DisplayName("신규 상품을 등록한다.")
+    @Test
+    void createProduct() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("product")
+                .productType(PRODUCT_A)
+                .price(10000)
+                .stockQuantity(1)
+                .build();
+
+        ProductResponse response = ProductResponse.builder()
+                .id(1L)
+                .name(request.getName())
+                .productType(request.getProductType())
+                .productSellingStatus(SELLING)
+                .price(request.getPrice())
+                .stockQuantity(request.getStockQuantity())
+                .build();
+
+        given(productService.createProduct(any(ProductCreateRequest.class)))
+                .willReturn(response);
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("상품 등록 시 상품 이름은 필수이다.")
+    @Test
+    void createProduct_MissingName() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("")
+                .productType(PRODUCT_A)
+                .price(10000)
+                .stockQuantity(1)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[name] 상품 이름은 필수입니다."));
+    }
+
+    @DisplayName("상품 등록 시 상품 타입은 필수이다.")
+    @Test
+    void createProduct_MissingProductType() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("product")
+                .productType(null)
+                .price(10000)
+                .stockQuantity(1)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[productType] 상품 타입은 필수입니다."));
+    }
+
+    @DisplayName("상품 등록 시 상품 가격은 양수여야 한다.")
+    @Test
+    void createProduct_ZeroPrice() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("product")
+                .productType(PRODUCT_A)
+                .price(0)
+                .stockQuantity(1)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[price] 등록 상품 가격은 양수여야 합니다."));
+    }
+
+    @DisplayName("상품 등록 시 상품 재고는 양수여야 한다.")
+    @Test
+    void createProduct_ZeroStockQuantity() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("product")
+                .productType(PRODUCT_A)
+                .price(10000)
+                .stockQuantity(0)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 등록 상품 재고는 양수여야 합니다."));
+    }
+}
