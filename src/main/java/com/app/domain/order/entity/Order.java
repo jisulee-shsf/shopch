@@ -21,6 +21,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
+@Table(name = "orders")
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Order extends BaseEntity {
