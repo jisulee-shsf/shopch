@@ -12,6 +12,7 @@ import java.util.List;
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
 import static com.app.domain.order.constant.OrderStatus.INIT;
+import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static com.app.fixture.TimeFixture.FIXED_INSTANT;
 import static com.app.fixture.TimeFixture.FIXED_TIME_ZONE;
@@ -102,6 +103,7 @@ class OrderTest {
         return Product.builder()
                 .name(name)
                 .productType(PRODUCT_A)
+                .productSellingStatus(SELLING)
                 .price(price)
                 .stockQuantity(stockQuantity)
                 .build();
@@ -118,6 +120,7 @@ class OrderTest {
         return Order.builder()
                 .member(member)
                 .orderDateTime(orderDateTime)
+                .orderStatus(INIT)
                 .orderProducts(orderProducts)
                 .build();
     }
