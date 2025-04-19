@@ -28,9 +28,13 @@ public class ProductService {
 
     @Transactional
     public ProductResponse updateProduct(Long productId, ProductUpdateRequest request) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
+        Product product = findProductById(productId);
         product.update(request);
         return ProductResponse.of(product);
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
     }
 }
