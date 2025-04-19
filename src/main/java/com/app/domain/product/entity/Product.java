@@ -1,5 +1,6 @@
 package com.app.domain.product.entity;
 
+import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.domain.common.BaseEntity;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.constant.ProductType;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.app.domain.product.constant.ProductSellingStatus.COMPLETED;
 import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -54,5 +56,17 @@ public class Product extends BaseEntity {
                 .price(price)
                 .stockQuantity(stockQuantity)
                 .build();
+    }
+
+    public void update(ProductUpdateRequest request) {
+        name = request.getName();
+        productType = request.getProductType();
+        price = request.getPrice();
+        stockQuantity = request.getStockQuantity();
+        changeProductSellingStatus();
+    }
+
+    private void changeProductSellingStatus() {
+        productSellingStatus = (stockQuantity == 0) ? COMPLETED : SELLING;
     }
 }
