@@ -1,12 +1,16 @@
 package com.app.api.product.service;
 
 import com.app.api.product.dto.request.ProductCreateRequest;
+import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.api.product.dto.response.ProductResponse;
 import com.app.domain.product.entity.Product;
 import com.app.domain.product.repository.ProductRepository;
+import com.app.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.app.global.error.ErrorType.PRODUCT_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,5 +24,13 @@ public class ProductService {
         Product product = request.toEntity();
         Product savedProduct = productRepository.save(product);
         return ProductResponse.of(savedProduct);
+    }
+
+    @Transactional
+    public ProductResponse updateProduct(Long productId, ProductUpdateRequest request) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
+        product.update(request);
+        return ProductResponse.of(product);
     }
 }
