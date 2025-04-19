@@ -4,6 +4,7 @@ import com.app.domain.product.entity.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +27,7 @@ class OrderProductTest {
         return Product.builder()
                 .name("product")
                 .productType(PRODUCT_A)
+                .productSellingStatus(SELLING)
                 .price(10000)
                 .stockQuantity(1)
                 .build();
