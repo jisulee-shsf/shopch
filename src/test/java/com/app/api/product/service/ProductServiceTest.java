@@ -3,6 +3,7 @@ package com.app.api.product.service;
 import com.app.api.product.dto.request.ProductCreateRequest;
 import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.api.product.dto.response.ProductResponse;
+import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.entity.Product;
 import com.app.domain.product.repository.ProductRepository;
 import com.app.global.error.exception.EntityNotFoundException;
@@ -12,13 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
+import static com.app.domain.product.constant.ProductSellingStatus.COMPLETED;
 import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static com.app.domain.product.constant.ProductType.PRODUCT_B;
 import static com.app.global.error.ErrorType.PRODUCT_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
@@ -117,5 +121,37 @@ class ProductServiceTest {
         assertThatThrownBy(() -> productService.updateProduct(1L, request))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(PRODUCT_NOT_FOUND.getErrorMessage());
+    }
+
+    @DisplayName("판매 상태인 상품을 조회한다.")
+    @Test
+    void findSellingProducts() {
+        // given
+        Product product1 = createTestProduct("productA", SELLING, 1);
+        Product product2 = createTestProduct("productB", SELLING, 2);
+        Product product3 = createTestProduct("productC", COMPLETED, 0);
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        // when
+        List<ProductResponse> responses = productService.findSellingProducts();
+
+        // then
+        assertThat(responses).size().isEqualTo(2);
+        assertThat(responses)
+                .extracting("name", "productSellingStatus", "stockQuantity")
+                .containsExactly(
+                        tuple("productA", SELLING, 1),
+                        tuple("productB", SELLING, 2)
+                );
+    }
+
+    private Product createTestProduct(String name, ProductSellingStatus productSellingStatus, int stockQuantity) {
+        return Product.builder()
+                .name(name)
+                .productType(PRODUCT_A)
+                .productSellingStatus(productSellingStatus)
+                .price(10000)
+                .stockQuantity(stockQuantity)
+                .build();
     }
 }
