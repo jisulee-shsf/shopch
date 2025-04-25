@@ -10,12 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
@@ -27,8 +28,7 @@ import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -99,7 +99,7 @@ class ProductControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/products")
-                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
                 )
@@ -121,7 +121,7 @@ class ProductControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/products")
-                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
                 )
@@ -143,7 +143,7 @@ class ProductControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/products")
-                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
                 )
@@ -165,7 +165,7 @@ class ProductControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/products")
-                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
                 )
@@ -201,7 +201,7 @@ class ProductControllerTest {
 
         // when & then
         mockMvc.perform(put("/api/products/{productId}", productId)
-                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
                 )
@@ -223,7 +223,7 @@ class ProductControllerTest {
 
         // when & then
         mockMvc.perform(put("/api/products/{productId}", productId)
-                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
                 )
@@ -247,12 +247,44 @@ class ProductControllerTest {
 
         // when & then
         mockMvc.perform(put("/api/products/{productId}", productId)
-                        .header(HttpHeaders.AUTHORIZATION, BEARER.getType() + " access-token")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("400"))
                 .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 수정 상품 재고는 0 이상이어야 합니다."));
+    }
+
+    @DisplayName("판매 상태인 상품을 조회한다.")
+    @Test
+    void findSellingProducts() throws Exception {
+        // given
+        ProductResponse response1 = ProductResponse.builder()
+                .id(1L)
+                .name("productA")
+                .productType(PRODUCT_A)
+                .productSellingStatus(SELLING)
+                .price(10000)
+                .stockQuantity(1)
+                .build();
+
+        ProductResponse response2 = ProductResponse.builder()
+                .id(2L)
+                .name("productB")
+                .productType(PRODUCT_B)
+                .productSellingStatus(SELLING)
+                .price(20000)
+                .stockQuantity(2)
+                .build();
+
+        given(productService.findSellingProducts())
+                .willReturn(List.of(response1, response2));
+
+        // when & then
+        mockMvc.perform(get("/api/products")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                )
+                .andExpect(status().isOk());
     }
 }

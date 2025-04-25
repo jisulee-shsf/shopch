@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -25,5 +27,10 @@ public class ProductController {
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId,
                                                          @Valid @RequestBody ProductUpdateRequest request) {
         return ResponseEntity.ok(productService.updateProduct(productId, request));
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductResponse>> findSellingProducts() {
+        return ResponseEntity.ok(productService.findSellingProducts());
     }
 }
