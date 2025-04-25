@@ -1,0 +1,61 @@
+package com.app.domain.product.repository;
+
+import com.app.domain.product.constant.ProductSellingStatus;
+import com.app.domain.product.entity.Product;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
+import static com.app.domain.product.constant.ProductSellingStatus.COMPLETED;
+import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
+import static com.app.domain.product.constant.ProductType.PRODUCT_A;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+@SpringBootTest
+class ProductRepositoryTest {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @AfterEach
+    void tearDown() {
+        productRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("판매 상태가 SELLING인 상품을 조회한다.")
+    @Test
+    void findAllSellingStatusIn() {
+        // given
+        Product product1 = createTestProduct("productA", SELLING, 1);
+        Product product2 = createTestProduct("productB", SELLING, 2);
+        Product product3 = createTestProduct("productC", COMPLETED, 0);
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        // when
+        List<Product> products = productRepository.findAllByProductSellingStatusIn(List.of(SELLING));
+
+        // then
+        assertThat(products).size().isEqualTo(2);
+        assertThat(products)
+                .extracting("name", "productSellingStatus", "stockQuantity")
+                .containsExactly(
+                        tuple("productA", SELLING, 1),
+                        tuple("productB", SELLING, 2)
+                );
+    }
+
+    private Product createTestProduct(String name, ProductSellingStatus productSellingStatus, int stockQuantity) {
+        return Product.builder()
+                .name(name)
+                .productType(PRODUCT_A)
+                .productSellingStatus(productSellingStatus)
+                .price(10000)
+                .stockQuantity(stockQuantity)
+                .build();
+    }
+}
