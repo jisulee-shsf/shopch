@@ -1,5 +1,6 @@
 package com.app.api.product.controller;
 
+import com.app.api.common.PageResponse;
 import com.app.api.product.dto.request.ProductCreateRequest;
 import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.api.product.dto.response.ProductResponse;
@@ -10,6 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -256,7 +261,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 수정 상품 재고는 0 이상이어야 합니다."));
     }
 
-    @DisplayName("판매 상태인 상품을 조회한다.")
+    @DisplayName("판매 상태인 상품과 페이징 결과를 조회한다.")
     @Test
     void findSellingProducts() throws Exception {
         // given
@@ -278,8 +283,11 @@ class ProductControllerTest {
                 .stockQuantity(2)
                 .build();
 
-        given(productService.findSellingProducts())
-                .willReturn(List.of(response1, response2));
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        Page<ProductResponse> pageResponse = new PageImpl<>(List.of(response1, response2), pageRequest, 2);
+
+        given(productService.findSellingProducts(any(Pageable.class)))
+                .willReturn(PageResponse.of(pageResponse));
 
         // when & then
         mockMvc.perform(get("/api/products")
