@@ -1,5 +1,6 @@
 package com.app.api.product.service;
 
+import com.app.api.common.PageResponse;
 import com.app.api.product.dto.request.ProductCreateRequest;
 import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.api.product.dto.response.ProductResponse;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -132,17 +134,47 @@ class ProductServiceTest {
         Product product3 = createTestProduct("productC", COMPLETED, 0);
         productRepository.saveAll(List.of(product1, product2, product3));
 
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
         // when
-        List<ProductResponse> responses = productService.findSellingProducts();
+        PageResponse<ProductResponse> pageResponse = productService.findSellingProducts(pageRequest);
 
         // then
-        assertThat(responses).size().isEqualTo(2);
-        assertThat(responses)
+        List<ProductResponse> content = pageResponse.getContent();
+        assertThat(content).hasSize(2);
+        assertThat(content)
                 .extracting("name", "productSellingStatus", "stockQuantity")
                 .containsExactly(
                         tuple("productA", SELLING, 1),
                         tuple("productB", SELLING, 2)
                 );
+
+        assertThat(pageResponse.getSize()).isEqualTo(2);
+        assertThat(pageResponse.getNumber()).isEqualTo(0);
+        assertThat(pageResponse.getTotalElements()).isEqualTo(2);
+        assertThat(pageResponse.getTotalPages()).isEqualTo(1);
+    }
+
+    @DisplayName("조회한 페이지에 컨텐츠가 없을 경우, 빈 페이지를 반환한다.")
+    @Test
+    void findSellingProducts_ContentDoesNotExist() {
+        // given
+        Product product1 = createTestProduct("productA", SELLING, 1);
+        Product product2 = createTestProduct("productB", SELLING, 2);
+        Product product3 = createTestProduct("productC", COMPLETED, 0);
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        PageRequest pageRequest = PageRequest.of(1, 2);
+
+        // when
+        PageResponse<ProductResponse> pageResponse = productService.findSellingProducts(pageRequest);
+
+        // then
+        assertThat(pageResponse.getContent()).isEmpty();
+        assertThat(pageResponse.getSize()).isEqualTo(2);
+        assertThat(pageResponse.getNumber()).isEqualTo(1);
+        assertThat(pageResponse.getTotalElements()).isEqualTo(2);
+        assertThat(pageResponse.getTotalPages()).isEqualTo(1);
     }
 
     private Product createTestProduct(String name, ProductSellingStatus productSellingStatus, int stockQuantity) {
