@@ -1,15 +1,15 @@
 package com.app.api.product.controller;
 
+import com.app.api.common.PageResponse;
 import com.app.api.product.dto.request.ProductCreateRequest;
 import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.api.product.dto.response.ProductResponse;
 import com.app.api.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -30,7 +30,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductResponse>> findSellingProducts() {
-        return ResponseEntity.ok(productService.findSellingProducts());
+    public ResponseEntity<PageResponse<ProductResponse>> findSellingProducts(Pageable pageable) {
+        return ResponseEntity.ok(productService.findSellingProducts(pageable));
     }
 }
