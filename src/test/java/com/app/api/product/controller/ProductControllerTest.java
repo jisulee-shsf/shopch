@@ -292,6 +292,8 @@ class ProductControllerTest {
         // when & then
         mockMvc.perform(get("/api/products")
                         .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .param("page", String.valueOf(pageRequest.getPageNumber()))
+                        .param("size", String.valueOf(pageRequest.getPageSize()))
                 )
                 .andExpect(status().isOk());
     }
