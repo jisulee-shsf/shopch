@@ -19,3 +19,7 @@ include::api/login/login.adoc[]
 include::api/member/member-info.adoc[]
 include::api/token/token-issue.adoc[]
 include::api/logout/logout.adoc[]
+
+[[Product-API]]
+== 3. 상품 API
+include::api/product/product.adoc[]
