@@ -83,7 +83,7 @@ class ProductServiceTest {
         productRepository.save(product);
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(20000)
                 .stockQuantity(2)
@@ -98,14 +98,14 @@ class ProductServiceTest {
         assertThat(response.getId()).isEqualTo(productId);
         assertThat(response)
                 .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("updateProduct", PRODUCT_B, SELLING, 20000, 2);
+                .containsExactly("updatedProduct", PRODUCT_B, SELLING, 20000, 2);
 
         Optional<Product> optionalProduct = productRepository.findById(productId);
         assertThat(optionalProduct)
                 .isPresent()
                 .get()
                 .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("updateProduct", PRODUCT_B, SELLING, 20000, 2);
+                .containsExactly("updatedProduct", PRODUCT_B, SELLING, 20000, 2);
     }
 
     @DisplayName("변경할 상품이 없을 때 변경을 시도할 경우, 예외가 발생한다.")
@@ -113,7 +113,7 @@ class ProductServiceTest {
     void updateProduct_ProductDoesNotExist() {
         // given
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(20000)
                 .stockQuantity(2)

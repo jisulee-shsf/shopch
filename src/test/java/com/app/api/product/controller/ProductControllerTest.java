@@ -186,7 +186,7 @@ class ProductControllerTest {
         Long productId = 1L;
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(10000)
                 .stockQuantity(1)
@@ -220,7 +220,7 @@ class ProductControllerTest {
         Long productId = 1L;
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(0)
                 .stockQuantity(1)
@@ -244,7 +244,7 @@ class ProductControllerTest {
         Long productId = 1L;
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(10000)
                 .stockQuantity(-1)
@@ -292,6 +292,8 @@ class ProductControllerTest {
         // when & then
         mockMvc.perform(get("/api/products")
                         .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .param("page", String.valueOf(pageRequest.getPageNumber()))
+                        .param("size", String.valueOf(pageRequest.getPageSize()))
                 )
                 .andExpect(status().isOk());
     }
