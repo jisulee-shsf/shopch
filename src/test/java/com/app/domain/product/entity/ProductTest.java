@@ -36,7 +36,7 @@ class ProductTest {
                 .build();
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(20000)
                 .stockQuantity(2)
@@ -48,7 +48,7 @@ class ProductTest {
         // then
         assertThat(product)
                 .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("updateProduct", PRODUCT_B, SELLING, 20000, 2);
+                .containsExactly("updatedProduct", PRODUCT_B, SELLING, 20000, 2);
     }
 
     @DisplayName("변경한 상품 재고가 0일 경우, 판매 상태를 SELLING에서 COMPLETED로 변경한다.")
@@ -64,7 +64,7 @@ class ProductTest {
                 .build();
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(20000)
                 .stockQuantity(0)

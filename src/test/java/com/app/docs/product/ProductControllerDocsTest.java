@@ -116,7 +116,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
         Long productId = 1L;
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updateProduct")
+                .name("updatedProduct")
                 .productType(PRODUCT_B)
                 .price(10000)
                 .stockQuantity(1)
