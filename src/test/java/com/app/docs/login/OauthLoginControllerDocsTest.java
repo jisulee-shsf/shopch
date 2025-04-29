@@ -4,7 +4,6 @@ import com.app.api.login.controller.OauthLoginController;
 import com.app.api.login.dto.OauthLoginRequest;
 import com.app.api.login.dto.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
-import com.app.api.login.validator.OauthValidator;
 import com.app.domain.member.constant.MemberType;
 import com.app.support.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -33,12 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class OauthLoginControllerDocsTest extends RestDocsSupport {
 
-    private final OauthValidator oauthValidator = mock(OauthValidator.class);
     private final OauthLoginService oauthLoginService = mock(OauthLoginService.class);
 
     @Override
     protected Object initController() {
-        return new OauthLoginController(oauthValidator, oauthLoginService);
+        return new OauthLoginController(oauthLoginService);
     }
 
     @DisplayName("로그인")

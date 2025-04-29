@@ -1,7 +1,5 @@
 package com.app.api.product.dto.response;
 
-import com.app.domain.product.constant.ProductSellingStatus;
-import com.app.domain.product.constant.ProductType;
 import com.app.domain.product.entity.Product;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,13 +9,13 @@ public class ProductResponse {
 
     private Long id;
     private String name;
-    private ProductType productType;
-    private ProductSellingStatus productSellingStatus;
+    private String productType;
+    private String productSellingStatus;
     private int price;
     private int stockQuantity;
 
     @Builder
-    private ProductResponse(Long id, String name, ProductType productType, ProductSellingStatus productSellingStatus, int price, int stockQuantity) {
+    private ProductResponse(Long id, String name, String productType, String productSellingStatus, int price, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.productType = productType;
@@ -30,8 +28,8 @@ public class ProductResponse {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
-                .productType(product.getProductType())
-                .productSellingStatus(product.getProductSellingStatus())
+                .productType(product.getProductType().name())
+                .productSellingStatus(product.getProductSellingStatus().name())
                 .price(product.getPrice())
                 .stockQuantity(product.getStockQuantity())
                 .build();

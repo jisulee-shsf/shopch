@@ -1,6 +1,5 @@
 package com.app.api.member.dto;
 
-import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,10 +11,10 @@ public class MemberInfoResponse {
     private String name;
     private String email;
     private String profile;
-    private Role role;
+    private String role;
 
     @Builder
-    private MemberInfoResponse(Long id, String name, String email, String profile, Role role) {
+    private MemberInfoResponse(Long id, String name, String email, String profile, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -29,7 +28,7 @@ public class MemberInfoResponse {
                 .name(member.getName())
                 .email(member.getEmail())
                 .profile(member.getProfile())
-                .role(member.getRole())
+                .role(member.getRole().name())
                 .build();
     }
 }

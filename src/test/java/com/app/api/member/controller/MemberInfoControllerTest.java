@@ -50,7 +50,7 @@ class MemberInfoControllerTest {
                 .name("member")
                 .email("member@email.com")
                 .profile("profile")
-                .role(USER)
+                .role(USER.name())
                 .build();
 
         given(memberInfoService.getMemberInfo(any()))

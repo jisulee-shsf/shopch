@@ -47,7 +47,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
         // given
         ProductCreateRequest request = ProductCreateRequest.builder()
                 .name("product")
-                .productType(PRODUCT_A)
+                .productType(PRODUCT_A.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -56,7 +56,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .id(1L)
                 .name(request.getName())
                 .productType(request.getProductType())
-                .productSellingStatus(SELLING)
+                .productSellingStatus(SELLING.name())
                 .price(request.getPrice())
                 .stockQuantity(request.getStockQuantity())
                 .build();
@@ -117,7 +117,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -126,7 +126,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .id(productId)
                 .name(request.getName())
                 .productType(request.getProductType())
-                .productSellingStatus(SELLING)
+                .productSellingStatus(SELLING.name())
                 .price(request.getPrice())
                 .stockQuantity(request.getStockQuantity())
                 .build();
@@ -186,8 +186,8 @@ public class ProductControllerDocsTest extends RestDocsSupport {
         ProductResponse response1 = ProductResponse.builder()
                 .id(1L)
                 .name("productA")
-                .productType(PRODUCT_A)
-                .productSellingStatus(SELLING)
+                .productType(PRODUCT_A.name())
+                .productSellingStatus(SELLING.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -195,8 +195,8 @@ public class ProductControllerDocsTest extends RestDocsSupport {
         ProductResponse response2 = ProductResponse.builder()
                 .id(2L)
                 .name("productB")
-                .productType(PRODUCT_B)
-                .productSellingStatus(SELLING)
+                .productType(PRODUCT_B.name())
+                .productSellingStatus(SELLING.name())
                 .price(20000)
                 .stockQuantity(2)
                 .build();

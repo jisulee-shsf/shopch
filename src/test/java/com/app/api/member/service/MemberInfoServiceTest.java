@@ -43,7 +43,7 @@ class MemberInfoServiceTest {
         assertThat(response.getId()).isNotNull();
         assertThat(response)
                 .extracting("name", "email", "profile", "role")
-                .containsExactly("member", "member@email.com", "profile", USER);
+                .containsExactly("member", "member@email.com", "profile", USER.name());
 
         Optional<Member> optionalMember = memberRepository.findById(member.getId());
         assertThat(optionalMember)

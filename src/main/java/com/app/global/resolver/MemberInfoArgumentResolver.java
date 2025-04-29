@@ -1,6 +1,5 @@
 package com.app.global.resolver;
 
-import com.app.domain.member.constant.Role;
 import com.app.global.jwt.service.TokenManager;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
 
         return MemberInfoRequest.builder()
                 .id(memberId)
-                .role(Role.from(role))
+                .role(role)
                 .build();
     }
 }

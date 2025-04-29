@@ -37,7 +37,7 @@ class ProductTest {
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(20000)
                 .stockQuantity(2)
                 .build();
@@ -65,7 +65,7 @@ class ProductTest {
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(20000)
                 .stockQuantity(0)
                 .build();
