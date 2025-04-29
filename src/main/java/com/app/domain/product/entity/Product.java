@@ -60,7 +60,7 @@ public class Product extends BaseEntity {
 
     public void update(ProductUpdateRequest request) {
         name = request.getName();
-        productType = request.getProductType();
+        productType = ProductType.from(request.getProductType());
         price = request.getPrice();
         stockQuantity = request.getStockQuantity();
         changeProductSellingStatus();

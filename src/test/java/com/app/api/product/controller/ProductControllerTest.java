@@ -65,7 +65,7 @@ class ProductControllerTest {
         // given
         ProductCreateRequest request = ProductCreateRequest.builder()
                 .name("product")
-                .productType(PRODUCT_A)
+                .productType(PRODUCT_A.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -74,7 +74,7 @@ class ProductControllerTest {
                 .id(1L)
                 .name(request.getName())
                 .productType(request.getProductType())
-                .productSellingStatus(SELLING)
+                .productSellingStatus(SELLING.name())
                 .price(request.getPrice())
                 .stockQuantity(request.getStockQuantity())
                 .build();
@@ -97,7 +97,7 @@ class ProductControllerTest {
         // given
         ProductCreateRequest request = ProductCreateRequest.builder()
                 .name("")
-                .productType(PRODUCT_A)
+                .productType(PRODUCT_A.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -119,7 +119,7 @@ class ProductControllerTest {
         // given
         ProductCreateRequest request = ProductCreateRequest.builder()
                 .name("product")
-                .productType(null)
+                .productType("")
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -135,13 +135,35 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("[productType] 상품 타입은 필수입니다."));
     }
 
+    @DisplayName("상품 등록 시 유효한 상품 타입은 필수이다.")
+    @Test
+    void createProduct_InvalidProductType() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("product")
+                .productType("invalid-product-type")
+                .price(10000)
+                .stockQuantity(1)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[productType] 유효한 상품 타입이 아닙니다."));
+    }
+
     @DisplayName("상품 등록 시 상품 가격은 양수여야 한다.")
     @Test
     void createProduct_ZeroPrice() throws Exception {
         // given
         ProductCreateRequest request = ProductCreateRequest.builder()
                 .name("product")
-                .productType(PRODUCT_A)
+                .productType(PRODUCT_A.name())
                 .price(0)
                 .stockQuantity(1)
                 .build();
@@ -163,7 +185,7 @@ class ProductControllerTest {
         // given
         ProductCreateRequest request = ProductCreateRequest.builder()
                 .name("product")
-                .productType(PRODUCT_A)
+                .productType(PRODUCT_A.name())
                 .price(10000)
                 .stockQuantity(0)
                 .build();
@@ -187,7 +209,7 @@ class ProductControllerTest {
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -196,7 +218,7 @@ class ProductControllerTest {
                 .id(productId)
                 .name(request.getName())
                 .productType(request.getProductType())
-                .productSellingStatus(SELLING)
+                .productSellingStatus(SELLING.name())
                 .price(request.getPrice())
                 .stockQuantity(request.getStockQuantity())
                 .build();
@@ -221,7 +243,7 @@ class ProductControllerTest {
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(0)
                 .stockQuantity(1)
                 .build();
@@ -245,7 +267,7 @@ class ProductControllerTest {
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(10000)
                 .stockQuantity(-1)
                 .build();
@@ -268,8 +290,8 @@ class ProductControllerTest {
         ProductResponse response1 = ProductResponse.builder()
                 .id(1L)
                 .name("productA")
-                .productType(PRODUCT_A)
-                .productSellingStatus(SELLING)
+                .productType(PRODUCT_A.name())
+                .productSellingStatus(SELLING.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -277,8 +299,8 @@ class ProductControllerTest {
         ProductResponse response2 = ProductResponse.builder()
                 .id(2L)
                 .name("productB")
-                .productType(PRODUCT_B)
-                .productSellingStatus(SELLING)
+                .productType(PRODUCT_B.name())
+                .productSellingStatus(SELLING.name())
                 .price(20000)
                 .stockQuantity(2)
                 .build();

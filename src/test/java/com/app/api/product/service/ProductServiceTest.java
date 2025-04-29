@@ -47,7 +47,7 @@ class ProductServiceTest {
         // given
         ProductCreateRequest request = ProductCreateRequest.builder()
                 .name("product")
-                .productType(PRODUCT_A)
+                .productType(PRODUCT_A.name())
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -59,7 +59,7 @@ class ProductServiceTest {
         assertThat(response.getId()).isNotNull();
         assertThat(response)
                 .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("product", PRODUCT_A, SELLING, 10000, 1);
+                .containsExactly("product", PRODUCT_A.name(), SELLING.name(), 10000, 1);
 
         Optional<Product> optionalProduct = productRepository.findById(response.getId());
         assertThat(optionalProduct)
@@ -84,7 +84,7 @@ class ProductServiceTest {
 
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(20000)
                 .stockQuantity(2)
                 .build();
@@ -98,7 +98,7 @@ class ProductServiceTest {
         assertThat(response.getId()).isEqualTo(productId);
         assertThat(response)
                 .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("updatedProduct", PRODUCT_B, SELLING, 20000, 2);
+                .containsExactly("updatedProduct", PRODUCT_B.name(), SELLING.name(), 20000, 2);
 
         Optional<Product> optionalProduct = productRepository.findById(productId);
         assertThat(optionalProduct)
@@ -114,7 +114,7 @@ class ProductServiceTest {
         // given
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B)
+                .productType(PRODUCT_B.name())
                 .price(20000)
                 .stockQuantity(2)
                 .build();
@@ -145,8 +145,8 @@ class ProductServiceTest {
         assertThat(content)
                 .extracting("name", "productSellingStatus", "stockQuantity")
                 .containsExactly(
-                        tuple("productA", SELLING, 1),
-                        tuple("productB", SELLING, 2)
+                        tuple("productA", SELLING.name(), 1),
+                        tuple("productB", SELLING.name(), 2)
                 );
 
         assertThat(pageResponse.getSize()).isEqualTo(2);
