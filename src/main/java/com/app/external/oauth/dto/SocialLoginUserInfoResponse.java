@@ -12,10 +12,10 @@ public class SocialLoginUserInfoResponse {
     private String name;
     private String email;
     private String profile;
-    private MemberType memberType;
+    private String memberType;
 
     @Builder
-    private SocialLoginUserInfoResponse(String name, String email, String profile, MemberType memberType) {
+    private SocialLoginUserInfoResponse(String name, String email, String profile, String memberType) {
         this.name = name;
         this.email = email;
         this.profile = profile;
@@ -27,7 +27,7 @@ public class SocialLoginUserInfoResponse {
                 .name(name)
                 .email(email)
                 .profile(profile)
-                .memberType(memberType)
+                .memberType(MemberType.from(memberType))
                 .role(role)
                 .build();
     }
