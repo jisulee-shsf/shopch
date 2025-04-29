@@ -97,7 +97,8 @@ jacocoTestReport {
                             '**/global/error/**',
                             '**/global/interceptor/**',
                             '**/global/resolver/**',
-                            '**/global/util/**'
+                            '**/global/util/**',
+                            '**/global/validator/**'
                     ])
                 })
         )
@@ -132,7 +133,8 @@ jacocoTestCoverageVerification {
                     '*.global.error.*',
                     '*.global.interceptor.*',
                     '*.global.resolver.*',
-                    '*.global.util.*'
+                    '*.global.util.*',
+                    '*.global.validator.*'
             ]
         }
     }
