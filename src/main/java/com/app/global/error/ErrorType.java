@@ -20,9 +20,8 @@ public enum ErrorType {
     INVALID_TOKEN_TYPE(UNAUTHORIZED, "A-006", "액세스 토큰 타입이 아닙니다."),
 
     // 회원
-    INVALID_MEMBER_TYPE(BAD_REQUEST, "M-001", "잘못된 회원 타입입니다."),
-    ALREADY_REGISTERED_MEMBER(BAD_REQUEST, "M-002", "이미 가입된 회원입니다."),
-    MEMBER_NOT_FOUND(BAD_REQUEST, "M-003", "회원이 존재하지 않습니다."),
+    ALREADY_REGISTERED_MEMBER(BAD_REQUEST, "M-001", "이미 가입된 회원입니다."),
+    MEMBER_NOT_FOUND(BAD_REQUEST, "M-002", "회원이 존재하지 않습니다."),
 
     // 상품
     PRODUCT_NOT_FOUND(BAD_REQUEST, "P-001", "상품이 존재하지 않습니다.");
