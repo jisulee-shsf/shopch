@@ -3,7 +3,6 @@ package com.app.api.login.controller;
 import com.app.api.login.dto.OauthLoginRequest;
 import com.app.api.login.dto.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
-import com.app.api.login.validator.OauthValidator;
 import com.app.domain.member.constant.MemberType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -56,9 +55,6 @@ class OauthLoginControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private OauthValidator oauthValidator;
-
-    @MockitoBean
     private OauthLoginService oauthLoginService;
 
     @DisplayName("소셜 로그인한 회원의 액세스 토큰과 리프레시 토큰을 발급한다.")
@@ -106,5 +102,22 @@ class OauthLoginControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("400"))
                 .andExpect(jsonPath("$.errorMessage").value("[memberType] 회원 타입은 필수입니다."));
+    }
+
+    @DisplayName("유효한 회원 타입은 필수이다.")
+    @Test
+    void oauthLogin_InvalidMemberType() throws Exception {
+        // given
+        OauthLoginRequest request = new OauthLoginRequest("invalid-member-type");
+
+        // when & then
+        mockMvc.perform(post("/api/oauth/login")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[memberType] 유효한 회원 타입이 아닙니다."));
     }
 }

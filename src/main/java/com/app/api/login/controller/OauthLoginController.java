@@ -3,7 +3,6 @@ package com.app.api.login.controller;
 import com.app.api.login.dto.OauthLoginRequest;
 import com.app.api.login.dto.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
-import com.app.api.login.validator.OauthValidator;
 import com.app.domain.member.constant.MemberType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,7 +23,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class OauthLoginController {
 
-    private final OauthValidator oauthValidator;
     private final OauthLoginService oauthLoginService;
 
     @PostMapping("/oauth/login")
@@ -33,12 +31,10 @@ public class OauthLoginController {
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION);
         validateAuthorizationHeader(authorizationHeader);
 
-        String memberType = oauthLoginRequest.getMemberType();
-        oauthValidator.validateMemberType(memberType);
-
+        MemberType memberType = MemberType.from(oauthLoginRequest.getMemberType());
         String accessToken = authorizationHeader.split(" ")[1];
         Date issueDate = new Date();
 
-        return ResponseEntity.ok(oauthLoginService.oauthLogin(MemberType.from(memberType), accessToken, issueDate));
+        return ResponseEntity.ok(oauthLoginService.oauthLogin(memberType, accessToken, issueDate));
     }
 }
