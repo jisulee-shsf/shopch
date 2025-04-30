@@ -131,7 +131,7 @@ class LogoutServiceTest {
     void logout_InvalidTokenType() {
         Date issueDate = clock.now();
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
-        String refreshToken = createTestRefreshToken(1L, issueDate, refreshTokenExpirationDate);
+        String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
 
         LocalDateTime now = convertDateToLocalDateTime(clock.now());
 
@@ -151,19 +151,18 @@ class LogoutServiceTest {
                 .build();
     }
 
-    private String createTestRefreshToken(Long memberId, Date issueDate, Date expirationDate) {
+    private String createTestRefreshToken(Date issueDate, Date expirationDate) {
         return Jwts.builder()
                 .subject(REFRESH.name())
                 .issuedAt(issueDate)
                 .expiration(expirationDate)
-                .claim("memberId", memberId)
                 .signWith(secretKey, HS512)
                 .compact();
     }
 
     private Member createTestMemberWithRefreshToken(Date issueDate, Date refreshTokenExpirationDate) {
         Member member = createTestMember();
-        String refreshToken = createTestRefreshToken(member.getId(), issueDate, refreshTokenExpirationDate);
+        String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
         LocalDateTime refreshTokenExpirationDateTime = convertDateToLocalDateTime(refreshTokenExpirationDate);
 
         return member.toBuilder()
