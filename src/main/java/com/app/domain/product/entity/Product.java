@@ -68,15 +68,19 @@ public class Product extends BaseEntity {
         changeProductSellingStatus();
     }
 
-    private void changeProductSellingStatus() {
-        productSellingStatus = (stockQuantity == 0) ? COMPLETED : SELLING;
-    }
-
     public void deductStockQuantity(int orderQuantity) {
-        if (stockQuantity < orderQuantity) {
+        if (isStockQuantityLessThanOrderQuantity(orderQuantity)) {
             throw new OutOfStockException(OUT_OF_STOCK);
         }
         stockQuantity -= orderQuantity;
         changeProductSellingStatus();
+    }
+
+    private void changeProductSellingStatus() {
+        productSellingStatus = (stockQuantity == 0) ? COMPLETED : SELLING;
+    }
+
+    private boolean isStockQuantityLessThanOrderQuantity(int orderQuantity) {
+        return stockQuantity < orderQuantity;
     }
 }
