@@ -4,6 +4,7 @@ import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.domain.common.BaseEntity;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.constant.ProductType;
+import com.app.global.error.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import static com.app.domain.product.constant.ProductSellingStatus.COMPLETED;
 import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
+import static com.app.global.error.ErrorType.OUT_OF_STOCK;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -68,5 +70,13 @@ public class Product extends BaseEntity {
 
     private void changeProductSellingStatus() {
         productSellingStatus = (stockQuantity == 0) ? COMPLETED : SELLING;
+    }
+
+    public void deductStockQuantity(int orderQuantity) {
+        if (stockQuantity < orderQuantity) {
+            throw new OutOfStockException(OUT_OF_STOCK);
+        }
+        stockQuantity -= orderQuantity;
+        changeProductSellingStatus();
     }
 }
