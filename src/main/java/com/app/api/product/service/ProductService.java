@@ -37,7 +37,7 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
-    private Product findProductById(Long productId) {
+    public Product findProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
     }
