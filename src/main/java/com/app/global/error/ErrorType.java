@@ -24,7 +24,8 @@ public enum ErrorType {
     MEMBER_NOT_FOUND(BAD_REQUEST, "M-002", "회원이 존재하지 않습니다."),
 
     // 상품
-    PRODUCT_NOT_FOUND(BAD_REQUEST, "P-001", "상품이 존재하지 않습니다.");
+    PRODUCT_NOT_FOUND(BAD_REQUEST, "P-001", "상품이 존재하지 않습니다."),
+    OUT_OF_STOCK(BAD_REQUEST, "P-002", "상품 재고가 부족합니다.");
 
     private final HttpStatus httpStatus;
     private final String errorCode;
