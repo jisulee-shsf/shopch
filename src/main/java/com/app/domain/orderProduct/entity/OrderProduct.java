@@ -38,6 +38,7 @@ public class OrderProduct extends BaseEntity {
         this.product = product;
         this.orderPrice = product.getPrice();
         this.orderQuantity = orderQuantity;
+        product.deductStockQuantity(orderQuantity);
     }
 
     public static OrderProduct create(Product product, int orderQuantity) {
