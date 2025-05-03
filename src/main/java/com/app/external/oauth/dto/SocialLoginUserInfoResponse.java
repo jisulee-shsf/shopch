@@ -23,12 +23,6 @@ public class SocialLoginUserInfoResponse {
     }
 
     public Member toEntity(Role role) {
-        return Member.builder()
-                .name(name)
-                .email(email)
-                .profile(profile)
-                .memberType(MemberType.from(memberType))
-                .role(role)
-                .build();
+        return Member.create(name, email, role, profile, MemberType.from(memberType));
     }
 }
