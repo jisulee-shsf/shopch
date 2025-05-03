@@ -76,6 +76,11 @@ public class Product extends BaseEntity {
         changeProductSellingStatus();
     }
 
+    public void addStockQuantity(int orderQuantity) {
+        stockQuantity += orderQuantity;
+        changeProductSellingStatus();
+    }
+
     private void changeProductSellingStatus() {
         productSellingStatus = (stockQuantity == 0) ? COMPLETED : SELLING;
     }
