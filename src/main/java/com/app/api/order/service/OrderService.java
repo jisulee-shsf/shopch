@@ -9,6 +9,8 @@ import com.app.domain.order.entity.Order;
 import com.app.domain.order.repository.OrderRepository;
 import com.app.domain.orderProduct.entity.OrderProduct;
 import com.app.domain.product.entity.Product;
+import com.app.global.error.exception.EntityNotFoundException;
+import com.app.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.app.global.error.ErrorType.FORBIDDEN_ORDER_CANCELLATION;
+import static com.app.global.error.ErrorType.ORDER_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,5 +43,25 @@ public class OrderService {
         Order order = Order.create(member, now, orderProducts);
         orderRepository.save(order);
         return OrderResponse.of(order);
+    }
+
+    @Transactional
+    public void cancelOrder(Long memberId, Long orderId) {
+        Member member = memberService.findMemberById(memberId);
+        Order order = findOrderById(orderId);
+        validateMember(member, order.getMember());
+
+        order.cancel();
+    }
+
+    private Order findOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(ORDER_NOT_FOUND));
+    }
+
+    private void validateMember(Member member, Member orderedMember) {
+        if (!member.isSameId(orderedMember.getId())) {
+            throw new ForbiddenException(FORBIDDEN_ORDER_CANCELLATION);
+        }
     }
 }
