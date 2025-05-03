@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -55,6 +56,16 @@ public class Member extends BaseEntity {
         this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
     }
 
+    public static Member create(String name, String email, Role role, String profile, MemberType memberType) {
+        return Member.builder()
+                .name(name)
+                .email(email)
+                .role(role)
+                .profile(profile)
+                .memberType(memberType)
+                .build();
+    }
+
     public void updateRefreshToken(String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
         this.refreshToken = refreshToken;
         this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
@@ -62,5 +73,9 @@ public class Member extends BaseEntity {
 
     public void expireRefreshToken(LocalDateTime now) {
         refreshTokenExpirationDateTime = now;
+    }
+
+    public boolean isSameId(final Long memberId) {
+        return Objects.equals(id, memberId);
     }
 }
