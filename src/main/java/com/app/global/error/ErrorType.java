@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @Getter
 @RequiredArgsConstructor
@@ -25,7 +24,11 @@ public enum ErrorType {
 
     // 상품
     PRODUCT_NOT_FOUND(BAD_REQUEST, "P-001", "상품이 존재하지 않습니다."),
-    OUT_OF_STOCK(BAD_REQUEST, "P-002", "상품 재고가 부족합니다.");
+    OUT_OF_STOCK(BAD_REQUEST, "P-002", "상품 재고가 부족합니다."),
+
+    // 주문
+    ORDER_NOT_FOUND(BAD_REQUEST, "O-001", "주문이 존재하지 않습니다."),
+    FORBIDDEN_ORDER_CANCELLATION(FORBIDDEN, "O-002", "주문을 취소할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String errorCode;
