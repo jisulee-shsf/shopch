@@ -1,7 +1,6 @@
 package com.app.domain.product.entity;
 
 import com.app.api.product.dto.request.ProductUpdateRequest;
-import com.app.global.error.ErrorType;
 import com.app.global.error.exception.OutOfStockException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,7 @@ import static com.app.domain.product.constant.ProductSellingStatus.COMPLETED;
 import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static com.app.domain.product.constant.ProductType.PRODUCT_B;
+import static com.app.global.error.ErrorType.OUT_OF_STOCK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -33,7 +33,6 @@ class ProductTest {
         Product product = Product.builder()
                 .name("product")
                 .productType(PRODUCT_A)
-                .productSellingStatus(SELLING)
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -50,11 +49,11 @@ class ProductTest {
 
         // then
         assertThat(product)
-                .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("updatedProduct", PRODUCT_B, SELLING, 20000, 2);
+                .extracting("name", "productType", "price", "stockQuantity")
+                .containsExactly("updatedProduct", PRODUCT_B, 20000, 2);
     }
 
-    @DisplayName("변경한 상품 재고가 0일 경우, 판매 상태를 SELLING에서 COMPLETED로 변경한다.")
+    @DisplayName("변경한 상품 재고 수량이 0이 될 경우, 상품 판매 상태를 SELLING에서 COMPLETED로 변경한다.")
     @Test
     void update_ZeroStockQuantity() {
         // given
@@ -81,20 +80,20 @@ class ProductTest {
         assertThat(product.getProductSellingStatus()).isEqualTo(COMPLETED);
     }
 
-    @DisplayName("상품 재고를 주문 수량만큼 차감한다.")
+    @DisplayName("상품 재고 수량을 주문 수량만큼 차감한다.")
     @Test
     void deductStockQuantity() {
         // given
-        Product product = createTestProduct(2);
+        Product product = createTestProduct(1);
 
         // when
         product.deductStockQuantity(1);
 
         // then
-        assertThat(product.getStockQuantity()).isEqualTo(1);
+        assertThat(product.getStockQuantity()).isZero();
     }
 
-    @DisplayName("상품 재고가 주문 수량보다 적을 때 차감을 시도할 경우, 예외가 발생한다.")
+    @DisplayName("상품 재고 수량이 주문 수량보다 적을 때 차감을 시도할 경우, 예외가 발생한다.")
     @Test
     void deductStockQuantity_StockQuantityLessThanOrderQuantity() {
         // given
@@ -103,10 +102,10 @@ class ProductTest {
         // when & then
         assertThatThrownBy(() -> product.deductStockQuantity(2))
                 .isInstanceOf(OutOfStockException.class)
-                .hasMessage(ErrorType.OUT_OF_STOCK.getErrorMessage());
+                .hasMessage(OUT_OF_STOCK.getErrorMessage());
     }
 
-    @DisplayName("차감한 상품 재고가 0일 경우, 판매 상태를 SELLING에서 COMPLETED로 변경한다.")
+    @DisplayName("차감한 상품 재고 수량이 0이 될 경우, 상품 판매 상태를 SELLING에서 COMPLETED로 변경한다.")
     @Test
     void deductStockQuantity_ZeroStockQuantity() {
         // given
@@ -117,6 +116,34 @@ class ProductTest {
 
         // then
         assertThat(product.getProductSellingStatus()).isEqualTo(COMPLETED);
+    }
+
+    @DisplayName("상품 재고 수량을 주문 수량만큼 복구한다.")
+    @Test
+    void addStockQuantity() {
+        // given
+        Product product = createTestProduct(0);
+
+        // when
+        product.addStockQuantity(1);
+
+        // then
+        assertThat(product.getStockQuantity()).isEqualTo(1);
+
+    }
+
+    @DisplayName("복구한 상품 재고 수량이 양수가 될 경우, 상품 판매 상태를 COMPLETED에서 SELLING으로 변경한다.")
+    @Test
+    void addStockQuantity_PositiveStockQuantity() {
+        // given
+        Product product = createTestProduct(0);
+
+        // when
+        product.addStockQuantity(1);
+
+        // then
+        assertThat(product.getProductSellingStatus()).isEqualTo(SELLING);
+
     }
 
     private Product createTestProduct(int stockQuantity) {
