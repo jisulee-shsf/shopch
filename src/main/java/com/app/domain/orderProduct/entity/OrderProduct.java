@@ -55,4 +55,8 @@ public class OrderProduct extends BaseEntity {
     public int calculateTotalPrice() {
         return orderPrice * orderQuantity;
     }
+
+    public void cancel() {
+        product.addStockQuantity(orderQuantity);
+    }
 }

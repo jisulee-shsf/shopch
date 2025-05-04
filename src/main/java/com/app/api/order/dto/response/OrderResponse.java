@@ -38,7 +38,7 @@ public class OrderResponse {
                 .memberName(order.getMember().getName())
                 .orderDateTime(order.getOrderDateTime())
                 .orderStatus(order.getOrderStatus().name())
-                .totalPrice(order.getTotalPrice())
+                .totalPrice(order.getTotalOrderPrice())
                 .orderProducts(order.getOrderProducts().stream()
                         .map(OrderProductResponse::of)
                         .collect(toList()))

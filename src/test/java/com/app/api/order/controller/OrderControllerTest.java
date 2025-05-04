@@ -132,4 +132,17 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.errorCode").value("400"))
                 .andExpect(jsonPath("$.errorMessage").value("[orderQuantity] 주문 수량은 양수여야 합니다."));
     }
+
+    @DisplayName("주문을 취소한다.")
+    @Test
+    void cancelOrder() throws Exception {
+        // given
+        Long orderId = 1L;
+
+        // when & then
+        mockMvc.perform(post("/api/orders/{orderId}/cancel", orderId)
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                )
+                .andExpect(status().isOk());
+    }
 }

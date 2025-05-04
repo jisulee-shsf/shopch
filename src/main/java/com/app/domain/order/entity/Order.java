@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.app.domain.order.constant.OrderStatus.CANCELED;
 import static com.app.domain.order.constant.OrderStatus.INIT;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
@@ -45,14 +46,14 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
-    private int totalPrice;
+    private int totalOrderPrice;
 
     @Builder
     private Order(Member member, LocalDateTime orderDateTime, OrderStatus orderStatus, List<OrderProduct> orderProducts) {
         this.member = member;
         this.orderDateTime = orderDateTime;
         this.orderStatus = orderStatus;
-        this.totalPrice = getTotalPrice(orderProducts);
+        this.totalOrderPrice = getTotalOrderPrice(orderProducts);
         orderProducts.forEach(this::changeOrderProduct);
     }
 
@@ -65,14 +66,19 @@ public class Order extends BaseEntity {
                 .build();
     }
 
-    private void changeOrderProduct(OrderProduct orderProduct) {
-        orderProducts.add(orderProduct);
-        orderProduct.changeOrder(this);
+    public void cancel() {
+        orderStatus = CANCELED;
+        orderProducts.forEach(OrderProduct::cancel);
     }
 
-    private int getTotalPrice(List<OrderProduct> orderProducts) {
+    private int getTotalOrderPrice(List<OrderProduct> orderProducts) {
         return orderProducts.stream()
                 .mapToInt(OrderProduct::calculateTotalPrice)
                 .sum();
+    }
+
+    private void changeOrderProduct(OrderProduct orderProduct) {
+        orderProducts.add(orderProduct);
+        orderProduct.changeOrder(this);
     }
 }

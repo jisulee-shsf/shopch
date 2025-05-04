@@ -90,7 +90,7 @@ class AccessTokenServiceTest {
 
     @DisplayName("리프레시 토큰을 가진 회원이 없을 때 재발급을 시도할 경우, 예외가 발생한다.")
     @Test
-    void createAccessTokenByRefreshToken_MemberDoesNotExist() {
+    void createAccessTokenByRefreshToken_MemberNotFound() {
         // given
         Date issueDate = Date.from(clock.instant());
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));

@@ -113,7 +113,7 @@ class MemberServiceTest {
 
     @DisplayName("등록된 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
     @Test
-    void findMemberById_MemberDoesNotExist() {
+    void findMemberById_MemberNotFound() {
         // given
         Long memberId = 1L;
 
@@ -167,7 +167,7 @@ class MemberServiceTest {
 
     @DisplayName("리프레시 토큰을 가진 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
     @Test
-    void findMemberByRefreshToken_MemberDoesNotExist() {
+    void findMemberByRefreshToken_MemberNotFound() {
         // given
         doReturn(FIXED_CLOCK.instant()).when(clock).instant();
 

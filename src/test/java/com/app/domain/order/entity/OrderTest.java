@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.domain.order.constant.OrderStatus.CANCELED;
 import static com.app.domain.order.constant.OrderStatus.INIT;
 import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
@@ -22,13 +23,13 @@ class OrderTest {
 
     @DisplayName("주문 생성 시 주문 상태는 INIT이다.")
     @Test
-    void create() {
+    void create_orderStatus() {
         // given
         Member member = createTestMember();
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
-        Product product = createTestProduct("product", 10000, 1);
-        OrderProduct orderProduct = createTestOrderProduct(product, 1);
+        Product product = createTestProduct();
+        OrderProduct orderProduct = createTestOrderProduct(product);
 
         // when
         Order order = Order.create(member, orderDateTime, List.of(orderProduct));
@@ -37,18 +38,18 @@ class OrderTest {
         assertThat(order.getOrderStatus()).isEqualTo(INIT);
     }
 
-    @DisplayName("주문 생성 시 주문이 회원을 참조하는 단방향 연관관계가 설정된.")
+    @DisplayName("주문 생성 시 주문이 회원을 참조하는 단방향 연관관계가 설정된다.")
     @Test
-    void create_UnidirectionalRelationship() {
+    void create_member() {
         // given
         Member member = createTestMember();
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
-        Product product = createTestProduct("product", 10000, 1);
-        OrderProduct orderProduct = createTestOrderProduct(product, 1);
+        Product product = createTestProduct();
+        OrderProduct orderProduct = createTestOrderProduct(product);
 
         // when
-        Order order = createTestOrder(member, orderDateTime, List.of(orderProduct));
+        Order order = Order.create(member, orderDateTime, List.of(orderProduct));
 
         // then
         assertThat(order.getMember()).isEqualTo(member);
@@ -56,37 +57,57 @@ class OrderTest {
 
     @DisplayName("주문 생성 시 주문과 주문 상품이 서로 참조하는 양방향 연관관계가 설정된다.")
     @Test
-    void create_BidirectionalRelationship() {
+    void create_changeOrderProduct() {
         // given
         Member member = createTestMember();
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
-        Product product = createTestProduct("product", 10000, 1);
-        OrderProduct orderProduct = createTestOrderProduct(product, 1);
+        Product product = createTestProduct();
+        OrderProduct orderProduct = createTestOrderProduct(product);
 
         // when
-        Order order = createTestOrder(member, orderDateTime, List.of(orderProduct));
+        Order order = Order.create(member, orderDateTime, List.of(orderProduct));
 
         // then
         assertThat(order.getOrderProducts().contains(orderProduct)).isTrue();
         assertThat(orderProduct.getOrder()).isEqualTo(order);
     }
 
-    @DisplayName("주문 생성 시 총 주문 금액은 주문 상품 금액의 합계이다.")
+    @DisplayName("주문 생성 시 총 주문 금액은 주문 상품별 총 금액의 합계이다.")
     @Test
-    void create_getTotalPrice() {
+    void create_getTotalOrderPrice() {
         // given
         Member member = createTestMember();
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
-        Product product = createTestProduct("product", 10000, 2);
-        OrderProduct orderProduct = createTestOrderProduct(product, 2);
+        Product product = createTestProduct(10000, 2);
+        OrderProduct orderProduct1 = createTestOrderProduct(product, 1);
+        OrderProduct orderProduct2 = createTestOrderProduct(product, 1);
 
         // when
-        Order order = createTestOrder(member, orderDateTime, List.of(orderProduct));
+        Order order = Order.create(member, orderDateTime, List.of(orderProduct1, orderProduct2));
 
         // then
-        assertThat(order.getTotalPrice()).isEqualTo(20000);
+        assertThat(order.getTotalOrderPrice()).isEqualTo(20000);
+    }
+
+    @DisplayName("주문 취소 시 주문 상태를 INIT에서 CANCELED로 변경한 후, 상품 재고 수량을 주문 수량만큼 복구한다.")
+    @Test
+    void cancel() {
+        // given
+        Member member = createTestMember();
+        LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+
+        Product product = createTestProduct(10000, 1);
+        OrderProduct orderProduct = createTestOrderProduct(product, 1);
+        Order order = createTestOrder(member, orderDateTime, List.of(orderProduct));
+
+        // when
+        order.cancel();
+
+        // then
+        assertThat(order.getOrderStatus()).isEqualTo(CANCELED);
+        assertThat(order.getOrderProducts().get(0).getProduct().getStockQuantity()).isEqualTo(1);
     }
 
     private Member createTestMember() {
@@ -99,14 +120,22 @@ class OrderTest {
                 .build();
     }
 
-    private Product createTestProduct(String name, int price, int stockQuantity) {
+    private Product createTestProduct() {
+        return createTestProduct(10000, 1);
+    }
+
+    private Product createTestProduct(int price, int stockQuantity) {
         return Product.builder()
-                .name(name)
+                .name("product")
                 .productType(PRODUCT_A)
                 .productSellingStatus(SELLING)
                 .price(price)
                 .stockQuantity(stockQuantity)
                 .build();
+    }
+
+    private OrderProduct createTestOrderProduct(Product product) {
+        return createTestOrderProduct(product, 1);
     }
 
     private OrderProduct createTestOrderProduct(Product product, int orderQuantity) {

@@ -110,7 +110,7 @@ class ProductServiceTest {
 
     @DisplayName("변경할 상품이 없을 때 변경을 시도할 경우, 예외가 발생한다.")
     @Test
-    void updateProduct_ProductDoesNotExist() {
+    void updateProduct_ProductNotFound() {
         // given
         ProductUpdateRequest request = ProductUpdateRequest.builder()
                 .name("updatedProduct")
@@ -157,7 +157,7 @@ class ProductServiceTest {
 
     @DisplayName("조회한 페이지에 컨텐츠가 없을 경우, 빈 페이지를 반환한다.")
     @Test
-    void findSellingProducts_ContentDoesNotExist() {
+    void findSellingProducts_NoContent() {
         // given
         Product product1 = createTestProduct("productA", SELLING, 1);
         Product product2 = createTestProduct("productB", SELLING, 2);
