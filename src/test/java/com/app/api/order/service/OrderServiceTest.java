@@ -6,28 +6,36 @@ import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.domain.order.entity.Order;
 import com.app.domain.order.repository.OrderRepository;
+import com.app.domain.orderProduct.entity.OrderProduct;
 import com.app.domain.orderProduct.repository.OrderProductRepository;
 import com.app.domain.product.entity.Product;
 import com.app.domain.product.repository.ProductRepository;
+import com.app.global.error.exception.EntityNotFoundException;
+import com.app.global.error.exception.ForbiddenException;
 import com.app.global.error.exception.OutOfStockException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
+import static com.app.domain.order.constant.OrderStatus.CANCELED;
 import static com.app.domain.order.constant.OrderStatus.INIT;
 import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static com.app.fixture.TimeFixture.FIXED_INSTANT;
 import static com.app.fixture.TimeFixture.FIXED_TIME_ZONE;
-import static com.app.global.error.ErrorType.OUT_OF_STOCK;
-import static org.assertj.core.api.Assertions.*;
+import static com.app.global.error.ErrorType.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
 class OrderServiceTest {
@@ -59,12 +67,8 @@ class OrderServiceTest {
     @Test
     void createOrder() {
         // given
-        Member member = createTestMember("member");
-        memberRepository.save(member);
-
-        Product product = createTestProduct("product", 10000, 2);
-        productRepository.save(product);
-
+        Member member = createAndSaveTestMember("member", "member@email.com");
+        Product product = createAndSaveTestProduct("product", 10000, 2);
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
         Long productId = product.getId();
@@ -90,23 +94,24 @@ class OrderServiceTest {
                 );
 
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        assertThat(optionalOrder).isPresent();
+        assertThat(optionalOrder)
+                .isPresent()
+                .get()
+                .extracting("orderStatus")
+                .isEqualTo(INIT);
     }
 
-    @DisplayName("상품 재고가 주문 수량보다 적을 때 주문 등록을 시도할 경우, 예외가 발생한다.")
+    @DisplayName("상품 재고 수량이 주문 수량보다 적을 때 등록을 시도할 경우, 예외가 발생한다.")
     @Test
     void createOrder_StockQuantityLessThanOrderQuantity() {
         // given
-        Member member = createTestMember("member");
-        memberRepository.save(member);
-
-        Product product = createTestProduct("product", 10000, 1);
-        productRepository.save(product);
-
+        Member member = createAndSaveTestMember("member", "member@email.com");
+        Product product = createAndSaveTestProduct("product", 10000, 1);
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
+        Long productId = product.getId();
         OrderCreateRequest request = OrderCreateRequest.builder()
-                .productId(product.getId())
+                .productId(productId)
                 .orderQuantity(2)
                 .build();
 
@@ -116,23 +121,98 @@ class OrderServiceTest {
                 .hasMessage(OUT_OF_STOCK.getErrorMessage());
     }
 
-    private Product createTestProduct(String name, int price, int stockQuantity) {
-        return Product.builder()
+    @DisplayName("등록된 주문을 취소한다.")
+    @Test
+    @Transactional
+    void cancelOrder() {
+        // given
+        Member member = createAndSaveTestMember("member", "member@email.com");
+        Product product = createAndSaveTestProduct("product", 10000, 1);
+        LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+        Order order = createAndSaveTestOrder(member, orderDateTime, product, 1);
+        Long orderId = order.getId();
+
+        // when
+        orderService.cancelOrder(order.getMember().getId(), orderId);
+
+        // then
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        assertThat(optionalOrder)
+                .isPresent()
+                .get()
+                .extracting("orderStatus")
+                .isEqualTo(CANCELED);
+
+        Product foundProduct = optionalOrder.get().getOrderProducts().get(0).getProduct();
+        assertThat(foundProduct)
+                .extracting("stockQuantity")
+                .isEqualTo(1);
+    }
+
+    @DisplayName("등록된 주문이 없을 때 취소를 시도할 경우, 예외가 발생한다.")
+    @Test
+    void cancelOrder_OrderNotFound() {
+        // given
+        Member member = createAndSaveTestMember();
+
+        // when & then
+        assertThatThrownBy(() -> orderService.cancelOrder(member.getId(), 1L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(ORDER_NOT_FOUND.getErrorMessage());
+    }
+
+    @DisplayName("주문을 등록하지 않은 회원 아이디로 취소를 시도할 경우, 예외가 발생한다.")
+    @Test
+    void cancelOrder_ForbiddenOrderCancellation() {
+        // given
+        Member member1 = createAndSaveTestMember("memberA", "memberA@email.com");
+        Product product = createAndSaveTestProduct("product", 10000, 1);
+        LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+        Order order = createAndSaveTestOrder(member1, orderDateTime, product, 1);
+
+        Member member2 = createAndSaveTestMember("memberB", "memberB@email.com");
+
+        // when & then
+        assertThatThrownBy(() -> orderService.cancelOrder(member2.getId(), order.getId()))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage(FORBIDDEN_ORDER_CANCELLATION.getErrorMessage());
+    }
+
+    private Member createAndSaveTestMember() {
+        return createAndSaveTestMember("member", "member@email.com");
+    }
+
+    private Member createAndSaveTestMember(String name, String email) {
+        return memberRepository.save(Member.builder()
+                .name(name)
+                .email(email)
+                .role(USER)
+                .profile("profile")
+                .memberType(KAKAO)
+                .build());
+    }
+
+    private Product createAndSaveTestProduct(String name, int price, int stockQuantity) {
+        return productRepository.save(Product.builder()
                 .name(name)
                 .productType(PRODUCT_A)
                 .productSellingStatus(SELLING)
                 .price(price)
                 .stockQuantity(stockQuantity)
-                .build();
+                .build());
     }
 
-    private Member createTestMember(String name) {
-        return Member.builder()
-                .name(name)
-                .email("member@email.com")
-                .role(USER)
-                .profile("profile")
-                .memberType(KAKAO)
+    private Order createAndSaveTestOrder(Member member, LocalDateTime orderDateTime, Product product, int orderQuantity) {
+        OrderProduct orderProduct = OrderProduct.builder()
+                .product(product)
+                .orderQuantity(orderQuantity)
                 .build();
+
+        return orderRepository.save(Order.builder()
+                .member(member)
+                .orderDateTime(orderDateTime)
+                .orderStatus(INIT)
+                .orderProducts(List.of(orderProduct))
+                .build());
     }
 }
