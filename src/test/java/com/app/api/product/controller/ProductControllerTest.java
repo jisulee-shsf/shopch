@@ -179,7 +179,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("[price] 등록 상품 가격은 양수여야 합니다."));
     }
 
-    @DisplayName("상품 등록 시 상품 재고는 양수여야 한다.")
+    @DisplayName("상품 등록 시 상품 재고 수량은 양수여야 한다.")
     @Test
     void createProduct_ZeroStockQuantity() throws Exception {
         // given
@@ -198,7 +198,7 @@ class ProductControllerTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("400"))
-                .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 등록 상품 재고는 양수여야 합니다."));
+                .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 등록 상품 재고 수량은 양수여야 합니다."));
     }
 
     @DisplayName("등록된 상품 정보를 주어진 상품 정보로 변경한다.")
@@ -259,7 +259,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("[price] 수정 상품 가격은 양수여야 합니다."));
     }
 
-    @DisplayName("상품 정보 변경 시 상품 재고는 0 이상이여야 한다.")
+    @DisplayName("상품 정보 변경 시 상품 재고 수량은 0 이상이여야 한다.")
     @Test
     void updateProduct_NegativeStockQuantity() throws Exception {
         // given
@@ -280,7 +280,7 @@ class ProductControllerTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("400"))
-                .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 수정 상품 재고는 0 이상이어야 합니다."));
+                .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 수정 상품 재고 수량은 0 이상이어야 합니다."));
     }
 
     @DisplayName("판매 상태인 상품과 페이징 결과를 조회한다.")

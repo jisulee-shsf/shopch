@@ -24,7 +24,7 @@ public enum ErrorType {
 
     // 상품
     PRODUCT_NOT_FOUND(BAD_REQUEST, "P-001", "상품이 존재하지 않습니다."),
-    OUT_OF_STOCK(BAD_REQUEST, "P-002", "상품 재고가 부족합니다."),
+    OUT_OF_STOCK(BAD_REQUEST, "P-002", "상품 재고 수량이 부족합니다."),
 
     // 주문
     ORDER_NOT_FOUND(BAD_REQUEST, "O-001", "주문이 존재하지 않습니다."),

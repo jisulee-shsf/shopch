@@ -23,7 +23,7 @@ public class ProductCreateRequest {
     @Positive(message = "등록 상품 가격은 양수여야 합니다.")
     private int price;
 
-    @Positive(message = "등록 상품 재고는 양수여야 합니다.")
+    @Positive(message = "등록 상품 재고 수량은 양수여야 합니다.")
     private int stockQuantity;
 
     @Builder

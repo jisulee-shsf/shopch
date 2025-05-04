@@ -23,7 +23,7 @@ public class ProductUpdateRequest {
     @Positive(message = "수정 상품 가격은 양수여야 합니다.")
     private int price;
 
-    @PositiveOrZero(message = "수정 상품 재고는 0 이상이어야 합니다.")
+    @PositiveOrZero(message = "수정 상품 재고 수량은 0 이상이어야 합니다.")
     private int stockQuantity;
 
     @Builder
