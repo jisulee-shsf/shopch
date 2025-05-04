@@ -30,7 +30,7 @@ class SocialLoginServiceFactoryTest {
 
     @DisplayName("회원 타입에 해당하는 SocialLoginService 구현체가 없을 경우, null을 반환한다.")
     @Test
-    void getSocialLoginService_ImplementationDoesNotExist() {
+    void getSocialLoginService_NoImplementation() {
         // given
         // when
         SocialLoginService service = SocialLoginServiceFactory.getSocialLoginService(GOOGLE);
