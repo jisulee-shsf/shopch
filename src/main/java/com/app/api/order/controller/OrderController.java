@@ -1,5 +1,6 @@
 package com.app.api.order.controller;
 
+import com.app.api.common.PageResponse;
 import com.app.api.order.dto.request.OrderCreateRequest;
 import com.app.api.order.dto.response.OrderResponse;
 import com.app.api.order.service.OrderService;
@@ -7,6 +8,7 @@ import com.app.global.resolver.MemberInfo;
 import com.app.global.resolver.MemberInfoRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +32,10 @@ public class OrderController {
                                             @PathVariable Long orderId) {
         orderService.cancelOrder(request.getId(), orderId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<PageResponse<OrderResponse>> findOrders(Pageable pageable) {
+        return ResponseEntity.ok(orderService.findOrders(pageable));
     }
 }
