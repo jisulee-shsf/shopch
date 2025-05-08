@@ -18,17 +18,17 @@ public class OrderResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime orderDateTime;
     private String orderStatus;
-    private int totalPrice;
+    private int totalOrderPrice;
     private List<OrderProductResponse> orderProducts;
 
     @Builder
-    private OrderResponse(Long orderId, String memberName, LocalDateTime orderDateTime, String orderStatus, int totalPrice,
+    private OrderResponse(Long orderId, String memberName, LocalDateTime orderDateTime, String orderStatus, int totalOrderPrice,
                           List<OrderProductResponse> orderProducts) {
         this.orderId = orderId;
         this.memberName = memberName;
         this.orderDateTime = orderDateTime;
         this.orderStatus = orderStatus;
-        this.totalPrice = totalPrice;
+        this.totalOrderPrice = totalOrderPrice;
         this.orderProducts = orderProducts;
     }
 
@@ -38,7 +38,7 @@ public class OrderResponse {
                 .memberName(order.getMember().getName())
                 .orderDateTime(order.getOrderDateTime())
                 .orderStatus(order.getOrderStatus().name())
-                .totalPrice(order.getTotalOrderPrice())
+                .totalOrderPrice(order.getTotalOrderPrice())
                 .orderProducts(order.getOrderProducts().stream()
                         .map(OrderProductResponse::of)
                         .collect(toList()))
