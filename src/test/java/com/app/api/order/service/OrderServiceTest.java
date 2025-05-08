@@ -1,5 +1,6 @@
 package com.app.api.order.service;
 
+import com.app.api.common.PageResponse;
 import com.app.api.order.dto.request.OrderCreateRequest;
 import com.app.api.order.dto.response.OrderResponse;
 import com.app.domain.member.entity.Member;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -33,6 +35,7 @@ import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static com.app.fixture.TimeFixture.FIXED_INSTANT;
 import static com.app.fixture.TimeFixture.FIXED_TIME_ZONE;
 import static com.app.global.error.ErrorType.*;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -85,7 +88,7 @@ class OrderServiceTest {
 
         assertThat(orderId).isNotNull();
         assertThat(response)
-                .extracting("memberName", "orderDateTime", "orderStatus", "totalPrice")
+                .extracting("memberName", "orderDateTime", "orderStatus", "totalOrderPrice")
                 .containsExactly("member", orderDateTime, INIT.name(), 20000);
         assertThat(response.getOrderProducts())
                 .extracting("productId", "productName", "orderPrice", "orderQuantity")
@@ -105,8 +108,8 @@ class OrderServiceTest {
     @Test
     void createOrder_StockQuantityLessThanOrderQuantity() {
         // given
-        Member member = createAndSaveTestMember("member", "member@email.com");
-        Product product = createAndSaveTestProduct("product", 10000, 1);
+        Member member = createAndSaveTestMember();
+        Product product = createAndSaveTestProduct(1);
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
         Long productId = product.getId();
@@ -126,8 +129,8 @@ class OrderServiceTest {
     @Transactional
     void cancelOrder() {
         // given
-        Member member = createAndSaveTestMember("member", "member@email.com");
-        Product product = createAndSaveTestProduct("product", 10000, 1);
+        Member member = createAndSaveTestMember();
+        Product product = createAndSaveTestProduct(1);
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
         Order order = createAndSaveTestOrder(member, orderDateTime, product, 1);
         Long orderId = order.getId();
@@ -166,7 +169,7 @@ class OrderServiceTest {
     void cancelOrder_ForbiddenOrderCancellation() {
         // given
         Member member1 = createAndSaveTestMember("memberA", "memberA@email.com");
-        Product product = createAndSaveTestProduct("product", 10000, 1);
+        Product product = createAndSaveTestProduct(1);
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
         Order order = createAndSaveTestOrder(member1, orderDateTime, product, 1);
 
@@ -176,6 +179,68 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.cancelOrder(member2.getId(), order.getId()))
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessage(FORBIDDEN_ORDER_CANCELLATION.getErrorMessage());
+    }
+
+    @DisplayName("등록된 주문을 조회한다.")
+    @Test
+    void findOrders() {
+        // given
+        Member member1 = createAndSaveTestMember("memberA", "memberA@email.com");
+        Member member2 = createAndSaveTestMember("memberB", "memberB@email.com");
+        Product product = createAndSaveTestProduct("product", 10000, 3);
+
+        LocalDateTime orderDateTime1 = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+        LocalDateTime orderDateTime2 = orderDateTime1.plus(1, MILLIS);
+
+        createAndSaveTestOrder(member1, orderDateTime1, product, 1);
+        createAndSaveTestOrder(member2, orderDateTime2, product, 2);
+
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
+        // when
+        PageResponse<OrderResponse> pageResponse = orderService.findOrders(pageRequest);
+
+        // then
+        List<OrderResponse> content = pageResponse.getContent();
+        assertThat(content).hasSize(2);
+        assertThat(content)
+                .extracting("memberName", "orderDateTime", "orderStatus", "totalOrderPrice")
+                .containsExactly(
+                        tuple("memberA", orderDateTime1, INIT.name(), 10000),
+                        tuple("memberB", orderDateTime2, INIT.name(), 20000)
+                );
+
+        assertThat(pageResponse.getSize()).isEqualTo(2);
+        assertThat(pageResponse.getNumber()).isEqualTo(0);
+        assertThat(pageResponse.getTotalElements()).isEqualTo(2);
+        assertThat(pageResponse.getTotalPages()).isEqualTo(1);
+    }
+
+    @DisplayName("조회한 페이지에 컨텐츠가 없을 경우, 빈 페이지를 반환한다.")
+    @Test
+    void findOrders_NoContent() {
+        // given
+        Member member1 = createAndSaveTestMember("memberA", "memberA@email.com");
+        Member member2 = createAndSaveTestMember("memberB", "memberB@email.com");
+        Product product = createAndSaveTestProduct("product", 10000, 3);
+
+        LocalDateTime orderDateTime1 = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+        LocalDateTime orderDateTime2 = orderDateTime1.plus(1, MILLIS);
+
+        createAndSaveTestOrder(member1, orderDateTime1, product, 1);
+        createAndSaveTestOrder(member2, orderDateTime2, product, 2);
+
+        PageRequest pageRequest = PageRequest.of(1, 2);
+
+        // when
+        PageResponse<OrderResponse> pageResponse = orderService.findOrders(pageRequest);
+
+        // then
+        assertThat(pageResponse.getContent()).isEmpty();
+        assertThat(pageResponse.getSize()).isEqualTo(2);
+        assertThat(pageResponse.getNumber()).isEqualTo(1);
+        assertThat(pageResponse.getTotalElements()).isEqualTo(2);
+        assertThat(pageResponse.getTotalPages()).isEqualTo(1);
     }
 
     private Member createAndSaveTestMember() {
@@ -190,6 +255,10 @@ class OrderServiceTest {
                 .profile("profile")
                 .memberType(KAKAO)
                 .build());
+    }
+
+    private Product createAndSaveTestProduct(int stockQuantity) {
+        return createAndSaveTestProduct("product", 10000, stockQuantity);
     }
 
     private Product createAndSaveTestProduct(String name, int price, int stockQuantity) {

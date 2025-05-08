@@ -1,5 +1,6 @@
 package com.app.api.order.service;
 
+import com.app.api.common.PageResponse;
 import com.app.api.order.dto.request.OrderCreateRequest;
 import com.app.api.order.dto.response.OrderResponse;
 import com.app.api.product.service.ProductService;
@@ -12,6 +13,8 @@ import com.app.domain.product.entity.Product;
 import com.app.global.error.exception.EntityNotFoundException;
 import com.app.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +55,11 @@ public class OrderService {
         validateMember(member, order.getMember());
 
         order.cancel();
+    }
+
+    public PageResponse<OrderResponse> findOrders(Pageable pageable) {
+        Page<Order> pageOrder = orderRepository.findAll(pageable);
+        return PageResponse.of(pageOrder.map(OrderResponse::of));
     }
 
     private Order findOrderById(Long orderId) {
