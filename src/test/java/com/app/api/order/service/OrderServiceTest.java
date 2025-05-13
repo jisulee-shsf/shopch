@@ -2,6 +2,7 @@ package com.app.api.order.service;
 
 import com.app.api.common.PageResponse;
 import com.app.api.order.dto.request.OrderCreateRequest;
+import com.app.api.order.dto.request.OrderSearchCondition;
 import com.app.api.order.dto.response.OrderResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
@@ -70,8 +71,12 @@ class OrderServiceTest {
     @Test
     void createOrder() {
         // given
-        Member member = createAndSaveTestMember("member", "member@email.com");
-        Product product = createAndSaveTestProduct("product", 10000, 2);
+        Member member = createTestMember("member", "member@email.com");
+        memberRepository.save(member);
+
+        Product product = createTestProduct("product", 10000, 2);
+        productRepository.save(product);
+
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
         Long productId = product.getId();
@@ -108,8 +113,12 @@ class OrderServiceTest {
     @Test
     void createOrder_StockQuantityLessThanOrderQuantity() {
         // given
-        Member member = createAndSaveTestMember();
-        Product product = createAndSaveTestProduct(1);
+        Member member = createTestMember();
+        memberRepository.save(member);
+
+        Product product = createTestProduct(1);
+        productRepository.save(product);
+
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
         Long productId = product.getId();
@@ -129,10 +138,16 @@ class OrderServiceTest {
     @Transactional
     void cancelOrder() {
         // given
-        Member member = createAndSaveTestMember();
-        Product product = createAndSaveTestProduct(1);
+        Member member = createTestMember();
+        memberRepository.save(member);
+
+        Product product = createTestProduct(1);
+        productRepository.save(product);
+
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
-        Order order = createAndSaveTestOrder(member, orderDateTime, product, 1);
+        Order order = createTestOrder(member, orderDateTime, product, 1);
+        orderRepository.save(order);
+
         Long orderId = order.getId();
 
         // when
@@ -156,7 +171,8 @@ class OrderServiceTest {
     @Test
     void cancelOrder_OrderNotFound() {
         // given
-        Member member = createAndSaveTestMember();
+        Member member = createTestMember();
+        memberRepository.save(member);
 
         // when & then
         assertThatThrownBy(() -> orderService.cancelOrder(member.getId(), 1L))
@@ -168,12 +184,16 @@ class OrderServiceTest {
     @Test
     void cancelOrder_ForbiddenOrderCancellation() {
         // given
-        Member member1 = createAndSaveTestMember("memberA", "memberA@email.com");
-        Product product = createAndSaveTestProduct(1);
-        LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
-        Order order = createAndSaveTestOrder(member1, orderDateTime, product, 1);
+        Member member1 = createTestMember("memberA", "memberA@email.com");
+        Member member2 = createTestMember("memberB", "memberB@email.com");
+        memberRepository.saveAll(List.of(member1, member2));
 
-        Member member2 = createAndSaveTestMember("memberB", "memberB@email.com");
+        Product product = createTestProduct(1);
+        productRepository.save(product);
+
+        LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+        Order order = createTestOrder(member1, orderDateTime, product, 1);
+        orderRepository.save(order);
 
         // when & then
         assertThatThrownBy(() -> orderService.cancelOrder(member2.getId(), order.getId()))
@@ -181,33 +201,40 @@ class OrderServiceTest {
                 .hasMessage(FORBIDDEN_ORDER_CANCELLATION.getErrorMessage());
     }
 
-    @DisplayName("등록된 주문을 조회한다.")
+    @DisplayName("검색 조건에 해당하는 주문과 페이징 결과를 조회한다.")
     @Test
     void findOrders() {
         // given
-        Member member1 = createAndSaveTestMember("memberA", "memberA@email.com");
-        Member member2 = createAndSaveTestMember("memberB", "memberB@email.com");
-        Product product = createAndSaveTestProduct("product", 10000, 3);
+        Member member = createTestMember("member", "member@email.com");
+        memberRepository.save(member);
+
+        Product product = createTestProduct(3);
+        productRepository.save(product);
 
         LocalDateTime orderDateTime1 = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
         LocalDateTime orderDateTime2 = orderDateTime1.plus(1, MILLIS);
 
-        createAndSaveTestOrder(member1, orderDateTime1, product, 1);
-        createAndSaveTestOrder(member2, orderDateTime2, product, 2);
+        Order order1 = createTestOrder(member, orderDateTime1, product, 1);
+        Order order2 = createTestOrder(member, orderDateTime2, product, 2);
+        orderRepository.saveAll(List.of(order1, order2));
 
-        PageRequest pageRequest = PageRequest.of(0, 2);
+        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+                .memberName("member")
+                .orderStatus(INIT.name())
+                .build();
 
         // when
-        PageResponse<OrderResponse> pageResponse = orderService.findOrders(pageRequest);
+        PageResponse<OrderResponse> pageResponse = orderService.findOrders(searchCondition, PageRequest.of(0, 2));
 
         // then
         List<OrderResponse> content = pageResponse.getContent();
+
         assertThat(content).hasSize(2);
         assertThat(content)
                 .extracting("memberName", "orderDateTime", "orderStatus", "totalOrderPrice")
                 .containsExactly(
-                        tuple("memberA", orderDateTime1, INIT.name(), 10000),
-                        tuple("memberB", orderDateTime2, INIT.name(), 20000)
+                        tuple("member", orderDateTime1, INIT.name(), 10000),
+                        tuple("member", orderDateTime2, INIT.name(), 20000)
                 );
 
         assertThat(pageResponse.getSize()).isEqualTo(2);
@@ -220,20 +247,26 @@ class OrderServiceTest {
     @Test
     void findOrders_NoContent() {
         // given
-        Member member1 = createAndSaveTestMember("memberA", "memberA@email.com");
-        Member member2 = createAndSaveTestMember("memberB", "memberB@email.com");
-        Product product = createAndSaveTestProduct("product", 10000, 3);
+        Member member = createTestMember("member", "member@email.com");
+        memberRepository.save(member);
+
+        Product product = createTestProduct(3);
+        productRepository.save(product);
 
         LocalDateTime orderDateTime1 = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
         LocalDateTime orderDateTime2 = orderDateTime1.plus(1, MILLIS);
 
-        createAndSaveTestOrder(member1, orderDateTime1, product, 1);
-        createAndSaveTestOrder(member2, orderDateTime2, product, 2);
+        Order order1 = createTestOrder(member, orderDateTime1, product, 1);
+        Order order2 = createTestOrder(member, orderDateTime2, product, 2);
+        orderRepository.saveAll(List.of(order1, order2));
 
-        PageRequest pageRequest = PageRequest.of(1, 2);
+        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+                .memberName("member")
+                .orderStatus(INIT.name())
+                .build();
 
         // when
-        PageResponse<OrderResponse> pageResponse = orderService.findOrders(pageRequest);
+        PageResponse<OrderResponse> pageResponse = orderService.findOrders(searchCondition, PageRequest.of(1, 2));
 
         // then
         assertThat(pageResponse.getContent()).isEmpty();
@@ -243,45 +276,45 @@ class OrderServiceTest {
         assertThat(pageResponse.getTotalPages()).isEqualTo(1);
     }
 
-    private Member createAndSaveTestMember() {
-        return createAndSaveTestMember("member", "member@email.com");
+    private Member createTestMember() {
+        return createTestMember("member", "member@email.com");
     }
 
-    private Member createAndSaveTestMember(String name, String email) {
-        return memberRepository.save(Member.builder()
+    private Member createTestMember(String name, String email) {
+        return Member.builder()
                 .name(name)
                 .email(email)
                 .role(USER)
                 .profile("profile")
                 .memberType(KAKAO)
-                .build());
+                .build();
     }
 
-    private Product createAndSaveTestProduct(int stockQuantity) {
-        return createAndSaveTestProduct("product", 10000, stockQuantity);
+    private Product createTestProduct(int stockQuantity) {
+        return createTestProduct("product", 10000, stockQuantity);
     }
 
-    private Product createAndSaveTestProduct(String name, int price, int stockQuantity) {
-        return productRepository.save(Product.builder()
+    private Product createTestProduct(String name, int price, int stockQuantity) {
+        return Product.builder()
                 .name(name)
                 .productType(PRODUCT_A)
                 .productSellingStatus(SELLING)
                 .price(price)
                 .stockQuantity(stockQuantity)
-                .build());
+                .build();
     }
 
-    private Order createAndSaveTestOrder(Member member, LocalDateTime orderDateTime, Product product, int orderQuantity) {
+    private Order createTestOrder(Member member, LocalDateTime orderDateTime, Product product, int orderQuantity) {
         OrderProduct orderProduct = OrderProduct.builder()
                 .product(product)
                 .orderQuantity(orderQuantity)
                 .build();
 
-        return orderRepository.save(Order.builder()
+        return Order.builder()
                 .member(member)
                 .orderDateTime(orderDateTime)
                 .orderStatus(INIT)
                 .orderProducts(List.of(orderProduct))
-                .build());
+                .build();
     }
 }
