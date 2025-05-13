@@ -2,6 +2,7 @@ package com.app.api.order.controller;
 
 import com.app.api.common.PageResponse;
 import com.app.api.order.dto.request.OrderCreateRequest;
+import com.app.api.order.dto.request.OrderSearchCondition;
 import com.app.api.order.dto.response.OrderProductResponse;
 import com.app.api.order.dto.response.OrderResponse;
 import com.app.api.order.service.OrderService;
@@ -153,10 +154,17 @@ class OrderControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("등록된 주문과 페이징 결과를 조회한다.")
+    @DisplayName("검색 조건에 해당하는 주문과 페이징 결과를 조회한다.")
     @Test
     void findOrders() throws Exception {
         // given
+        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+                .memberName("member")
+                .orderStatus(INIT.name())
+                .build();
+
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
         OrderProductResponse orderProductResponse1 = OrderProductResponse.builder()
                 .productId(1L)
                 .productName("product")
@@ -174,7 +182,7 @@ class OrderControllerTest {
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
         OrderResponse orderResponse1 = OrderResponse.builder()
                 .orderId(1L)
-                .memberName("memberA")
+                .memberName("member")
                 .orderDateTime(orderDateTime)
                 .orderStatus(INIT.name())
                 .totalOrderPrice(orderProductResponse1.getOrderPrice() * orderProductResponse1.getOrderQuantity())
@@ -183,22 +191,22 @@ class OrderControllerTest {
 
         OrderResponse orderResponse2 = OrderResponse.builder()
                 .orderId(2L)
-                .memberName("memberB")
+                .memberName("member")
                 .orderDateTime(orderDateTime.plus(1000, MILLIS))
                 .orderStatus(INIT.name())
                 .totalOrderPrice(orderProductResponse2.getOrderPrice() * orderProductResponse2.getOrderQuantity())
                 .orderProducts(List.of(orderProductResponse2))
                 .build();
 
-        PageRequest pageRequest = PageRequest.of(0, 2);
         Page<OrderResponse> pageResponse = new PageImpl<>(List.of(orderResponse1, orderResponse2), pageRequest, 2);
-
-        given(orderService.findOrders(any(Pageable.class)))
+        given(orderService.findOrders(any(OrderSearchCondition.class), any(Pageable.class)))
                 .willReturn(PageResponse.of(pageResponse));
 
         // when & then
         mockMvc.perform(get("/api/orders")
                         .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .param("memberName", searchCondition.getMemberName())
+                        .param("orderStatus", searchCondition.getOrderStatus())
                         .param("page", String.valueOf(pageRequest.getPageNumber()))
                         .param("size", String.valueOf(pageRequest.getPageSize()))
                 )
