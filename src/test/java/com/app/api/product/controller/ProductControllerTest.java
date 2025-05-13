@@ -157,6 +157,28 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("[productType] 유효한 상품 타입이 아닙니다."));
     }
 
+    @DisplayName("상품 등록 시 상품 가격은 필수이다.")
+    @Test
+    void createProduct_MissingPrice() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("product")
+                .productType(PRODUCT_A.name())
+                .price(null)
+                .stockQuantity(1)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[price] 등록 상품 가격은 필수입니다."));
+    }
+
     @DisplayName("상품 등록 시 상품 가격은 양수여야 한다.")
     @Test
     void createProduct_ZeroPrice() throws Exception {
@@ -177,6 +199,28 @@ class ProductControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("400"))
                 .andExpect(jsonPath("$.errorMessage").value("[price] 등록 상품 가격은 양수여야 합니다."));
+    }
+
+    @DisplayName("상품 등록 시 상품 재고 수량은 필수이다.")
+    @Test
+    void createProduct_MissingStockQuantity() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .name("product")
+                .productType(PRODUCT_A.name())
+                .price(10000)
+                .stockQuantity(null)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 등록 상품 재고 수량은 필수입니다."));
     }
 
     @DisplayName("상품 등록 시 상품 재고 수량은 양수여야 한다.")
@@ -235,7 +279,31 @@ class ProductControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("상품 정보 변경 시 상품 가격은 양수여야 한다.")
+    @DisplayName("상품 정보 수정 시 상품 가격은 필수이다.")
+    @Test
+    void updateProduct_MissingPrice() throws Exception {
+        // given
+        Long productId = 1L;
+
+        ProductUpdateRequest request = ProductUpdateRequest.builder()
+                .name("updatedProduct")
+                .productType(PRODUCT_B.name())
+                .price(null)
+                .stockQuantity(1)
+                .build();
+
+        // when & then
+        mockMvc.perform(put("/api/products/{productId}", productId)
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[price] 수정 상품 가격은 필수입니다."));
+    }
+
+    @DisplayName("상품 정보 수정 시 상품 가격은 양수여야 한다.")
     @Test
     void updateProduct_ZeroPrice() throws Exception {
         // given
@@ -259,7 +327,31 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("[price] 수정 상품 가격은 양수여야 합니다."));
     }
 
-    @DisplayName("상품 정보 변경 시 상품 재고 수량은 0 이상이여야 한다.")
+    @DisplayName("상품 정보 수정 시 상품 재고 수량은 필수이다.")
+    @Test
+    void updateProduct_MissingStockQuantity() throws Exception {
+        // given
+        Long productId = 1L;
+
+        ProductUpdateRequest request = ProductUpdateRequest.builder()
+                .name("updatedProduct")
+                .productType(PRODUCT_B.name())
+                .price(10000)
+                .stockQuantity(null)
+                .build();
+
+        // when & then
+        mockMvc.perform(put("/api/products/{productId}", productId)
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[stockQuantity] 수정 상품 재고 수량은 필수입니다."));
+    }
+
+    @DisplayName("상품 정보 수정 시 상품 재고 수량은 0 이상이여야 한다.")
     @Test
     void updateProduct_NegativeStockQuantity() throws Exception {
         // given
@@ -287,6 +379,8 @@ class ProductControllerTest {
     @Test
     void findSellingProducts() throws Exception {
         // given
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
         ProductResponse response1 = ProductResponse.builder()
                 .id(1L)
                 .name("productA")
@@ -305,9 +399,7 @@ class ProductControllerTest {
                 .stockQuantity(2)
                 .build();
 
-        PageRequest pageRequest = PageRequest.of(0, 2);
         Page<ProductResponse> pageResponse = new PageImpl<>(List.of(response1, response2), pageRequest, 2);
-
         given(productService.findSellingProducts(any(Pageable.class)))
                 .willReturn(PageResponse.of(pageResponse));
 

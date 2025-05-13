@@ -121,6 +121,46 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("[productId] 상품 아이디는 필수입니다."));
     }
 
+    @DisplayName("주문 등록 시 상품 아이디는 양수여야 한다.")
+    @Test
+    void createOrder_ZeroProductId() throws Exception {
+        // given
+        OrderCreateRequest request = OrderCreateRequest.builder()
+                .productId(0L)
+                .orderQuantity(1)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/orders")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[productId] 상품 아이디는 양수여야 합니다."));
+    }
+
+    @DisplayName("주문 등록 시 주문 수량은 필수이다.")
+    @Test
+    void createOrder_MissingOrderQuantity() throws Exception {
+        // given
+        OrderCreateRequest request = OrderCreateRequest.builder()
+                .productId(1L)
+                .orderQuantity(null)
+                .build();
+
+        // when & then
+        mockMvc.perform(post("/api/orders")
+                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("400"))
+                .andExpect(jsonPath("$.errorMessage").value("[orderQuantity] 주문 수량은 필수입니다."));
+    }
+
     @DisplayName("주문 등록 시 주문 수량은 양수여야 한다.")
     @Test
     void createOrder_ZeroOrderQuantity() throws Exception {

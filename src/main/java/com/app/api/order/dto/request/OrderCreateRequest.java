@@ -11,13 +11,15 @@ import lombok.NoArgsConstructor;
 public class OrderCreateRequest {
 
     @NotNull(message = "상품 아이디는 필수입니다.")
+    @Positive(message = "상품 아이디는 양수여야 합니다.")
     private Long productId;
 
+    @NotNull(message = "주문 수량은 필수입니다.")
     @Positive(message = "주문 수량은 양수여야 합니다.")
-    private int orderQuantity;
+    private Integer orderQuantity;
 
     @Builder
-    private OrderCreateRequest(Long productId, int orderQuantity) {
+    private OrderCreateRequest(Long productId, Integer orderQuantity) {
         this.productId = productId;
         this.orderQuantity = orderQuantity;
     }
