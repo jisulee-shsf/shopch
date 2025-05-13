@@ -2,6 +2,7 @@ package com.app.api.order.service;
 
 import com.app.api.common.PageResponse;
 import com.app.api.order.dto.request.OrderCreateRequest;
+import com.app.api.order.dto.request.OrderSearchCondition;
 import com.app.api.order.dto.response.OrderResponse;
 import com.app.api.product.service.ProductService;
 import com.app.domain.member.entity.Member;
@@ -57,8 +58,8 @@ public class OrderService {
         order.cancel();
     }
 
-    public PageResponse<OrderResponse> findOrders(Pageable pageable) {
-        Page<Order> pageOrder = orderRepository.findAll(pageable);
+    public PageResponse<OrderResponse> findOrders(OrderSearchCondition searchCondition, Pageable pageable) {
+        Page<Order> pageOrder = orderRepository.findAllBySearchCondition(searchCondition, pageable);
         return PageResponse.of(pageOrder.map(OrderResponse::of));
     }
 

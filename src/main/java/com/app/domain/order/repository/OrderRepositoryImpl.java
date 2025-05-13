@@ -1,0 +1,54 @@
+package com.app.domain.order.repository;
+
+import com.app.api.order.dto.request.OrderSearchCondition;
+import com.app.domain.order.constant.OrderStatus;
+import com.app.domain.order.entity.Order;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+import static com.app.domain.order.entity.QOrder.order;
+
+@RequiredArgsConstructor
+public class OrderRepositoryImpl implements OrderRepositoryCustom {
+
+    private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Page<Order> findAllBySearchCondition(OrderSearchCondition searchCondition, Pageable pageable) {
+        List<Order> content = jpaQueryFactory
+                .selectFrom(order)
+                .where(
+                        memberNameEq(searchCondition.getMemberName()),
+                        orderStatusEq(searchCondition.getOrderStatus())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> count = jpaQueryFactory
+                .select(order.count())
+                .from(order)
+                .where(
+                        memberNameEq(searchCondition.getMemberName()),
+                        orderStatusEq(searchCondition.getOrderStatus())
+                );
+
+        return PageableExecutionUtils.getPage(content, pageable, count::fetchOne);
+    }
+
+    private BooleanExpression memberNameEq(String memberName) {
+        return StringUtils.hasText(memberName) ? order.member.name.eq(memberName) : null;
+    }
+
+    private BooleanExpression orderStatusEq(String orderStatus) {
+        return StringUtils.hasText(orderStatus) ? order.orderStatus.eq(OrderStatus.from(orderStatus)) : null;
+    }
+}

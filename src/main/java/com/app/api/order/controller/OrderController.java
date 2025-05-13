@@ -2,6 +2,7 @@ package com.app.api.order.controller;
 
 import com.app.api.common.PageResponse;
 import com.app.api.order.dto.request.OrderCreateRequest;
+import com.app.api.order.dto.request.OrderSearchCondition;
 import com.app.api.order.dto.response.OrderResponse;
 import com.app.api.order.service.OrderService;
 import com.app.global.resolver.MemberInfo;
@@ -35,7 +36,8 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<PageResponse<OrderResponse>> findOrders(Pageable pageable) {
-        return ResponseEntity.ok(orderService.findOrders(pageable));
+    public ResponseEntity<PageResponse<OrderResponse>> findOrders(OrderSearchCondition searchCondition,
+                                                                  Pageable pageable) {
+        return ResponseEntity.ok(orderService.findOrders(searchCondition, pageable));
     }
 }

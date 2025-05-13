@@ -61,6 +61,12 @@ dependencies {
 
     // Spring Cloud OpenFeign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Querydsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 dependencyManagement {
@@ -85,6 +91,11 @@ jacocoTestReport {
         html.required = true
     }
 
+    def QDomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        QDomains.add(qPattern + '*')
+    }
+
     afterEvaluate {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
@@ -99,7 +110,7 @@ jacocoTestReport {
                             '**/global/resolver/**',
                             '**/global/util/**',
                             '**/global/validator/**'
-                    ])
+                    ] + QDomains)
                 })
         )
     }
@@ -134,7 +145,8 @@ jacocoTestCoverageVerification {
                     '*.global.interceptor.*',
                     '*.global.resolver.*',
                     '*.global.util.*',
-                    '*.global.validator.*'
+                    '*.global.validator.*',
+                    '*.Q*'
             ]
         }
     }
