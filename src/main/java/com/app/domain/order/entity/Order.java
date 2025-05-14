@@ -4,6 +4,7 @@ import com.app.domain.common.BaseEntity;
 import com.app.domain.member.entity.Member;
 import com.app.domain.order.constant.OrderStatus;
 import com.app.domain.orderProduct.entity.OrderProduct;
+import com.app.global.error.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static com.app.domain.order.constant.OrderStatus.CANCELED;
 import static com.app.domain.order.constant.OrderStatus.INIT;
+import static com.app.global.error.ErrorType.ALREADY_CANCELED_ORDER;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
@@ -67,6 +69,9 @@ public class Order extends BaseEntity {
     }
 
     public void cancel() {
+        if (isCanceled()) {
+            throw new BusinessException(ALREADY_CANCELED_ORDER);
+        }
         orderStatus = CANCELED;
         orderProducts.forEach(OrderProduct::cancel);
     }
@@ -80,5 +85,9 @@ public class Order extends BaseEntity {
     private void changeOrderProduct(OrderProduct orderProduct) {
         orderProducts.add(orderProduct);
         orderProduct.changeOrder(this);
+    }
+
+    private boolean isCanceled() {
+        return orderStatus == CANCELED;
     }
 }
