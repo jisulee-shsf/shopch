@@ -1,8 +1,10 @@
 package com.app.domain.order.entity;
 
 import com.app.domain.member.entity.Member;
+import com.app.domain.order.constant.OrderStatus;
 import com.app.domain.orderProduct.entity.OrderProduct;
 import com.app.domain.product.entity.Product;
+import com.app.global.error.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +19,9 @@ import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
 import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static com.app.fixture.TimeFixture.FIXED_INSTANT;
 import static com.app.fixture.TimeFixture.FIXED_TIME_ZONE;
+import static com.app.global.error.ErrorType.ALREADY_CANCELED_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderTest {
 
@@ -110,6 +114,23 @@ class OrderTest {
         assertThat(order.getOrderProducts().get(0).getProduct().getStockQuantity()).isEqualTo(1);
     }
 
+    @DisplayName("이미 취소된 주문에 대해 중복 취소를 시도할 경우, 예외가 발생한다.")
+    @Test
+    void cancel_AlreadyCanceledOrder() {
+        // given
+        Member member = createTestMember();
+        LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+
+        Product product = createTestProduct(10000, 1);
+        OrderProduct orderProduct = createTestOrderProduct(product, 1);
+        Order canceledOrder = createTestOrder(member, orderDateTime, List.of(orderProduct), CANCELED);
+
+        // when & then
+        assertThatThrownBy(() -> canceledOrder.cancel())
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ALREADY_CANCELED_ORDER.getErrorMessage());
+    }
+
     private Member createTestMember() {
         return Member.builder()
                 .name("member")
@@ -146,10 +167,14 @@ class OrderTest {
     }
 
     private Order createTestOrder(Member member, LocalDateTime orderDateTime, List<OrderProduct> orderProducts) {
+        return createTestOrder(member, orderDateTime, orderProducts, INIT);
+    }
+
+    private Order createTestOrder(Member member, LocalDateTime orderDateTime, List<OrderProduct> orderProducts, OrderStatus orderStatus) {
         return Order.builder()
                 .member(member)
                 .orderDateTime(orderDateTime)
-                .orderStatus(INIT)
+                .orderStatus(orderStatus)
                 .orderProducts(orderProducts)
                 .build();
     }
