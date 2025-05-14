@@ -69,7 +69,7 @@ public class Order extends BaseEntity {
     }
 
     public void cancel() {
-        if (isCanceled()) {
+        if (isAlreadyCanceled()) {
             throw new BusinessException(ALREADY_CANCELED_ORDER);
         }
         orderStatus = CANCELED;
@@ -87,7 +87,7 @@ public class Order extends BaseEntity {
         orderProduct.changeOrder(this);
     }
 
-    private boolean isCanceled() {
+    private boolean isAlreadyCanceled() {
         return orderStatus == CANCELED;
     }
 }
