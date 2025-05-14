@@ -32,7 +32,6 @@ import static com.app.global.jwt.constant.GrantType.BEARER;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -89,7 +88,7 @@ class OrderControllerTest {
                 .orderProducts(List.of(orderProductResponse))
                 .build();
 
-        given(orderService.createOrder(anyLong(), any(LocalDateTime.class), any(OrderCreateRequest.class)))
+        given(orderService.createOrder(any(), any(LocalDateTime.class), any(OrderCreateRequest.class)))
                 .willReturn(orderResponse);
 
         // when & then
