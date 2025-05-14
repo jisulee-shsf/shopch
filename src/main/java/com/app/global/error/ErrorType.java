@@ -28,7 +28,8 @@ public enum ErrorType {
 
     // 주문
     ORDER_NOT_FOUND(BAD_REQUEST, "O-001", "주문이 존재하지 않습니다."),
-    FORBIDDEN_ORDER_CANCELLATION(FORBIDDEN, "O-002", "주문을 취소할 수 없습니다.");
+    FORBIDDEN_ORDER_CANCELLATION(FORBIDDEN, "O-002", "주문을 취소할 수 없습니다."),
+    ALREADY_CANCELED_ORDER(BAD_REQUEST, "O-003", "이미 취소된 주문입니다.");
 
     private final HttpStatus httpStatus;
     private final String errorCode;
