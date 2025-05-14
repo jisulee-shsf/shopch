@@ -1,0 +1,29 @@
+[[order-create]]
+=== 4.1. 주문 등록
+
+==== HTTP Request
+include::{snippets}/order-create/http-request.adoc[]
+include::{snippets}/order-create/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/order-create/http-response.adoc[]
+include::{snippets}/order-create/response-fields.adoc[]
+
+[[order-cancel]]
+=== 4.2. 주문 취소
+
+==== HTTP Request
+include::{snippets}/order-cancel/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/order-cancel/http-response.adoc[]
+
+[[order-find]]
+=== 4.3. 검색 주문 조회
+
+==== HTTP Request
+include::{snippets}/order-find/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/order-find/http-response.adoc[]
+include::{snippets}/order-find/response-fields.adoc[]
