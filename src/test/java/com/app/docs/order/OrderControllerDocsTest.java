@@ -212,7 +212,8 @@ public class OrderControllerDocsTest extends RestDocsSupport {
                                         .type(STRING)
                                         .description("주문 일자"),
                                 fieldWithPath("content.[].orderStatus")
-                                        .type(STRING).description("주문 상태"),
+                                        .type(STRING)
+                                        .description("주문 상태"),
                                 fieldWithPath("content.[].totalOrderPrice")
                                         .type(NUMBER)
                                         .description("총 주문 금액"),
