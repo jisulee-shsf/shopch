@@ -4,7 +4,6 @@ import com.app.domain.common.BaseEntity;
 import com.app.domain.member.entity.Member;
 import com.app.domain.order.constant.OrderStatus;
 import com.app.domain.orderProduct.entity.OrderProduct;
-import com.app.global.error.ErrorType;
 import com.app.global.error.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.global.error.ErrorType.*;
+import static com.app.global.error.ErrorType.ALREADY_CANCELED_ORDER;
 
 @Entity
 @Table(name = "orders")

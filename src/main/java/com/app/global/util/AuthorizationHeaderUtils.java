@@ -1,11 +1,11 @@
 package com.app.global.util;
 
-import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.GrantType;
 import org.springframework.util.StringUtils;
 
-import static com.app.global.error.ErrorType.*;
+import static com.app.global.error.ErrorType.INVALID_GRANT_TYPE;
+import static com.app.global.error.ErrorType.MISSING_AUTHORIZATION_HEADER;
 
 public class AuthorizationHeaderUtils {
 

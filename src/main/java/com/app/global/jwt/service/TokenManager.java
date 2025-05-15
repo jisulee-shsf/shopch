@@ -1,7 +1,6 @@
 package com.app.global.jwt.service;
 
 import com.app.domain.member.constant.Role;
-import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.GrantType;
 import com.app.global.jwt.constant.TokenType;
@@ -16,7 +15,8 @@ import lombok.RequiredArgsConstructor;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-import static com.app.global.error.ErrorType.*;
+import static com.app.global.error.ErrorType.EXPIRED_TOKEN;
+import static com.app.global.error.ErrorType.INVALID_TOKEN;
 
 @RequiredArgsConstructor
 public class TokenManager {

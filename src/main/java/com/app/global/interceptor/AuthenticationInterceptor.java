@@ -1,6 +1,5 @@
 package com.app.global.interceptor;
 
-import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.service.TokenManager;
@@ -13,7 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import static com.app.global.error.ErrorType.*;
+import static com.app.global.error.ErrorType.INVALID_TOKEN_TYPE;
 
 @Component
 @RequiredArgsConstructor

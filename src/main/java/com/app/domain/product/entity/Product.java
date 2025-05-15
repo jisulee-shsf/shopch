@@ -4,7 +4,6 @@ import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.domain.common.BaseEntity;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.constant.ProductType;
-import com.app.global.error.ErrorType;
 import com.app.global.error.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.app.global.error.ErrorType.*;
+import static com.app.global.error.ErrorType.OUT_OF_STOCK;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
