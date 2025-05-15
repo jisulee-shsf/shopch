@@ -11,6 +11,7 @@ import com.app.domain.order.entity.Order;
 import com.app.domain.order.repository.OrderRepository;
 import com.app.domain.orderProduct.entity.OrderProduct;
 import com.app.domain.product.entity.Product;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.EntityNotFoundException;
 import com.app.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.global.error.ErrorType.FORBIDDEN_ORDER_CANCELLATION;
-import static com.app.global.error.ErrorType.ORDER_NOT_FOUND;
+import static com.app.global.error.ErrorType.*;
 
 @Service
 @Transactional(readOnly = true)

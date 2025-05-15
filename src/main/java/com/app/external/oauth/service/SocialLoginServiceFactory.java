@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static com.app.domain.member.constant.MemberType.KAKAO;
-
 @Service
 public class SocialLoginServiceFactory {
 
@@ -18,7 +16,7 @@ public class SocialLoginServiceFactory {
 
     public static SocialLoginService getSocialLoginService(MemberType memberType) {
         String socialLoginServiceBeanName = "";
-        if (memberType.equals(KAKAO)) {
+        if (memberType.equals(MemberType.KAKAO)) {
             socialLoginServiceBeanName = "kakaoLoginServiceImpl";
         }
         return socialLoginServices.get(socialLoginServiceBeanName);

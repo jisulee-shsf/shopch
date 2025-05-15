@@ -4,37 +4,34 @@ import com.app.api.product.dto.request.ProductUpdateRequest;
 import com.app.domain.common.BaseEntity;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.constant.ProductType;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.OutOfStockException;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.app.domain.product.constant.ProductSellingStatus.COMPLETED;
-import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
-import static com.app.global.error.ErrorType.OUT_OF_STOCK;
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
+import static com.app.global.error.ErrorType.*;
 
 @Entity
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Product extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    @Enumerated(value = STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private ProductType productType;
 
-    @Enumerated(value = STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private ProductSellingStatus productSellingStatus;
 
@@ -54,7 +51,7 @@ public class Product extends BaseEntity {
         return Product.builder()
                 .name(name)
                 .productType(productType)
-                .productSellingStatus(SELLING)
+                .productSellingStatus(ProductSellingStatus.SELLING)
                 .price(price)
                 .stockQuantity(stockQuantity)
                 .build();
@@ -82,7 +79,7 @@ public class Product extends BaseEntity {
     }
 
     private void changeProductSellingStatus() {
-        productSellingStatus = (stockQuantity == 0) ? COMPLETED : SELLING;
+        productSellingStatus = (stockQuantity == 0) ? ProductSellingStatus.COMPLETED : ProductSellingStatus.SELLING;
     }
 
     private boolean isStockQuantityLessThanOrderQuantity(int orderQuantity) {

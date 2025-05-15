@@ -4,8 +4,10 @@ import com.app.domain.common.BaseEntity;
 import com.app.domain.member.entity.Member;
 import com.app.domain.order.constant.OrderStatus;
 import com.app.domain.orderProduct.entity.OrderProduct;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.BusinessException;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,38 +16,31 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.domain.order.constant.OrderStatus.CANCELED;
-import static com.app.domain.order.constant.OrderStatus.INIT;
-import static com.app.global.error.ErrorType.ALREADY_CANCELED_ORDER;
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
+import static com.app.global.error.ErrorType.*;
 
 @Entity
 @Table(name = "orders")
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Order extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Column(nullable = false)
     private LocalDateTime orderDateTime;
 
-    @Enumerated(value = STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "order", cascade = ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     private int totalOrderPrice;
@@ -63,7 +58,7 @@ public class Order extends BaseEntity {
         return Order.builder()
                 .member(member)
                 .orderDateTime(orderDateTime)
-                .orderStatus(INIT)
+                .orderStatus(OrderStatus.INIT)
                 .orderProducts(orderProducts)
                 .build();
     }
@@ -72,7 +67,7 @@ public class Order extends BaseEntity {
         if (isAlreadyCanceled()) {
             throw new BusinessException(ALREADY_CANCELED_ORDER);
         }
-        orderStatus = CANCELED;
+        orderStatus = OrderStatus.CANCELED;
         orderProducts.forEach(OrderProduct::cancel);
     }
 
@@ -88,6 +83,6 @@ public class Order extends BaseEntity {
     }
 
     private boolean isAlreadyCanceled() {
-        return orderStatus == CANCELED;
+        return orderStatus == OrderStatus.CANCELED;
     }
 }

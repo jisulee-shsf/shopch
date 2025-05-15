@@ -4,9 +4,11 @@ import com.app.api.login.dto.OauthLoginRequest;
 import com.app.api.login.dto.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
 import com.app.domain.member.constant.MemberType;
+import com.app.global.util.AuthorizationHeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
-
-import static com.app.global.util.AuthorizationHeaderUtils.validateAuthorizationHeader;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
 @RequestMapping("/api")
@@ -28,8 +27,8 @@ public class OauthLoginController {
     @PostMapping("/oauth/login")
     public ResponseEntity<OauthLoginResponse> oauthLogin(HttpServletRequest httpServletRequest,
                                                          @Valid @RequestBody OauthLoginRequest oauthLoginRequest) {
-        String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION);
-        validateAuthorizationHeader(authorizationHeader);
+        String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);
 
         MemberType memberType = MemberType.from(oauthLoginRequest.getMemberType());
         String accessToken = authorizationHeader.split(" ")[1];

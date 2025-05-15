@@ -2,6 +2,7 @@ package com.app.api.login.service;
 
 import com.app.api.login.dto.OauthLoginResponse;
 import com.app.domain.member.constant.MemberType;
+import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
 import com.app.external.oauth.dto.SocialLoginUserInfoResponse;
@@ -15,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
-
-import static com.app.domain.member.constant.Role.USER;
 
 @Service
 @Transactional
@@ -46,7 +45,7 @@ public class OauthLoginService {
         if (optionalMember.isPresent()) {
             return optionalMember.get();
         } else {
-            Member member = response.toEntity(USER);
+            Member member = response.toEntity(Role.USER);
             memberService.registerMember(member);
             return member;
         }

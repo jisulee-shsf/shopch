@@ -2,6 +2,7 @@ package com.app.api.logout.service;
 
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.service.TokenManager;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static com.app.global.error.ErrorType.INVALID_TOKEN_TYPE;
+import static com.app.global.error.ErrorType.*;
 
 @Service
 @Transactional

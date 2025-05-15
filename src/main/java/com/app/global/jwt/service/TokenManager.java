@@ -1,8 +1,12 @@
 package com.app.global.jwt.service;
 
 import com.app.domain.member.constant.Role;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
+import com.app.global.jwt.constant.GrantType;
+import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.dto.TokenResponse;
+import com.app.global.util.DateTimeUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -12,13 +16,7 @@ import lombok.RequiredArgsConstructor;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-import static com.app.global.error.ErrorType.EXPIRED_TOKEN;
-import static com.app.global.error.ErrorType.INVALID_TOKEN;
-import static com.app.global.jwt.constant.GrantType.BEARER;
-import static com.app.global.jwt.constant.TokenType.ACCESS;
-import static com.app.global.jwt.constant.TokenType.REFRESH;
-import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
-import static io.jsonwebtoken.Jwts.SIG.HS512;
+import static com.app.global.error.ErrorType.*;
 
 @RequiredArgsConstructor
 public class TokenManager {
@@ -38,12 +36,12 @@ public class TokenManager {
 
     public String createAccessToken(Long memberId, Role role, Date issueDate, Date expirationDate) {
         return Jwts.builder()
-                .subject(ACCESS.name())
+                .subject(TokenType.ACCESS.name())
                 .issuedAt(issueDate)
                 .expiration(expirationDate)
                 .claim("memberId", memberId)
                 .claim("role", role)
-                .signWith(secretKey, HS512)
+                .signWith(secretKey, Jwts.SIG.HS512)
                 .header()
                 .add("typ", "JWT")
                 .and()
@@ -52,11 +50,11 @@ public class TokenManager {
 
     public String createRefreshToken(Long memberId, Date issueDate, Date expirationDate) {
         return Jwts.builder()
-                .subject(REFRESH.name())
+                .subject(TokenType.REFRESH.name())
                 .issuedAt(issueDate)
                 .expiration(expirationDate)
                 .claim("memberId", memberId)
-                .signWith(secretKey, HS512)
+                .signWith(secretKey, Jwts.SIG.HS512)
                 .header()
                 .add("typ", "JWT")
                 .and()
@@ -71,11 +69,11 @@ public class TokenManager {
         String refreshToken = createRefreshToken(memberId, issueDate, refreshTokenExpirationDate);
 
         return TokenResponse.builder()
-                .grantType(BEARER.getType())
+                .grantType(GrantType.BEARER.getType())
                 .accessToken(accessToken)
-                .accessTokenExpirationDateTime(convertDateToLocalDateTime(accessTokenExpirationDate))
+                .accessTokenExpirationDateTime(DateTimeUtils.convertDateToLocalDateTime(accessTokenExpirationDate))
                 .refreshToken(refreshToken)
-                .refreshTokenExpirationDateTime(convertDateToLocalDateTime(refreshTokenExpirationDate))
+                .refreshTokenExpirationDateTime(DateTimeUtils.convertDateToLocalDateTime(refreshTokenExpirationDate))
                 .build();
     }
 

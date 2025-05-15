@@ -2,6 +2,7 @@ package com.app.domain.member.service;
 
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.error.exception.BusinessException;
 import com.app.global.error.exception.EntityNotFoundException;
