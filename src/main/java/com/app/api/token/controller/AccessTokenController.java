@@ -8,19 +8,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AccessTokenController {
 
     private final AccessTokenService accessTokenService;
 
-    @PostMapping("/access-token/issue")
+    @PostMapping("/api/access-token/issue")
     public ResponseEntity<AccessTokenResponse> createAccessToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);

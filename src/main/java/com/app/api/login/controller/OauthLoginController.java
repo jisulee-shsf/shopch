@@ -12,19 +12,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api")
 @RequiredArgsConstructor
 public class OauthLoginController {
 
     private final OauthLoginService oauthLoginService;
 
-    @PostMapping("/oauth/login")
+    @PostMapping("/api/oauth/login")
     public ResponseEntity<OauthLoginResponse> oauthLogin(HttpServletRequest httpServletRequest,
                                                          @Valid @RequestBody OauthLoginRequest oauthLoginRequest) {
         String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
