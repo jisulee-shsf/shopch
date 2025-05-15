@@ -11,7 +11,6 @@ import com.app.domain.order.entity.Order;
 import com.app.domain.order.repository.OrderRepository;
 import com.app.domain.orderProduct.entity.OrderProduct;
 import com.app.domain.product.entity.Product;
-import com.app.global.error.ErrorType;
 import com.app.global.error.exception.EntityNotFoundException;
 import com.app.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.global.error.ErrorType.*;
+import static com.app.global.error.ErrorType.FORBIDDEN_ORDER_CANCELLATION;
+import static com.app.global.error.ErrorType.ORDER_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -59,8 +59,8 @@ public class OrderService {
     }
 
     public PageResponse<OrderResponse> findOrders(OrderSearchCondition searchCondition, Pageable pageable) {
-        Page<Order> pageOrder = orderRepository.findAllBySearchCondition(searchCondition, pageable);
-        return PageResponse.of(pageOrder.map(OrderResponse::of));
+        Page<Order> pageOrders = orderRepository.findAllBySearchCondition(searchCondition, pageable);
+        return PageResponse.of(pageOrders.map(OrderResponse::of));
     }
 
     private Order findOrderById(Long orderId) {

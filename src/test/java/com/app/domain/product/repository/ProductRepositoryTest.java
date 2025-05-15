@@ -41,10 +41,10 @@ class ProductRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 2);
 
         // when
-        Page<Product> pageProduct = productRepository.findAllByProductSellingStatusIn(List.of(SELLING), pageRequest);
+        Page<Product> pageProducts = productRepository.findAllByProductSellingStatusIn(List.of(SELLING), pageRequest);
 
         // then
-        List<Product> content = pageProduct.getContent();
+        List<Product> content = pageProducts.getContent();
         assertThat(content).hasSize(2);
         assertThat(content)
                 .extracting("name", "productSellingStatus", "stockQuantity")
@@ -53,10 +53,10 @@ class ProductRepositoryTest {
                         tuple("productB", SELLING, 2)
                 );
 
-        assertThat(pageProduct.getSize()).isEqualTo(2);
-        assertThat(pageProduct.getNumber()).isEqualTo(0);
-        assertThat(pageProduct.getTotalElements()).isEqualTo(2);
-        assertThat(pageProduct.getTotalPages()).isEqualTo(1);
+        assertThat(pageProducts.getSize()).isEqualTo(2);
+        assertThat(pageProducts.getNumber()).isEqualTo(0);
+        assertThat(pageProducts.getTotalElements()).isEqualTo(2);
+        assertThat(pageProducts.getTotalPages()).isEqualTo(1);
     }
 
     private Product createTestProduct(String name, ProductSellingStatus productSellingStatus, int stockQuantity) {

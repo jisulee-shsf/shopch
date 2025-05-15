@@ -105,10 +105,10 @@ class MemberServiceTest {
         Long memberId = member.getId();
 
         // when
-        Member findMember = memberService.findMemberById(memberId);
+        Member foundMember = memberService.findMemberById(memberId);
 
         // then
-        assertThat(findMember.getEmail()).isEqualTo(member.getEmail());
+        assertThat(foundMember.getEmail()).isEqualTo(member.getEmail());
     }
 
     @DisplayName("등록된 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
