@@ -59,7 +59,7 @@ class ProductControllerTest {
     @MockitoBean
     private ProductService productService;
 
-    @DisplayName("신규 상품을 등록한다.")
+    @DisplayName("상품을 등록한다.")
     @Test
     void createProduct() throws Exception {
         // given

@@ -39,7 +39,7 @@ public class HealthCheckControllerDocsTest extends RestDocsSupport {
                 .andDo(document("health-check",
                         responseFields(
                                 fieldWithPath("health").type(STRING).description("서버 상태"),
-                                fieldWithPath("serverId").type(STRING).description("서버 고유 ID"),
+                                fieldWithPath("serverId").type(STRING).description("서버 고유 아이디"),
                                 fieldWithPath("activeProfiles").type(ARRAY).description("활성 프로파일 목록")
                         )
                 ));

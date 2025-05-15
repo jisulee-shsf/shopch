@@ -90,7 +90,7 @@ public class OrderControllerDocsTest extends RestDocsSupport {
                         responseFields(
                                 fieldWithPath("orderId").type(NUMBER).description("주문 아이디"),
                                 fieldWithPath("memberName").type(STRING).description("회원 이름"),
-                                fieldWithPath("orderDateTime").type(STRING).description("주문 일자"),
+                                fieldWithPath("orderDateTime").type(STRING).description("주문 일시"),
                                 fieldWithPath("orderStatus").type(STRING).description("주문 상태"),
                                 fieldWithPath("totalOrderPrice").type(NUMBER).description("총 주문 금액"),
                                 fieldWithPath("orderProducts.[]").type(ARRAY).description("주문 상품 목록"),
@@ -178,7 +178,7 @@ public class OrderControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("content.[]").type(ARRAY).description("주문 목록"),
                                 fieldWithPath("content.[].orderId").type(NUMBER).description("주문 아이디"),
                                 fieldWithPath("content.[].memberName").type(STRING).description("회원 이름"),
-                                fieldWithPath("content.[].orderDateTime").type(STRING).description("주문 일자"),
+                                fieldWithPath("content.[].orderDateTime").type(STRING).description("주문 일시"),
                                 fieldWithPath("content.[].orderStatus").type(STRING).description("주문 상태"),
                                 fieldWithPath("content.[].totalOrderPrice").type(NUMBER).description("총 주문 금액"),
                                 fieldWithPath("content.[].orderProducts.[]").type(ARRAY).description("주문 상품 목록"),
