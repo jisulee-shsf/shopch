@@ -59,15 +59,9 @@ public class AccessTokenControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document("token-issue",
                         responseFields(
-                                fieldWithPath("grantType")
-                                        .type(STRING)
-                                        .description("인증 타입"),
-                                fieldWithPath("accessToken")
-                                        .type(STRING)
-                                        .description("액세스 토큰"),
-                                fieldWithPath("accessTokenExpirationDateTime")
-                                        .type(STRING)
-                                        .description("액세스 토큰 만료 일시")
+                                fieldWithPath("grantType").type(STRING).description("인증 타입"),
+                                fieldWithPath("accessToken").type(STRING).description("액세스 토큰"),
+                                fieldWithPath("accessTokenExpirationDateTime").type(STRING).description("액세스 토큰 만료 일시")
                         )
                 ));
     }

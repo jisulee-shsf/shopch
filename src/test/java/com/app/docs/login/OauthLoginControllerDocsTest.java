@@ -69,26 +69,14 @@ class OauthLoginControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document("login",
                         requestFields(
-                                fieldWithPath("memberType")
-                                        .type(STRING)
-                                        .description("회원 타입")
+                                fieldWithPath("memberType").type(STRING).description("회원 타입")
                         ),
                         responseFields(
-                                fieldWithPath("grantType")
-                                        .type(STRING)
-                                        .description("인증 타입"),
-                                fieldWithPath("accessToken")
-                                        .type(STRING)
-                                        .description("액세스 토큰"),
-                                fieldWithPath("accessTokenExpirationDateTime")
-                                        .type(STRING)
-                                        .description("액세스 토큰 만료 일시"),
-                                fieldWithPath("refreshToken")
-                                        .type(STRING)
-                                        .description("리프레시 토큰"),
-                                fieldWithPath("refreshTokenExpirationDateTime")
-                                        .type(STRING)
-                                        .description("리프레시 토큰 만료 일시")
+                                fieldWithPath("grantType").type(STRING).description("인증 타입"),
+                                fieldWithPath("accessToken").type(STRING).description("액세스 토큰"),
+                                fieldWithPath("accessTokenExpirationDateTime").type(STRING).description("액세스 토큰 만료 일시"),
+                                fieldWithPath("refreshToken").type(STRING).description("리프레시 토큰"),
+                                fieldWithPath("refreshTokenExpirationDateTime").type(STRING).description("리프레시 토큰 만료 일시")
                         )
                 ));
     }
