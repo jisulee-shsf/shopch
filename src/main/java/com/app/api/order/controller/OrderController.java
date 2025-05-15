@@ -32,7 +32,7 @@ public class OrderController {
     public ResponseEntity<Void> cancelOrder(@MemberInfo MemberInfoRequest request,
                                             @PathVariable Long orderId) {
         orderService.cancelOrder(request.getId(), orderId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

@@ -111,8 +111,9 @@ public class OrderControllerDocsTest extends RestDocsSupport {
         // when & then
         mockMvc.perform(post("/api/orders/{orderId}/cancel", orderId)
                         .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .contentType(APPLICATION_JSON)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andDo(document("order-cancel"));
     }
 

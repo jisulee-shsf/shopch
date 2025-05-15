@@ -190,7 +190,7 @@ class OrderControllerTest {
         mockMvc.perform(post("/api/orders/{orderId}/cancel", orderId)
                         .header(AUTHORIZATION, BEARER.getType() + " access-token")
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @DisplayName("검색 조건에 해당하는 주문과 페이징 결과를 조회한다.")
