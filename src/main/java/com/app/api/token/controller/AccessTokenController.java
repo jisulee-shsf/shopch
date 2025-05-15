@@ -27,8 +27,6 @@ public class AccessTokenController {
         validateAuthorizationHeader(authorizationHeader);
 
         String refreshToken = authorizationHeader.split(" ")[1];
-        Date reissueDate = new Date();
-
-        return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, reissueDate));
+        return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, new Date()));
     }
 }
