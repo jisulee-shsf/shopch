@@ -31,7 +31,6 @@ public class OauthLoginService {
 
         TokenResponse tokenResponse = tokenManager.createToken(oauthMember.getId(), oauthMember.getRole(), issueDate);
         oauthMember.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
-
         return OauthLoginResponse.of(tokenResponse);
     }
 

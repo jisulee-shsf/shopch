@@ -21,11 +21,10 @@ public class HealthCheckController {
 
     @GetMapping("/health")
     public ResponseEntity<HealthCheckResponse> healthCheck() {
-        HealthCheckResponse response = HealthCheckResponse.builder()
+        return ResponseEntity.ok(HealthCheckResponse.builder()
                 .health("OK")
                 .serverId(serverId)
                 .activeProfiles(Arrays.asList(environment.getActiveProfiles()))
-                .build();
-        return ResponseEntity.ok(response);
+                .build());
     }
 }
