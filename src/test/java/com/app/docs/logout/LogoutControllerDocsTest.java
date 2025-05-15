@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static com.app.global.jwt.constant.GrantType.BEARER;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,8 +30,9 @@ class LogoutControllerDocsTest extends RestDocsSupport {
         // when & then
         mockMvc.perform(post("/api/logout")
                         .header(AUTHORIZATION, BEARER.getType() + " access-token")
+                        .contentType(APPLICATION_JSON)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andDo(document("logout"));
     }
 }

@@ -24,6 +24,6 @@ public class LogoutController {
 
         String accessToken = authorizationHeader.split(" ")[1];
         logoutService.logout(accessToken, LocalDateTime.now());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
