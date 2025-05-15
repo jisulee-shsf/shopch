@@ -1,8 +1,8 @@
 package com.app.docs.login;
 
 import com.app.api.login.controller.OauthLoginController;
-import com.app.api.login.dto.OauthLoginRequest;
-import com.app.api.login.dto.OauthLoginResponse;
+import com.app.api.login.dto.request.OauthLoginRequest;
+import com.app.api.login.dto.response.OauthLoginResponse;
 import com.app.api.login.service.OauthLoginService;
 import com.app.domain.member.constant.MemberType;
 import com.app.support.RestDocsSupport;

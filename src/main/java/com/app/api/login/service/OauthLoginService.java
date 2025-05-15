@@ -1,6 +1,6 @@
 package com.app.api.login.service;
 
-import com.app.api.login.dto.OauthLoginResponse;
+import com.app.api.login.dto.response.OauthLoginResponse;
 import com.app.domain.member.constant.MemberType;
 import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;

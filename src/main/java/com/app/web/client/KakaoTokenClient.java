@@ -1,8 +1,8 @@
 package com.app.web.client;
 
 import com.app.global.config.FeignConfig;
-import com.app.web.dto.KakaoTokenRequest;
-import com.app.web.dto.KakaoTokenResponse;
+import com.app.web.dto.request.KakaoTokenRequest;
+import com.app.web.dto.response.KakaoTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.PostMapping;

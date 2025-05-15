@@ -1,6 +1,6 @@
 package com.app.api.login.service;
 
-import com.app.api.login.dto.OauthLoginResponse;
+import com.app.api.login.dto.response.OauthLoginResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.external.oauth.kakao.client.KakaoUserInfoClient;

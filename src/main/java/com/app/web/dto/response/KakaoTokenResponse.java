@@ -1,4 +1,4 @@
-package com.app.web.dto;
+package com.app.web.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

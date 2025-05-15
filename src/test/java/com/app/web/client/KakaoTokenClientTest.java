@@ -1,8 +1,8 @@
 package com.app.web.client;
 
 import com.app.support.WireMockSupport;
-import com.app.web.dto.KakaoTokenRequest;
-import com.app.web.dto.KakaoTokenResponse;
+import com.app.web.dto.request.KakaoTokenRequest;
+import com.app.web.dto.response.KakaoTokenResponse;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import feign.FeignException;
 import feign.RetryableException;

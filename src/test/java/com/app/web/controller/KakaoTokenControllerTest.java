@@ -1,8 +1,8 @@
 package com.app.web.controller;
 
 import com.app.web.client.KakaoTokenClient;
-import com.app.web.dto.KakaoTokenRequest;
-import com.app.web.dto.KakaoTokenResponse;
+import com.app.web.dto.request.KakaoTokenRequest;
+import com.app.web.dto.response.KakaoTokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

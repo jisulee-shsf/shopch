@@ -1,4 +1,4 @@
-package com.app.api.login.dto;
+package com.app.api.login.dto.request;
 
 import com.app.domain.member.constant.MemberType;
 import com.app.global.validator.ValidEnum;
