@@ -16,26 +16,26 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/orders")
+    @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@MemberInfo MemberInfoRequest memberInfoRequest,
                                                      @Valid @RequestBody OrderCreateRequest orderCreateRequest) {
         return ResponseEntity.ok(orderService.createOrder(memberInfoRequest.getId(), LocalDateTime.now(), orderCreateRequest));
     }
 
-    @PostMapping("/orders/{orderId}/cancel")
+    @PostMapping("/{orderId}/cancel")
     public ResponseEntity<Void> cancelOrder(@MemberInfo MemberInfoRequest request,
                                             @PathVariable Long orderId) {
         orderService.cancelOrder(request.getId(), orderId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/orders")
+    @GetMapping
     public ResponseEntity<PageResponse<OrderResponse>> findOrders(OrderSearchCondition searchCondition,
                                                                   Pageable pageable) {
         return ResponseEntity.ok(orderService.findOrders(searchCondition, pageable));

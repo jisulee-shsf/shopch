@@ -9,15 +9,14 @@ import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
+import org.springframework.http.MediaType;
 
 @Configuration
 @EnableFeignClients(basePackages = "com.app")
 @Import(FeignClientsConfiguration.class)
 public class FeignConfig {
 
-    public static final String APPLICATION_FORM_URLENCODED_WITH_UTF8 = APPLICATION_FORM_URLENCODED_VALUE + ";charset=utf-8";
+    public static final String APPLICATION_FORM_URLENCODED_WITH_UTF8 = MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=utf-8";
 
     @Value("${retry.period}")
     private Long period;

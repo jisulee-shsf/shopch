@@ -7,8 +7,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 @Getter
 public class OrderResponse {
@@ -41,7 +40,7 @@ public class OrderResponse {
                 .totalOrderPrice(order.getTotalOrderPrice())
                 .orderProducts(order.getOrderProducts().stream()
                         .map(OrderProductResponse::of)
-                        .collect(toList()))
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

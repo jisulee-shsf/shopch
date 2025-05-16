@@ -3,15 +3,14 @@ package com.app.api.token.service;
 import com.app.api.token.dto.AccessTokenResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
+import com.app.global.jwt.constant.GrantType;
 import com.app.global.jwt.service.TokenManager;
+import com.app.global.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-
-import static com.app.global.jwt.constant.GrantType.BEARER;
-import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 
 @Service
 @Transactional
@@ -28,9 +27,9 @@ public class AccessTokenService {
         String accessToken = tokenManager.createAccessToken(member.getId(), member.getRole(), reissueDate, accessTokenExpirationDate);
 
         return AccessTokenResponse.builder()
-                .grantType(BEARER.getType())
+                .grantType(GrantType.BEARER.getType())
                 .accessToken(accessToken)
-                .accessTokenExpirationDateTime(convertDateToLocalDateTime(accessTokenExpirationDate))
+                .accessTokenExpirationDateTime(DateTimeUtils.convertDateToLocalDateTime(accessTokenExpirationDate))
                 .build();
     }
 }

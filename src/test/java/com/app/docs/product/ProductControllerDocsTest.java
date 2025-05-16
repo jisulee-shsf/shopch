@@ -73,38 +73,18 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document("product-create",
                         requestFields(
-                                fieldWithPath("name")
-                                        .type(STRING)
-                                        .description("상품 이름"),
-                                fieldWithPath("productType")
-                                        .type(STRING)
-                                        .description("상품 타입"),
-                                fieldWithPath("price")
-                                        .type(NUMBER)
-                                        .description("상품 금액"),
-                                fieldWithPath("stockQuantity")
-                                        .type(NUMBER)
-                                        .description("상품 재고 수량")
+                                fieldWithPath("name").type(STRING).description("상품 이름"),
+                                fieldWithPath("productType").type(STRING).description("상품 타입"),
+                                fieldWithPath("price").type(NUMBER).description("상품 금액"),
+                                fieldWithPath("stockQuantity").type(NUMBER).description("상품 재고 수량")
                         ),
                         responseFields(
-                                fieldWithPath("id")
-                                        .type(NUMBER)
-                                        .description("상품 아이디"),
-                                fieldWithPath("name")
-                                        .type(STRING)
-                                        .description("상품 이름"),
-                                fieldWithPath("productType")
-                                        .type(STRING)
-                                        .description("상품 타입"),
-                                fieldWithPath("productSellingStatus")
-                                        .type(STRING)
-                                        .description("상품 판매 상태"),
-                                fieldWithPath("price")
-                                        .type(NUMBER)
-                                        .description("상품 금액"),
-                                fieldWithPath("stockQuantity")
-                                        .type(NUMBER)
-                                        .description("상품 재고 수량")
+                                fieldWithPath("id").type(NUMBER).description("상품 아이디"),
+                                fieldWithPath("name").type(STRING).description("상품 이름"),
+                                fieldWithPath("productType").type(STRING).description("상품 타입"),
+                                fieldWithPath("productSellingStatus").type(STRING).description("상품 판매 상태"),
+                                fieldWithPath("price").type(NUMBER).description("상품 금액"),
+                                fieldWithPath("stockQuantity").type(NUMBER).description("상품 재고 수량")
                         )
                 ));
     }
@@ -143,38 +123,18 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document("product-update",
                         requestFields(
-                                fieldWithPath("name")
-                                        .type(STRING)
-                                        .description("상품 이름"),
-                                fieldWithPath("productType")
-                                        .type(STRING)
-                                        .description("상품 타입"),
-                                fieldWithPath("price")
-                                        .type(NUMBER)
-                                        .description("상품 금액"),
-                                fieldWithPath("stockQuantity")
-                                        .type(NUMBER)
-                                        .description("상품 재고 수량")
+                                fieldWithPath("name").type(STRING).description("상품 이름"),
+                                fieldWithPath("productType").type(STRING).description("상품 타입"),
+                                fieldWithPath("price").type(NUMBER).description("상품 금액"),
+                                fieldWithPath("stockQuantity").type(NUMBER).description("상품 재고 수량")
                         ),
                         responseFields(
-                                fieldWithPath("id")
-                                        .type(NUMBER)
-                                        .description("상품 아이디"),
-                                fieldWithPath("name")
-                                        .type(STRING)
-                                        .description("상품 이름"),
-                                fieldWithPath("productType")
-                                        .type(STRING)
-                                        .description("상품 타입"),
-                                fieldWithPath("productSellingStatus")
-                                        .type(STRING)
-                                        .description("상품 판매 상태"),
-                                fieldWithPath("price")
-                                        .type(NUMBER)
-                                        .description("상품 금액"),
-                                fieldWithPath("stockQuantity")
-                                        .type(NUMBER)
-                                        .description("상품 재고 수량")
+                                fieldWithPath("id").type(NUMBER).description("상품 아이디"),
+                                fieldWithPath("name").type(STRING).description("상품 이름"),
+                                fieldWithPath("productType").type(STRING).description("상품 타입"),
+                                fieldWithPath("productSellingStatus").type(STRING).description("상품 판매 상태"),
+                                fieldWithPath("price").type(NUMBER).description("상품 금액"),
+                                fieldWithPath("stockQuantity").type(NUMBER).description("상품 재고 수량")
                         )
                 ));
     }
@@ -216,38 +176,17 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document("product-find",
                         responseFields(
-                                fieldWithPath("content.[]")
-                                        .type(ARRAY)
-                                        .description("판매 상품 목록"),
-                                fieldWithPath("content.[].id")
-                                        .type(NUMBER)
-                                        .description("상품 아이디"),
-                                fieldWithPath("content.[].name")
-                                        .type(STRING)
-                                        .description("상품 이름"),
-                                fieldWithPath("content.[].productType")
-                                        .type(STRING)
-                                        .description("상품 타입"),
-                                fieldWithPath("content.[].productSellingStatus")
-                                        .type(STRING)
-                                        .description("상품 판매 상태"),
-                                fieldWithPath("content.[].price")
-                                        .type(NUMBER)
-                                        .description("상품 금액"),
-                                fieldWithPath("content.[].stockQuantity")
-                                        .type(NUMBER)
-                                        .description("상품 재고 수량"),
-                                fieldWithPath("size")
-                                        .type(NUMBER)
-                                        .description("한 페이지에 포함된 상품 수"),
-                                fieldWithPath("number")
-                                        .type(NUMBER)
-                                        .description("현재 페이지 번호"),
-                                fieldWithPath("totalElements")
-                                        .type(NUMBER).description("전체 상품 수"),
-                                fieldWithPath("totalPages")
-                                        .type(NUMBER)
-                                        .description("전체 페이지 수")
+                                fieldWithPath("content.[]").type(ARRAY).description("판매 상품 목록"),
+                                fieldWithPath("content.[].id").type(NUMBER).description("상품 아이디"),
+                                fieldWithPath("content.[].name").type(STRING).description("상품 이름"),
+                                fieldWithPath("content.[].productType").type(STRING).description("상품 타입"),
+                                fieldWithPath("content.[].productSellingStatus").type(STRING).description("상품 판매 상태"),
+                                fieldWithPath("content.[].price").type(NUMBER).description("상품 금액"),
+                                fieldWithPath("content.[].stockQuantity").type(NUMBER).description("상품 재고 수량"),
+                                fieldWithPath("size").type(NUMBER).description("한 페이지에 포함된 상품 수"),
+                                fieldWithPath("number").type(NUMBER).description("현재 페이지 번호"),
+                                fieldWithPath("totalElements").type(NUMBER).description("전체 상품 수"),
+                                fieldWithPath("totalPages").type(NUMBER).description("전체 페이지 수")
                         )
                 ));
     }

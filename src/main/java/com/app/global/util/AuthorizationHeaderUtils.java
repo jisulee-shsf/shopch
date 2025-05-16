@@ -1,11 +1,11 @@
 package com.app.global.util;
 
 import com.app.global.error.exception.AuthenticationException;
+import com.app.global.jwt.constant.GrantType;
 import org.springframework.util.StringUtils;
 
 import static com.app.global.error.ErrorType.INVALID_GRANT_TYPE;
 import static com.app.global.error.ErrorType.MISSING_AUTHORIZATION_HEADER;
-import static com.app.global.jwt.constant.GrantType.BEARER;
 
 public class AuthorizationHeaderUtils {
 
@@ -15,7 +15,7 @@ public class AuthorizationHeaderUtils {
         }
 
         String[] authorizations = authorizationHeader.split(" ");
-        if (authorizations.length < 2 || !authorizations[0].equals(BEARER.getType())) {
+        if (authorizations.length < 2 || !authorizations[0].equals(GrantType.BEARER.getType())) {
             throw new AuthenticationException(INVALID_GRANT_TYPE);
         }
     }

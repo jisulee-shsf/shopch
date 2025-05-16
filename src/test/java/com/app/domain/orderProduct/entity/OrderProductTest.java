@@ -36,7 +36,7 @@ class OrderProductTest {
         assertThat(product.getStockQuantity()).isZero();
     }
 
-    @DisplayName("주문 상품의 총 금액은 주문 가격(상품 가격) * 주문 수량이다.")
+    @DisplayName("주문 상품의 총 금액은 주문 금액(상품 금액) * 주문 수량이다.")
     @Test
     void calculateTotalPrice() {
         // given

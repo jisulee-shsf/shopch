@@ -12,24 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/products")
+    @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest request) {
         return ResponseEntity.ok(productService.createProduct(request));
     }
 
-    @PutMapping("/products/{productId}")
+    @PutMapping("/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId,
                                                          @Valid @RequestBody ProductUpdateRequest request) {
         return ResponseEntity.ok(productService.updateProduct(productId, request));
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public ResponseEntity<PageResponse<ProductResponse>> findSellingProducts(Pageable pageable) {
         return ResponseEntity.ok(productService.findSellingProducts(pageable));
     }

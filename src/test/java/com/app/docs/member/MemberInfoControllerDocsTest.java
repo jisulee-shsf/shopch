@@ -52,21 +52,11 @@ public class MemberInfoControllerDocsTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(document("member-info",
                         responseFields(
-                                fieldWithPath("id")
-                                        .type(NUMBER)
-                                        .description("회원 아이디"),
-                                fieldWithPath("name")
-                                        .type(STRING)
-                                        .description("회원 이름"),
-                                fieldWithPath("email")
-                                        .type(STRING)
-                                        .description("회원 이메일"),
-                                fieldWithPath("profile")
-                                        .type(STRING)
-                                        .description("회원 프로필 이미지"),
-                                fieldWithPath("role")
-                                        .type(STRING)
-                                        .description("회원 역할")
+                                fieldWithPath("id").type(NUMBER).description("회원 아이디"),
+                                fieldWithPath("name").type(STRING).description("회원 이름"),
+                                fieldWithPath("email").type(STRING).description("회원 이메일"),
+                                fieldWithPath("profile").type(STRING).description("회원 프로필 이미지"),
+                                fieldWithPath("role").type(STRING).description("회원 역할")
                         )
                 ));
     }

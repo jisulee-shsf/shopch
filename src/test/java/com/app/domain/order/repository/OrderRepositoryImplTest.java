@@ -78,20 +78,20 @@ class OrderRepositoryImplTest {
                 .build();
 
         // when
-        Page<Order> pageOrder = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
+        Page<Order> pageOrders = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
 
         // then
-        List<Order> content = pageOrder.getContent();
+        List<Order> content = pageOrders.getContent();
         assertThat(content).hasSize(1);
         assertThat(content)
                 .extracting(Order::getMember)
                 .extracting(Member::getId)
                 .containsExactly(member1.getId());
 
-        assertThat(pageOrder.getSize()).isEqualTo(3);
-        assertThat(pageOrder.getNumber()).isEqualTo(0);
-        assertThat(pageOrder.getTotalElements()).isEqualTo(1);
-        assertThat(pageOrder.getTotalPages()).isEqualTo(1);
+        assertThat(pageOrders.getSize()).isEqualTo(3);
+        assertThat(pageOrders.getNumber()).isEqualTo(0);
+        assertThat(pageOrders.getTotalElements()).isEqualTo(1);
+        assertThat(pageOrders.getTotalPages()).isEqualTo(1);
     }
 
     @DisplayName("검색 조건으로 주문 상태만 있을 경우, 주문 상태가 같은 주문과 페이징 결과를 조회한다.")
@@ -118,19 +118,19 @@ class OrderRepositoryImplTest {
                 .build();
 
         // when
-        Page<Order> pageOrder = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
+        Page<Order> pageOrders = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
 
         // then
-        List<Order> content = pageOrder.getContent();
+        List<Order> content = pageOrders.getContent();
         assertThat(content).hasSize(2);
         assertThat(content)
                 .extracting(Order::getOrderStatus)
                 .containsOnly(INIT);
 
-        assertThat(pageOrder.getSize()).isEqualTo(3);
-        assertThat(pageOrder.getNumber()).isEqualTo(0);
-        assertThat(pageOrder.getTotalElements()).isEqualTo(2);
-        assertThat(pageOrder.getTotalPages()).isEqualTo(1);
+        assertThat(pageOrders.getSize()).isEqualTo(3);
+        assertThat(pageOrders.getNumber()).isEqualTo(0);
+        assertThat(pageOrders.getTotalElements()).isEqualTo(2);
+        assertThat(pageOrders.getTotalPages()).isEqualTo(1);
     }
 
     @DisplayName("검색 조건이 모두 있을 경우, 조건에 해당하는 주문과 페이징 결과를 조회한다.")
@@ -157,10 +157,10 @@ class OrderRepositoryImplTest {
                 .build();
 
         // when
-        Page<Order> pageOrder = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
+        Page<Order> pageOrders = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
 
         // then
-        List<Order> content = pageOrder.getContent();
+        List<Order> content = pageOrders.getContent();
         assertThat(content).hasSize(1);
         assertThat(content)
                 .extracting(Order::getMember)
@@ -170,10 +170,10 @@ class OrderRepositoryImplTest {
                 .extracting(Order::getOrderStatus)
                 .containsExactly(INIT);
 
-        assertThat(pageOrder.getSize()).isEqualTo(3);
-        assertThat(pageOrder.getNumber()).isEqualTo(0);
-        assertThat(pageOrder.getTotalElements()).isEqualTo(1);
-        assertThat(pageOrder.getTotalPages()).isEqualTo(1);
+        assertThat(pageOrders.getSize()).isEqualTo(3);
+        assertThat(pageOrders.getNumber()).isEqualTo(0);
+        assertThat(pageOrders.getTotalElements()).isEqualTo(1);
+        assertThat(pageOrders.getTotalPages()).isEqualTo(1);
     }
 
     @DisplayName("검색 조건이 모두 없을 경우, 등록된 모든 주문과 페이징 결과를 조회한다.")
@@ -200,10 +200,10 @@ class OrderRepositoryImplTest {
                 .build();
 
         // when
-        Page<Order> pageOrder = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
+        Page<Order> pageOrders = orderRepository.findAllBySearchCondition(searchCondition, PageRequest.of(0, 3));
 
         // then
-        List<Order> content = pageOrder.getContent();
+        List<Order> content = pageOrders.getContent();
         assertThat(content).hasSize(3);
         assertThat(content)
                 .extracting(Order::getMember)
@@ -213,10 +213,10 @@ class OrderRepositoryImplTest {
                 .extracting(Order::getOrderStatus)
                 .containsOnly(INIT, CANCELED);
 
-        assertThat(pageOrder.getSize()).isEqualTo(3);
-        assertThat(pageOrder.getNumber()).isEqualTo(0);
-        assertThat(pageOrder.getTotalElements()).isEqualTo(3);
-        assertThat(pageOrder.getTotalPages()).isEqualTo(1);
+        assertThat(pageOrders.getSize()).isEqualTo(3);
+        assertThat(pageOrders.getNumber()).isEqualTo(0);
+        assertThat(pageOrders.getTotalElements()).isEqualTo(3);
+        assertThat(pageOrders.getTotalPages()).isEqualTo(1);
     }
 
     private Member createTestMember(String name, String email) {

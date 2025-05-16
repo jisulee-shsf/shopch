@@ -45,6 +45,6 @@ class LogoutControllerTest {
         mockMvc.perform(post("/api/logout")
                         .header(AUTHORIZATION, BEARER.getType() + " access-token")
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 }

@@ -4,6 +4,7 @@ import com.app.domain.common.BaseEntity;
 import com.app.domain.member.constant.MemberType;
 import com.app.domain.member.constant.Role;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,17 +12,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
-
 @Entity
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Member extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -31,13 +28,13 @@ public class Member extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Enumerated(value = STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     private String profile;
 
-    @Enumerated(value = STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private MemberType memberType;
 
