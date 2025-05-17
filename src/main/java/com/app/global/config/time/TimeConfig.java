@@ -8,7 +8,7 @@ import java.time.ZoneId;
 @Configuration
 public class TimeConfig {
 
-    public final static ZoneId TIME_ZONE = ZoneId.of("Asia/Seoul");
+    public final static ZoneId TIME_ZONE = ZoneId.systemDefault();
 
     @Bean
     public java.time.Clock clock() {
