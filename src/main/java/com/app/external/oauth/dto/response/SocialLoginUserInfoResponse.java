@@ -1,4 +1,4 @@
-package com.app.external.oauth.dto;
+package com.app.external.oauth.dto.response;
 
 import com.app.domain.member.constant.MemberType;
 import com.app.domain.member.constant.Role;
