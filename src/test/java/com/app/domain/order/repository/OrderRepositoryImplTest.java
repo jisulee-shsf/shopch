@@ -1,6 +1,6 @@
 package com.app.domain.order.repository;
 
-import com.app.api.order.dto.request.OrderSearchCondition;
+import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.domain.order.constant.OrderStatus;
@@ -72,7 +72,7 @@ class OrderRepositoryImplTest {
         Order order3 = createTestOrder(member2, orderDateTime2, product, 1, CANCELED);
         orderRepository.saveAll(List.of(order1, order2, order3));
 
-        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+        OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName("memberA")
                 .orderStatus(null)
                 .build();
@@ -112,7 +112,7 @@ class OrderRepositoryImplTest {
         Order order3 = createTestOrder(member2, orderDateTime2, product, 1, CANCELED);
         orderRepository.saveAll(List.of(order1, order2, order3));
 
-        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+        OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName(null)
                 .orderStatus(INIT.name())
                 .build();
@@ -151,7 +151,7 @@ class OrderRepositoryImplTest {
         Order order3 = createTestOrder(member2, orderDateTime2, product, 1, CANCELED);
         orderRepository.saveAll(List.of(order1, order2, order3));
 
-        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+        OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName("memberA")
                 .orderStatus(INIT.name())
                 .build();
@@ -194,7 +194,7 @@ class OrderRepositoryImplTest {
         Order order3 = createTestOrder(member2, orderDateTime2, product, 1, CANCELED);
         orderRepository.saveAll(List.of(order1, order2, order3));
 
-        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+        OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName(null)
                 .orderStatus(null)
                 .build();

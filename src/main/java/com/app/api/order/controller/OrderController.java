@@ -1,10 +1,10 @@
 package com.app.api.order.controller;
 
 import com.app.api.common.PageResponse;
-import com.app.api.order.dto.request.OrderCreateRequest;
-import com.app.api.order.dto.request.OrderSearchCondition;
-import com.app.api.order.dto.response.OrderResponse;
+import com.app.api.order.controller.dto.request.OrderCreateRequest;
+import com.app.api.order.controller.dto.request.OrderSearchCondition;
 import com.app.api.order.service.OrderService;
+import com.app.api.order.service.dto.response.OrderResponse;
 import com.app.global.resolver.MemberInfo;
 import com.app.global.resolver.MemberInfoRequest;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@MemberInfo MemberInfoRequest memberInfoRequest,
                                                      @Valid @RequestBody OrderCreateRequest orderCreateRequest) {
-        return ResponseEntity.ok(orderService.createOrder(memberInfoRequest.getId(), LocalDateTime.now(), orderCreateRequest));
+        return ResponseEntity.ok(orderService.createOrder(memberInfoRequest.getId(), LocalDateTime.now(), orderCreateRequest.toServiceRequest()));
     }
 
     @PostMapping("/{orderId}/cancel")
@@ -38,6 +38,6 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<PageResponse<OrderResponse>> findOrders(OrderSearchCondition searchCondition,
                                                                   Pageable pageable) {
-        return ResponseEntity.ok(orderService.findOrders(searchCondition, pageable));
+        return ResponseEntity.ok(orderService.findOrders(searchCondition.toServiceSearchCondition(), pageable));
     }
 }

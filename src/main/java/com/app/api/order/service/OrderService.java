@@ -1,9 +1,9 @@
 package com.app.api.order.service;
 
 import com.app.api.common.PageResponse;
-import com.app.api.order.dto.request.OrderCreateRequest;
-import com.app.api.order.dto.request.OrderSearchCondition;
-import com.app.api.order.dto.response.OrderResponse;
+import com.app.api.order.service.dto.request.OrderCreateServiceRequest;
+import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
+import com.app.api.order.service.dto.response.OrderResponse;
 import com.app.api.product.service.ProductService;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
@@ -36,7 +36,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public OrderResponse createOrder(Long memberId, LocalDateTime now, OrderCreateRequest request) {
+    public OrderResponse createOrder(Long memberId, LocalDateTime now, OrderCreateServiceRequest request) {
         Member member = memberService.findMemberById(memberId);
         Product product = productService.findProductById(request.getProductId());
 
@@ -58,7 +58,7 @@ public class OrderService {
         order.cancel();
     }
 
-    public PageResponse<OrderResponse> findOrders(OrderSearchCondition searchCondition, Pageable pageable) {
+    public PageResponse<OrderResponse> findOrders(OrderServiceSearchCondition searchCondition, Pageable pageable) {
         Page<Order> pageOrders = orderRepository.findAllBySearchCondition(searchCondition, pageable);
         return PageResponse.of(pageOrders.map(OrderResponse::of));
     }

@@ -1,4 +1,4 @@
-package com.app.api.order.dto.response;
+package com.app.api.order.service.dto.response;
 
 import com.app.domain.orderProduct.entity.OrderProduct;
 import lombok.Builder;

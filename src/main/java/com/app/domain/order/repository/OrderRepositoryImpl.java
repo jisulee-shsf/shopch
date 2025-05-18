@@ -1,6 +1,6 @@
 package com.app.domain.order.repository;
 
-import com.app.api.order.dto.request.OrderSearchCondition;
+import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
 import com.app.domain.order.constant.OrderStatus;
 import com.app.domain.order.entity.Order;
 import com.app.domain.order.entity.QOrder;
@@ -21,7 +21,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Order> findAllBySearchCondition(OrderSearchCondition searchCondition, Pageable pageable) {
+    public Page<Order> findAllBySearchCondition(OrderServiceSearchCondition searchCondition, Pageable pageable) {
         List<Order> content = jpaQueryFactory
                 .selectFrom(QOrder.order)
                 .where(
