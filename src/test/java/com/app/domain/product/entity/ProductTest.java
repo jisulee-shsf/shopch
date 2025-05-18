@@ -1,6 +1,6 @@
 package com.app.domain.product.entity;
 
-import com.app.api.product.dto.request.ProductUpdateRequest;
+import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
 import com.app.global.error.exception.OutOfStockException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class ProductTest {
                 .stockQuantity(1)
                 .build();
 
-        ProductUpdateRequest request = ProductUpdateRequest.builder()
+        ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
                 .name("updatedProduct")
                 .productType(PRODUCT_B.name())
                 .price(20000)
@@ -65,7 +65,7 @@ class ProductTest {
                 .stockQuantity(1)
                 .build();
 
-        ProductUpdateRequest request = ProductUpdateRequest.builder()
+        ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
                 .name("updatedProduct")
                 .productType(PRODUCT_B.name())
                 .price(20000)

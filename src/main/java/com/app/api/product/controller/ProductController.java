@@ -3,8 +3,8 @@ package com.app.api.product.controller;
 import com.app.api.common.PageResponse;
 import com.app.api.product.dto.request.ProductCreateRequest;
 import com.app.api.product.dto.request.ProductUpdateRequest;
-import com.app.api.product.dto.response.ProductResponse;
 import com.app.api.product.service.ProductService;
+import com.app.api.product.service.dto.response.ProductResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +20,13 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest request) {
-        return ResponseEntity.ok(productService.createProduct(request));
+        return ResponseEntity.ok(productService.createProduct(request.toServiceRequest()));
     }
 
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId,
                                                          @Valid @RequestBody ProductUpdateRequest request) {
-        return ResponseEntity.ok(productService.updateProduct(productId, request));
+        return ResponseEntity.ok(productService.updateProduct(productId, request.toServiceRequest()));
     }
 
     @GetMapping

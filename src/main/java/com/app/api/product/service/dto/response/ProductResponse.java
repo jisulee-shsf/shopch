@@ -1,4 +1,4 @@
-package com.app.api.product.dto.response;
+package com.app.api.product.service.dto.response;
 
 import com.app.domain.product.entity.Product;
 import lombok.Builder;

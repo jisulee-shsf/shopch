@@ -1,9 +1,9 @@
 package com.app.api.product.service;
 
 import com.app.api.common.PageResponse;
-import com.app.api.product.dto.request.ProductCreateRequest;
-import com.app.api.product.dto.request.ProductUpdateRequest;
-import com.app.api.product.dto.response.ProductResponse;
+import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
+import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
+import com.app.api.product.service.dto.response.ProductResponse;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.entity.Product;
 import com.app.domain.product.repository.ProductRepository;
@@ -45,7 +45,7 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        ProductCreateRequest request = ProductCreateRequest.builder()
+        ProductCreateServiceRequest request = ProductCreateServiceRequest.builder()
                 .name("product")
                 .productType(PRODUCT_A.name())
                 .price(10000)
@@ -82,7 +82,7 @@ class ProductServiceTest {
                 .build();
         productRepository.save(product);
 
-        ProductUpdateRequest request = ProductUpdateRequest.builder()
+        ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
                 .name("updatedProduct")
                 .productType(PRODUCT_B.name())
                 .price(20000)
@@ -112,7 +112,7 @@ class ProductServiceTest {
     @Test
     void updateProduct_ProductNotFound() {
         // given
-        ProductUpdateRequest request = ProductUpdateRequest.builder()
+        ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
                 .name("updatedProduct")
                 .productType(PRODUCT_B.name())
                 .price(20000)
