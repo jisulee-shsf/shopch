@@ -1,11 +1,12 @@
 package com.app.api.login.service;
 
-import com.app.api.login.dto.response.OauthLoginResponse;
+import com.app.api.login.service.dto.request.OauthLoginServiceRequest;
+import com.app.api.login.service.dto.response.OauthLoginResponse;
 import com.app.domain.member.constant.MemberType;
 import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
-import com.app.external.oauth.dto.SocialLoginUserInfoResponse;
+import com.app.external.oauth.dto.response.SocialLoginUserInfoResponse;
 import com.app.external.oauth.service.SocialLoginService;
 import com.app.external.oauth.service.SocialLoginServiceFactory;
 import com.app.global.jwt.dto.TokenResponse;
@@ -25,7 +26,8 @@ public class OauthLoginService {
     private final MemberService memberService;
     private final TokenManager tokenManager;
 
-    public OauthLoginResponse oauthLogin(MemberType memberType, String accessToken, Date issueDate) {
+    public OauthLoginResponse oauthLogin(OauthLoginServiceRequest request, String accessToken, Date issueDate) {
+        MemberType memberType = MemberType.from(request.getMemberType());
         SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(memberType, accessToken);
         Member oauthMember = getOrRegisterMember(userInfoResponse);
 

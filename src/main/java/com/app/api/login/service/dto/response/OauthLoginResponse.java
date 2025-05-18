@@ -1,4 +1,4 @@
-package com.app.api.login.dto.response;
+package com.app.api.login.service.dto.response;
 
 import com.app.global.jwt.dto.TokenResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;

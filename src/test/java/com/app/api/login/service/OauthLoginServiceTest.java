@@ -1,10 +1,11 @@
 package com.app.api.login.service;
 
-import com.app.api.login.dto.response.OauthLoginResponse;
+import com.app.api.login.service.dto.request.OauthLoginServiceRequest;
+import com.app.api.login.service.dto.response.OauthLoginResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
-import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
+import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,8 @@ class OauthLoginServiceTest {
         Member member = createTestMember("member@email.com");
         memberRepository.save(member);
 
+        OauthLoginServiceRequest request = new OauthLoginServiceRequest("KAKAO");
+
         KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse(member.getEmail());
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
                 .willReturn(userInfoResponse);
@@ -58,7 +61,7 @@ class OauthLoginServiceTest {
         Date issueDate = Date.from(FIXED_INSTANT);
 
         // when
-        OauthLoginResponse response = oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
+        OauthLoginResponse response = oauthLoginService.oauthLogin(request, BEARER.getType() + " access-token", issueDate);
 
         // then
         assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
@@ -75,6 +78,8 @@ class OauthLoginServiceTest {
     @Test
     void oauthLogin_NotRegisteredMember() {
         // given
+        OauthLoginServiceRequest request = new OauthLoginServiceRequest("KAKAO");
+
         KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse("member@email.com");
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
                 .willReturn(userInfoResponse);
@@ -82,7 +87,7 @@ class OauthLoginServiceTest {
         Date issueDate = Date.from(FIXED_INSTANT);
 
         // when
-        OauthLoginResponse response = oauthLoginService.oauthLogin(KAKAO, BEARER.getType() + " access-token", issueDate);
+        OauthLoginResponse response = oauthLoginService.oauthLogin(request, BEARER.getType() + " access-token", issueDate);
 
         // then
         assertThat(response.getGrantType()).isEqualTo(BEARER.getType());
