@@ -1,8 +1,8 @@
 package com.app.external.oauth.kakao.service;
 
-import com.app.external.oauth.dto.SocialLoginUserInfoResponse;
+import com.app.external.oauth.dto.response.SocialLoginUserInfoResponse;
 import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
-import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
+import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

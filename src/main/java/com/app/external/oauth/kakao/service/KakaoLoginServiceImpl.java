@@ -1,9 +1,9 @@
 package com.app.external.oauth.kakao.service;
 
 import com.app.domain.member.constant.MemberType;
-import com.app.external.oauth.dto.SocialLoginUserInfoResponse;
+import com.app.external.oauth.dto.response.SocialLoginUserInfoResponse;
 import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
-import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
+import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
 import com.app.external.oauth.service.SocialLoginService;
 import com.app.global.jwt.constant.GrantType;
 import lombok.RequiredArgsConstructor;

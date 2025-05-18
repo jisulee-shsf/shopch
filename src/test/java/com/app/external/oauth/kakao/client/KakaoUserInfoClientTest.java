@@ -1,6 +1,6 @@
 package com.app.external.oauth.kakao.client;
 
-import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
+import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
 import com.app.support.WireMockSupport;
 import feign.FeignException;
 import feign.RetryableException;
