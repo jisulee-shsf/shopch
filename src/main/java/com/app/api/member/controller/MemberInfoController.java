@@ -1,7 +1,7 @@
 package com.app.api.member.controller;
 
-import com.app.api.member.dto.MemberInfoResponse;
 import com.app.api.member.service.MemberInfoService;
+import com.app.api.member.service.dto.response.MemberInfoResponse;
 import com.app.global.resolver.MemberInfo;
 import com.app.global.resolver.MemberInfoRequest;
 import lombok.RequiredArgsConstructor;
