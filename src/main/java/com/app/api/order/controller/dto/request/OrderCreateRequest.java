@@ -1,5 +1,6 @@
-package com.app.api.order.dto.request;
+package com.app.api.order.controller.dto.request;
 
+import com.app.api.order.service.dto.request.OrderCreateServiceRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
@@ -22,5 +23,12 @@ public class OrderCreateRequest {
     private OrderCreateRequest(Long productId, Integer orderQuantity) {
         this.productId = productId;
         this.orderQuantity = orderQuantity;
+    }
+
+    public OrderCreateServiceRequest toServiceRequest() {
+        return OrderCreateServiceRequest.builder()
+                .productId(productId)
+                .orderQuantity(orderQuantity)
+                .build();
     }
 }
