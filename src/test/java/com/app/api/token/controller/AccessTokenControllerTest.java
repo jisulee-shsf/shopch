@@ -1,7 +1,7 @@
 package com.app.api.token.controller;
 
-import com.app.api.token.dto.AccessTokenResponse;
 import com.app.api.token.service.AccessTokenService;
+import com.app.api.token.service.dto.response.AccessTokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
