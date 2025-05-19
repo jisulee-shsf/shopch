@@ -60,7 +60,6 @@ class KakaoTokenControllerTest {
         // when & then
         mockMvc.perform(get("/oauth/kakao/callback")
                 )
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token_type").value(response.getTokenType()))
                 .andExpect(jsonPath("$.access_token").value(response.getAccessToken()))

@@ -72,7 +72,7 @@ public class Member extends BaseEntity {
         refreshTokenExpirationDateTime = now;
     }
 
-    public boolean isSameId(final Long memberId) {
+    public boolean isSameId(Long memberId) {
         return Objects.equals(id, memberId);
     }
 }
