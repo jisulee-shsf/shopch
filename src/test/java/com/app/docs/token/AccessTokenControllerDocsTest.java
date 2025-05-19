@@ -1,8 +1,8 @@
 package com.app.docs.token;
 
 import com.app.api.token.controller.AccessTokenController;
-import com.app.api.token.dto.AccessTokenResponse;
 import com.app.api.token.service.AccessTokenService;
+import com.app.api.token.service.dto.response.AccessTokenResponse;
 import com.app.support.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

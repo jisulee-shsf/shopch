@@ -1,10 +1,10 @@
 package com.app.docs.login;
 
 import com.app.api.login.controller.OauthLoginController;
-import com.app.api.login.dto.request.OauthLoginRequest;
-import com.app.api.login.dto.response.OauthLoginResponse;
+import com.app.api.login.controller.dto.request.OauthLoginRequest;
 import com.app.api.login.service.OauthLoginService;
-import com.app.domain.member.constant.MemberType;
+import com.app.api.login.service.dto.request.OauthLoginServiceRequest;
+import com.app.api.login.service.dto.response.OauthLoginResponse;
 import com.app.support.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ class OauthLoginControllerDocsTest extends RestDocsSupport {
                 .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
                 .build();
 
-        given(oauthLoginService.oauthLogin(any(MemberType.class), anyString(), any(Date.class)))
+        given(oauthLoginService.oauthLogin(any(OauthLoginServiceRequest.class), anyString(), any(Date.class)))
                 .willReturn(response);
 
         // when & then

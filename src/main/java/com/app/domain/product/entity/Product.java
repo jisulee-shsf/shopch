@@ -1,6 +1,6 @@
 package com.app.domain.product.entity;
 
-import com.app.api.product.dto.request.ProductUpdateRequest;
+import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
 import com.app.domain.common.BaseEntity;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.constant.ProductType;
@@ -56,7 +56,7 @@ public class Product extends BaseEntity {
                 .build();
     }
 
-    public void update(ProductUpdateRequest request) {
+    public void update(ProductUpdateServiceRequest request) {
         name = request.getName();
         productType = ProductType.from(request.getProductType());
         price = request.getPrice();

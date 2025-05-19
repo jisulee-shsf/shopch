@@ -1,7 +1,7 @@
 package com.app.api.product.dto.request;
 
+import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
 import com.app.domain.product.constant.ProductType;
-import com.app.domain.product.entity.Product;
 import com.app.global.validator.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +37,12 @@ public class ProductCreateRequest {
         this.stockQuantity = stockQuantity;
     }
 
-    public Product toEntity() {
-        return Product.create(name, ProductType.from(productType), price, stockQuantity);
+    public ProductCreateServiceRequest toServiceRequest() {
+        return ProductCreateServiceRequest.builder()
+                .name(name)
+                .productType(productType)
+                .price(price)
+                .stockQuantity(stockQuantity)
+                .build();
     }
 }

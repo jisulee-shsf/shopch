@@ -1,6 +1,6 @@
 package com.app.api.token.service;
 
-import com.app.api.token.dto.AccessTokenResponse;
+import com.app.api.token.service.dto.response.AccessTokenResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
 import com.app.global.jwt.constant.GrantType;

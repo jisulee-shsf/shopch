@@ -1,9 +1,8 @@
 package com.app.api.login.controller;
 
-import com.app.api.login.dto.request.OauthLoginRequest;
-import com.app.api.login.dto.response.OauthLoginResponse;
+import com.app.api.login.controller.dto.request.OauthLoginRequest;
 import com.app.api.login.service.OauthLoginService;
-import com.app.domain.member.constant.MemberType;
+import com.app.api.login.service.dto.response.OauthLoginResponse;
 import com.app.global.util.AuthorizationHeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,8 +27,7 @@ public class OauthLoginController {
         String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
         AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);
 
-        MemberType memberType = MemberType.from(oauthLoginRequest.getMemberType());
         String accessToken = authorizationHeader.split(" ")[1];
-        return ResponseEntity.ok(oauthLoginService.oauthLogin(memberType, accessToken, new Date()));
+        return ResponseEntity.ok(oauthLoginService.oauthLogin(oauthLoginRequest.toServiceRequest(), accessToken, new Date()));
     }
 }

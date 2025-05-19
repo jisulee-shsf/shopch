@@ -1,5 +1,6 @@
-package com.app.api.login.dto.request;
+package com.app.api.login.controller.dto.request;
 
+import com.app.api.login.service.dto.request.OauthLoginServiceRequest;
 import com.app.domain.member.constant.MemberType;
 import com.app.global.validator.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
@@ -16,5 +17,9 @@ public class OauthLoginRequest {
 
     public OauthLoginRequest(String memberType) {
         this.memberType = memberType;
+    }
+
+    public OauthLoginServiceRequest toServiceRequest() {
+        return new OauthLoginServiceRequest(memberType);
     }
 }

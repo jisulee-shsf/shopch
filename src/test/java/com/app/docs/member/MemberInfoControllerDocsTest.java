@@ -1,8 +1,8 @@
 package com.app.docs.member;
 
 import com.app.api.member.controller.MemberInfoController;
-import com.app.api.member.dto.MemberInfoResponse;
 import com.app.api.member.service.MemberInfoService;
+import com.app.api.member.service.dto.response.MemberInfoResponse;
 import com.app.support.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

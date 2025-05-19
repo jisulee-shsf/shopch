@@ -1,6 +1,6 @@
 package com.app.api.member.service;
 
-import com.app.api.member.dto.MemberInfoResponse;
+import com.app.api.member.service.dto.response.MemberInfoResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;

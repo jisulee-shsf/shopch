@@ -1,6 +1,6 @@
 package com.app.api.token.service;
 
-import com.app.api.token.dto.AccessTokenResponse;
+import com.app.api.token.service.dto.response.AccessTokenResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.global.error.exception.AuthenticationException;

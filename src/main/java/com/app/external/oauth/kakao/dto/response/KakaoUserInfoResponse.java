@@ -1,4 +1,4 @@
-package com.app.external.oauth.kakao.dto;
+package com.app.external.oauth.kakao.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

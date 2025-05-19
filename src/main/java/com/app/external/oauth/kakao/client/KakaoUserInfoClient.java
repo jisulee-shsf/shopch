@@ -1,6 +1,6 @@
 package com.app.external.oauth.kakao.client;
 
-import com.app.external.oauth.kakao.dto.KakaoUserInfoResponse;
+import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
 import com.app.global.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;

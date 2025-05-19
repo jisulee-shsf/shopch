@@ -1,9 +1,9 @@
 package com.app.api.order.service;
 
 import com.app.api.common.PageResponse;
-import com.app.api.order.dto.request.OrderCreateRequest;
-import com.app.api.order.dto.request.OrderSearchCondition;
-import com.app.api.order.dto.response.OrderResponse;
+import com.app.api.order.service.dto.request.OrderCreateServiceRequest;
+import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
+import com.app.api.order.service.dto.response.OrderResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.domain.order.entity.Order;
@@ -80,7 +80,7 @@ class OrderServiceTest {
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
         Long productId = product.getId();
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productId(productId)
                 .orderQuantity(2)
                 .build();
@@ -122,7 +122,7 @@ class OrderServiceTest {
         LocalDateTime orderDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
 
         Long productId = product.getId();
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productId(productId)
                 .orderQuantity(2)
                 .build();
@@ -218,7 +218,7 @@ class OrderServiceTest {
         Order order2 = createTestOrder(member, orderDateTime2, product, 2);
         orderRepository.saveAll(List.of(order1, order2));
 
-        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+        OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName("member")
                 .orderStatus(INIT.name())
                 .build();
@@ -260,7 +260,7 @@ class OrderServiceTest {
         Order order2 = createTestOrder(member, orderDateTime2, product, 2);
         orderRepository.saveAll(List.of(order1, order2));
 
-        OrderSearchCondition searchCondition = OrderSearchCondition.builder()
+        OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName("member")
                 .orderStatus(INIT.name())
                 .build();

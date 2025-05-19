@@ -1,9 +1,9 @@
 package com.app.api.login.controller;
 
-import com.app.api.login.dto.request.OauthLoginRequest;
-import com.app.api.login.dto.response.OauthLoginResponse;
+import com.app.api.login.controller.dto.request.OauthLoginRequest;
 import com.app.api.login.service.OauthLoginService;
-import com.app.domain.member.constant.MemberType;
+import com.app.api.login.service.dto.request.OauthLoginServiceRequest;
+import com.app.api.login.service.dto.response.OauthLoginResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,7 +75,7 @@ class OauthLoginControllerTest {
                 .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
                 .build();
 
-        given(oauthLoginService.oauthLogin(any(MemberType.class), anyString(), any(Date.class)))
+        given(oauthLoginService.oauthLogin(any(OauthLoginServiceRequest.class), anyString(), any(Date.class)))
                 .willReturn(response);
 
         // when & then

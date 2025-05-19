@@ -3,8 +3,10 @@ package com.app.api.product.controller;
 import com.app.api.common.PageResponse;
 import com.app.api.product.dto.request.ProductCreateRequest;
 import com.app.api.product.dto.request.ProductUpdateRequest;
-import com.app.api.product.dto.response.ProductResponse;
 import com.app.api.product.service.ProductService;
+import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
+import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
+import com.app.api.product.service.dto.response.ProductResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,7 +81,7 @@ class ProductControllerTest {
                 .stockQuantity(request.getStockQuantity())
                 .build();
 
-        given(productService.createProduct(any(ProductCreateRequest.class)))
+        given(productService.createProduct(any(ProductCreateServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
@@ -267,7 +269,7 @@ class ProductControllerTest {
                 .stockQuantity(request.getStockQuantity())
                 .build();
 
-        given(productService.updateProduct(eq(productId), any(ProductUpdateRequest.class)))
+        given(productService.updateProduct(eq(productId), any(ProductUpdateServiceRequest.class)))
                 .willReturn(response);
 
         // when & then

@@ -4,8 +4,10 @@ import com.app.api.common.PageResponse;
 import com.app.api.product.controller.ProductController;
 import com.app.api.product.dto.request.ProductCreateRequest;
 import com.app.api.product.dto.request.ProductUpdateRequest;
-import com.app.api.product.dto.response.ProductResponse;
 import com.app.api.product.service.ProductService;
+import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
+import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
+import com.app.api.product.service.dto.response.ProductResponse;
 import com.app.support.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,7 +63,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .stockQuantity(request.getStockQuantity())
                 .build();
 
-        given(productService.createProduct(any(ProductCreateRequest.class)))
+        given(productService.createProduct(any(ProductCreateServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
@@ -111,7 +113,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .stockQuantity(request.getStockQuantity())
                 .build();
 
-        given(productService.updateProduct(eq(productId), any(ProductUpdateRequest.class)))
+        given(productService.updateProduct(eq(productId), any(ProductUpdateServiceRequest.class)))
                 .willReturn(response);
 
         // when & then
@@ -143,6 +145,8 @@ public class ProductControllerDocsTest extends RestDocsSupport {
     @Test
     void findSellingProducts() throws Exception {
         // given
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
         ProductResponse response1 = ProductResponse.builder()
                 .id(1L)
                 .name("productA")
@@ -161,9 +165,7 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .stockQuantity(2)
                 .build();
 
-        PageRequest pageRequest = PageRequest.of(0, 2);
         Page<ProductResponse> pageResponse = new PageImpl<>(List.of(response1, response2), pageRequest, 2);
-
         given(productService.findSellingProducts(any(Pageable.class)))
                 .willReturn(PageResponse.of(pageResponse));
 

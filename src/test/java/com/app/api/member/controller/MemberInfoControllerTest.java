@@ -1,7 +1,7 @@
 package com.app.api.member.controller;
 
-import com.app.api.member.dto.MemberInfoResponse;
 import com.app.api.member.service.MemberInfoService;
+import com.app.api.member.service.dto.response.MemberInfoResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.app.api.token.dto;
+package com.app.api.token.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

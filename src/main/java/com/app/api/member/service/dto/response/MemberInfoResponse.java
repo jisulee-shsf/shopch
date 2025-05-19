@@ -1,4 +1,4 @@
-package com.app.api.member.dto;
+package com.app.api.member.service.dto.response;
 
 import com.app.domain.member.entity.Member;
 import lombok.Builder;

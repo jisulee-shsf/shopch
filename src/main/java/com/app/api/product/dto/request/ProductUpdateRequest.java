@@ -1,5 +1,6 @@
 package com.app.api.product.dto.request;
 
+import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
 import com.app.domain.product.constant.ProductType;
 import com.app.global.validator.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
@@ -35,5 +36,14 @@ public class ProductUpdateRequest {
         this.productType = productType;
         this.price = price;
         this.stockQuantity = stockQuantity;
+    }
+
+    public ProductUpdateServiceRequest toServiceRequest() {
+        return ProductUpdateServiceRequest.builder()
+                .name(name)
+                .productType(productType)
+                .price(price)
+                .stockQuantity(stockQuantity)
+                .build();
     }
 }

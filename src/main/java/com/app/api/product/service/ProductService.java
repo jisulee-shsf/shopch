@@ -1,9 +1,9 @@
 package com.app.api.product.service;
 
 import com.app.api.common.PageResponse;
-import com.app.api.product.dto.request.ProductCreateRequest;
-import com.app.api.product.dto.request.ProductUpdateRequest;
-import com.app.api.product.dto.response.ProductResponse;
+import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
+import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
+import com.app.api.product.service.dto.response.ProductResponse;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.entity.Product;
 import com.app.domain.product.repository.ProductRepository;
@@ -24,14 +24,14 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public ProductResponse createProduct(ProductCreateRequest request) {
+    public ProductResponse createProduct(ProductCreateServiceRequest request) {
         Product product = request.toEntity();
         Product savedProduct = productRepository.save(product);
         return ProductResponse.of(savedProduct);
     }
 
     @Transactional
-    public ProductResponse updateProduct(Long productId, ProductUpdateRequest request) {
+    public ProductResponse updateProduct(Long productId, ProductUpdateServiceRequest request) {
         Product product = findProductById(productId);
         product.update(request);
         return ProductResponse.of(product);

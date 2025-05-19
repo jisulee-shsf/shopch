@@ -1,11 +1,13 @@
 package com.app.api.order.controller;
 
 import com.app.api.common.PageResponse;
-import com.app.api.order.dto.request.OrderCreateRequest;
-import com.app.api.order.dto.request.OrderSearchCondition;
-import com.app.api.order.dto.response.OrderProductResponse;
-import com.app.api.order.dto.response.OrderResponse;
+import com.app.api.order.controller.dto.request.OrderCreateRequest;
+import com.app.api.order.controller.dto.request.OrderSearchCondition;
 import com.app.api.order.service.OrderService;
+import com.app.api.order.service.dto.request.OrderCreateServiceRequest;
+import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
+import com.app.api.order.service.dto.response.OrderProductResponse;
+import com.app.api.order.service.dto.response.OrderResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,7 +90,7 @@ class OrderControllerTest {
                 .orderProducts(List.of(orderProductResponse))
                 .build();
 
-        given(orderService.createOrder(any(), any(LocalDateTime.class), any(OrderCreateRequest.class)))
+        given(orderService.createOrder(any(), any(LocalDateTime.class), any(OrderCreateServiceRequest.class)))
                 .willReturn(orderResponse);
 
         // when & then
@@ -238,7 +240,7 @@ class OrderControllerTest {
                 .build();
 
         Page<OrderResponse> pageResponse = new PageImpl<>(List.of(orderResponse1, orderResponse2), pageRequest, 2);
-        given(orderService.findOrders(any(OrderSearchCondition.class), any(Pageable.class)))
+        given(orderService.findOrders(any(OrderServiceSearchCondition.class), any(Pageable.class)))
                 .willReturn(PageResponse.of(pageResponse));
 
         // when & then
