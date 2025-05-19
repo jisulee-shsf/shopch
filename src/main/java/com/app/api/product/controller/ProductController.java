@@ -1,8 +1,8 @@
 package com.app.api.product.controller;
 
 import com.app.api.common.PageResponse;
-import com.app.api.product.dto.request.ProductCreateRequest;
-import com.app.api.product.dto.request.ProductUpdateRequest;
+import com.app.api.product.controller.dto.request.ProductCreateRequest;
+import com.app.api.product.controller.dto.request.ProductUpdateRequest;
 import com.app.api.product.service.ProductService;
 import com.app.api.product.service.dto.response.ProductResponse;
 import jakarta.validation.Valid;

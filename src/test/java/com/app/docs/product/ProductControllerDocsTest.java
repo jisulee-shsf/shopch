@@ -2,8 +2,8 @@ package com.app.docs.product;
 
 import com.app.api.common.PageResponse;
 import com.app.api.product.controller.ProductController;
-import com.app.api.product.dto.request.ProductCreateRequest;
-import com.app.api.product.dto.request.ProductUpdateRequest;
+import com.app.api.product.controller.dto.request.ProductCreateRequest;
+import com.app.api.product.controller.dto.request.ProductUpdateRequest;
 import com.app.api.product.service.ProductService;
 import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
 import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
