@@ -2,11 +2,11 @@ package com.app.domain.product.repository;
 
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.entity.Product;
+import com.app.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -18,8 +18,7 @@ import static com.app.domain.product.constant.ProductType.PRODUCT_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-@SpringBootTest
-class ProductRepositoryTest {
+class ProductRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private ProductRepository productRepository;

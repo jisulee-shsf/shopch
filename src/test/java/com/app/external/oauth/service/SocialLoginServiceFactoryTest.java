@@ -1,17 +1,16 @@
 package com.app.external.oauth.service;
 
 import com.app.external.oauth.kakao.service.KakaoLoginServiceImpl;
+import com.app.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.app.domain.member.constant.MemberType.GOOGLE;
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest
-class SocialLoginServiceFactoryTest {
+class SocialLoginServiceFactoryTest extends IntegrationTestSupport {
 
     @Autowired
     private KakaoLoginServiceImpl kakaoLoginServiceImpl;

@@ -4,14 +4,12 @@ import com.app.api.login.service.dto.request.OauthLoginServiceRequest;
 import com.app.api.login.service.dto.response.OauthLoginResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
-import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
 import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
+import com.app.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -28,17 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
-class OauthLoginServiceTest {
+class OauthLoginServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OauthLoginService oauthLoginService;
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @MockitoBean
-    private KakaoUserInfoClient kakaoUserInfoClient;
 
     @AfterEach
     void tearDown() {
