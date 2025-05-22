@@ -1,11 +1,11 @@
 package com.app.domain.member.repository;
 
 import com.app.domain.member.entity.Member;
+import com.app.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -18,8 +18,7 @@ import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class MemberRepositoryTest {
+class MemberRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberRepository memberRepository;

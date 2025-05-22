@@ -3,26 +3,17 @@ package com.app.api.order.controller;
 import com.app.api.common.PageResponse;
 import com.app.api.order.controller.dto.request.OrderCreateRequest;
 import com.app.api.order.controller.dto.request.OrderSearchCondition;
-import com.app.api.order.service.OrderService;
 import com.app.api.order.service.dto.request.OrderCreateServiceRequest;
 import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
 import com.app.api.order.service.dto.response.OrderProductResponse;
 import com.app.api.order.service.dto.response.OrderResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.app.support.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,34 +26,13 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(
-        value = OrderController.class,
-        excludeFilters = @ComponentScan.Filter(
-                type = ASSIGNABLE_TYPE,
-                classes = {
-                        WebMvcConfigurer.class,
-                        HandlerInterceptor.class,
-                        HandlerMethodArgumentResolver.class
-                }
-        )
-)
-class OrderControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockitoBean
-    private OrderService orderService;
+class OrderControllerTest extends ControllerTestSupport {
 
     @DisplayName("주문을 등록한다.")
     @Test

@@ -8,11 +8,11 @@ import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.entity.Product;
 import com.app.domain.product.repository.ProductRepository;
 import com.app.global.error.exception.EntityNotFoundException;
+import com.app.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -27,8 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@SpringBootTest
-class ProductServiceTest {
+class ProductServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ProductService productService;

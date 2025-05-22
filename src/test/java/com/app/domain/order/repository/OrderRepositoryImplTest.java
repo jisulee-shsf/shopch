@@ -9,11 +9,11 @@ import com.app.domain.orderProduct.entity.OrderProduct;
 import com.app.domain.orderProduct.repository.OrderProductRepository;
 import com.app.domain.product.entity.Product;
 import com.app.domain.product.repository.ProductRepository;
+import com.app.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -31,8 +31,7 @@ import static com.app.fixture.TimeFixture.FIXED_TIME_ZONE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class OrderRepositoryImplTest {
+class OrderRepositoryImplTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderRepository orderRepository;

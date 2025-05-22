@@ -3,7 +3,7 @@ package com.app.api.logout.service;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.global.error.exception.AuthenticationException;
-import io.jsonwebtoken.Clock;
+import com.app.support.IntegrationTestSupport;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.AfterEach;
@@ -12,8 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import javax.crypto.SecretKey;
 import java.security.SecureRandom;
@@ -37,17 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.doReturn;
 
-@SpringBootTest
-class LogoutServiceTest {
+class LogoutServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private LogoutService logoutService;
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @MockitoSpyBean
-    private Clock clock;
 
     @Value("${token.secret}")
     private String tokenSecret;
@@ -56,7 +50,7 @@ class LogoutServiceTest {
 
     @BeforeEach
     void setUp() {
-        doReturn(Date.from(FIXED_CLOCK.instant())).when(clock).now();
+        doReturn(Date.from(FIXED_CLOCK.instant())).when(jwtClock).now();
         secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
     }
 
@@ -69,7 +63,7 @@ class LogoutServiceTest {
     @Test
     void logout() {
         // given
-        Date issueDate = clock.now();
+        Date issueDate = jwtClock.now();
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
@@ -77,7 +71,7 @@ class LogoutServiceTest {
         Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String accessToken = createTestAccessToken(member.getId(), issueDate, accessTokenExpirationDate);
 
-        LocalDateTime now = convertDateToLocalDateTime(clock.now());
+        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
 
         // when
         logoutService.logout(accessToken, now);
@@ -95,11 +89,11 @@ class LogoutServiceTest {
     @Test
     void logout_ExpiredAccessToken() {
         // given
-        Date issueDate = Date.from(clock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
+        Date issueDate = Date.from(jwtClock.now().toInstant().minusMillis(ACCESS_TOKEN_EXPIRATION_TIME + 1000));
         Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String expiredAccessToken = createTestAccessToken(1L, issueDate, accessTokenExpirationDate);
 
-        LocalDateTime now = convertDateToLocalDateTime(clock.now());
+        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
 
         // when & then
         assertThatThrownBy(() -> logoutService.logout(expiredAccessToken, now))
@@ -111,14 +105,14 @@ class LogoutServiceTest {
     @Test
     void logout_InvalidAccessToken() {
         // given
-        Date issueDate = clock.now();
+        Date issueDate = jwtClock.now();
         Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
 
         String newTokenSecret = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(64));
         SecretKey newSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(newTokenSecret));
         String invalidAccessToken = createTestAccessToken(1L, issueDate, accessTokenExpirationDate, newSecretKey);
 
-        LocalDateTime now = convertDateToLocalDateTime(clock.now());
+        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
 
         // when & then
         assertThatThrownBy(() -> logoutService.logout(invalidAccessToken, now))
@@ -129,11 +123,11 @@ class LogoutServiceTest {
     @DisplayName("액세스 타입이 아닌 토큰으로 로그아웃을 시도할 경우, 예외가 발생한다.")
     @Test
     void logout_InvalidTokenType() {
-        Date issueDate = clock.now();
+        Date issueDate = jwtClock.now();
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
 
-        LocalDateTime now = convertDateToLocalDateTime(clock.now());
+        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
 
         // when & then
         assertThatThrownBy(() -> logoutService.logout(refreshToken, now))

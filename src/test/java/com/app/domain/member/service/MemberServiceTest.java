@@ -5,6 +5,7 @@ import com.app.domain.member.repository.MemberRepository;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.error.exception.BusinessException;
 import com.app.global.error.exception.EntityNotFoundException;
+import com.app.support.IntegrationTestSupport;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.AfterEach;
@@ -13,11 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import javax.crypto.SecretKey;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
@@ -35,17 +33,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.doReturn;
 
-@SpringBootTest
-class MemberServiceTest {
+class MemberServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberService memberService;
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @MockitoSpyBean
-    private Clock clock;
 
     @Value("${token.secret}")
     private String tokenSecret;
