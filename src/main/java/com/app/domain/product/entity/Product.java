@@ -10,12 +10,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import static com.app.global.error.ErrorType.OUT_OF_STOCK;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@BatchSize(size = 100)
 public class Product extends BaseEntity {
 
     @Id
