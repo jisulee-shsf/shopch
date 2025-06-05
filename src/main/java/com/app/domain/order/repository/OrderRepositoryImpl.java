@@ -3,7 +3,6 @@ package com.app.domain.order.repository;
 import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
 import com.app.domain.order.constant.OrderStatus;
 import com.app.domain.order.entity.Order;
-import com.app.domain.order.entity.QOrder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,6 +14,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import static com.app.domain.member.entity.QMember.member;
+import static com.app.domain.order.entity.QOrder.order;
+
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
@@ -23,7 +25,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     @Override
     public Page<Order> findAllBySearchCondition(OrderServiceSearchCondition searchCondition, Pageable pageable) {
         List<Order> content = jpaQueryFactory
-                .selectFrom(QOrder.order)
+                .selectFrom(order)
+                .join(order.member, member).fetchJoin()
                 .where(
                         memberNameEq(searchCondition.getMemberName()),
                         orderStatusEq(searchCondition.getOrderStatus())
@@ -33,8 +36,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .fetch();
 
         JPAQuery<Long> count = jpaQueryFactory
-                .select(QOrder.order.count())
-                .from(QOrder.order)
+                .select(order.count())
+                .from(order)
                 .where(
                         memberNameEq(searchCondition.getMemberName()),
                         orderStatusEq(searchCondition.getOrderStatus())
@@ -44,10 +47,10 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     private BooleanExpression memberNameEq(String memberName) {
-        return StringUtils.hasText(memberName) ? QOrder.order.member.name.eq(memberName) : null;
+        return StringUtils.hasText(memberName) ? order.member.name.eq(memberName) : null;
     }
 
     private BooleanExpression orderStatusEq(String orderStatus) {
-        return StringUtils.hasText(orderStatus) ? QOrder.order.orderStatus.eq(OrderStatus.from(orderStatus)) : null;
+        return StringUtils.hasText(orderStatus) ? order.orderStatus.eq(OrderStatus.from(orderStatus)) : null;
     }
 }
