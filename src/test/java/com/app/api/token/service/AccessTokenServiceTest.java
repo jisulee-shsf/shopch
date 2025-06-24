@@ -21,7 +21,7 @@ import java.util.Date;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.FIXED_CLOCK;
+import static com.app.fixture.TimeFixture.FIXED_INSTANT;
 import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.error.ErrorType.EXPIRED_REFRESH_TOKEN;
@@ -34,7 +34,7 @@ import static io.jsonwebtoken.io.Decoders.BASE64URL;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.doReturn;
+import static org.mockito.Mockito.doReturn;
 
 class AccessTokenServiceTest extends IntegrationTestSupport {
 
@@ -51,7 +51,7 @@ class AccessTokenServiceTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
-        doReturn(FIXED_CLOCK.instant()).when(clock).instant();
+        doReturn(FIXED_INSTANT).when(clock).instant();
         secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
     }
 
@@ -64,12 +64,12 @@ class AccessTokenServiceTest extends IntegrationTestSupport {
     @Test
     void createAccessTokenByRefreshToken() {
         // given
-        Date issueDate = Date.from(clock.instant());
+        Date issueDate = Date.from(FIXED_INSTANT);
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
-        Date reissueDate = Date.from(clock.instant());
+        Date reissueDate = Date.from(FIXED_INSTANT.plusMillis(1000));
 
         // when
         AccessTokenResponse response = accessTokenService.createAccessTokenByRefreshToken(member.getRefreshToken(), reissueDate);
@@ -86,11 +86,11 @@ class AccessTokenServiceTest extends IntegrationTestSupport {
     @Test
     void createAccessTokenByRefreshToken_MemberNotFound() {
         // given
-        Date issueDate = Date.from(clock.instant());
+        Date issueDate = Date.from(FIXED_INSTANT);
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
 
-        Date reissueDate = Date.from(clock.instant());
+        Date reissueDate = Date.from(FIXED_INSTANT.plusMillis(1000));
 
         // when & then
         assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(refreshToken, reissueDate))
@@ -102,13 +102,13 @@ class AccessTokenServiceTest extends IntegrationTestSupport {
     @Test
     void createAccessTokenByRefreshToken_ExpiredRefreshToken() {
         // given
-        Date issueDate = Date.from(clock.instant().minusMillis(REFRESH_TOKEN_EXPIRATION_TIME + 1000));
+        Date issueDate = Date.from(FIXED_INSTANT.minusMillis(REFRESH_TOKEN_EXPIRATION_TIME + 1000));
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
 
         String expiredRefreshToken = member.getRefreshToken();
-        Date reissueDate = Date.from(clock.instant());
+        Date reissueDate = Date.from(FIXED_INSTANT.plusMillis(1000));
 
         // when & then
         assertThatThrownBy(() -> accessTokenService.createAccessTokenByRefreshToken(expiredRefreshToken, reissueDate))

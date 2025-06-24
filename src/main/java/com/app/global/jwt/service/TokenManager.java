@@ -24,7 +24,7 @@ public class TokenManager {
     private final Long accessTokenExpirationTime;
     private final Long refreshTokenExpirationTime;
     private final SecretKey secretKey;
-    private final Clock clock;
+    private final Clock jwtClock;
 
     public Date createAccessTokenExpirationDate(Date issueDate) {
         return Date.from(issueDate.toInstant().plusMillis(accessTokenExpirationTime));
@@ -79,7 +79,7 @@ public class TokenManager {
 
     public void validateToken(String token) {
         try {
-            Jwts.parser().clock(clock).verifyWith(secretKey).build().parseSignedClaims(token);
+            Jwts.parser().clock(jwtClock).verifyWith(secretKey).build().parseSignedClaims(token);
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException(EXPIRED_TOKEN);
         } catch (Exception e) {
@@ -90,7 +90,7 @@ public class TokenManager {
     public Claims getTokenClaims(String token) {
         Claims claims;
         try {
-            claims = Jwts.parser().clock(clock).verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+            claims = Jwts.parser().clock(jwtClock).verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException(EXPIRED_TOKEN);
         } catch (Exception e) {

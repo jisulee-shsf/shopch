@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -55,6 +56,7 @@ public class AccessTokenControllerDocsTest extends RestDocsSupport {
         // when & then
         mockMvc.perform(post("/api/access-token/issue")
                         .header(AUTHORIZATION, BEARER.getType() + " refresh-token")
+                        .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(document("token-issue",

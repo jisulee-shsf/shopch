@@ -22,7 +22,8 @@ import java.util.Optional;
 
 import static com.app.domain.member.constant.MemberType.KAKAO;
 import static com.app.domain.member.constant.Role.USER;
-import static com.app.fixture.TimeFixture.FIXED_CLOCK;
+import static com.app.fixture.TimeFixture.FIXED_INSTANT;
+import static com.app.fixture.TimeFixture.FIXED_TIME_ZONE;
 import static com.app.fixture.TokenFixture.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.app.fixture.TokenFixture.REFRESH_TOKEN_EXPIRATION_TIME;
 import static com.app.global.error.ErrorType.*;
@@ -50,7 +51,7 @@ class LogoutServiceTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
-        doReturn(Date.from(FIXED_CLOCK.instant())).when(jwtClock).now();
+        doReturn(Date.from(FIXED_INSTANT)).when(jwtClock).now();
         secretKey = Keys.hmacShaKeyFor(BASE64URL.decode(tokenSecret));
     }
 
@@ -63,7 +64,7 @@ class LogoutServiceTest extends IntegrationTestSupport {
     @Test
     void logout() {
         // given
-        Date issueDate = jwtClock.now();
+        Date issueDate = Date.from(FIXED_INSTANT);
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         Member member = createTestMemberWithRefreshToken(issueDate, refreshTokenExpirationDate);
         memberRepository.save(member);
@@ -71,7 +72,7 @@ class LogoutServiceTest extends IntegrationTestSupport {
         Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String accessToken = createTestAccessToken(member.getId(), issueDate, accessTokenExpirationDate);
 
-        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
+        LocalDateTime now = LocalDateTime.ofInstant(FIXED_INSTANT.plusMillis(1000), FIXED_TIME_ZONE);
 
         // when
         logoutService.logout(accessToken, now);
@@ -93,7 +94,7 @@ class LogoutServiceTest extends IntegrationTestSupport {
         Date accessTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(ACCESS_TOKEN_EXPIRATION_TIME));
         String expiredAccessToken = createTestAccessToken(1L, issueDate, accessTokenExpirationDate);
 
-        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
+        LocalDateTime now = LocalDateTime.ofInstant(FIXED_INSTANT.plusMillis(1000), FIXED_TIME_ZONE);
 
         // when & then
         assertThatThrownBy(() -> logoutService.logout(expiredAccessToken, now))
@@ -112,7 +113,7 @@ class LogoutServiceTest extends IntegrationTestSupport {
         SecretKey newSecretKey = Keys.hmacShaKeyFor(BASE64URL.decode(newTokenSecret));
         String invalidAccessToken = createTestAccessToken(1L, issueDate, accessTokenExpirationDate, newSecretKey);
 
-        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
+        LocalDateTime now = LocalDateTime.ofInstant(FIXED_INSTANT.plusMillis(1000), FIXED_TIME_ZONE);
 
         // when & then
         assertThatThrownBy(() -> logoutService.logout(invalidAccessToken, now))
@@ -127,7 +128,7 @@ class LogoutServiceTest extends IntegrationTestSupport {
         Date refreshTokenExpirationDate = Date.from(issueDate.toInstant().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         String refreshToken = createTestRefreshToken(issueDate, refreshTokenExpirationDate);
 
-        LocalDateTime now = convertDateToLocalDateTime(jwtClock.now());
+        LocalDateTime now = LocalDateTime.ofInstant(FIXED_INSTANT.plusMillis(1000), FIXED_TIME_ZONE);
 
         // when & then
         assertThatThrownBy(() -> logoutService.logout(refreshToken, now))
