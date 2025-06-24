@@ -23,8 +23,8 @@ public class TokenConfig {
     private String tokenSecret;
 
     @Bean
-    public TokenManager tokenManager(Clock clock) {
+    public TokenManager tokenManager(Clock jwtClock) {
         SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(tokenSecret));
-        return new TokenManager(accessTokenExpirationTime, refreshTokenExpirationTime, secretKey, clock);
+        return new TokenManager(accessTokenExpirationTime, refreshTokenExpirationTime, secretKey, jwtClock);
     }
 }

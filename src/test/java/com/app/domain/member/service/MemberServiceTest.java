@@ -151,10 +151,10 @@ class MemberServiceTest extends IntegrationTestSupport {
         String refreshToken = member.getRefreshToken();
 
         // when
-        Member findMember = memberService.findMemberByRefreshToken(refreshToken);
+        Member foundMember = memberService.findMemberByRefreshToken(refreshToken);
 
         // then
-        assertThat(findMember)
+        assertThat(foundMember)
                 .extracting("refreshToken", "refreshTokenExpirationDateTime")
                 .containsExactly(refreshToken, member.getRefreshTokenExpirationDateTime());
     }

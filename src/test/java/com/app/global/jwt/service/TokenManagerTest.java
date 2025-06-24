@@ -37,17 +37,17 @@ class TokenManagerTest {
 
     private static final String TOKEN_SECRET = Base64.getUrlEncoder().encodeToString(new SecureRandom().generateSeed(64));
     private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(BASE64URL.decode(TOKEN_SECRET));
-    private Clock clock;
+    private Clock jwtClock;
     private TokenManager tokenManager;
 
     @BeforeEach
     void setUp() {
-        clock = new JwtClock(java.time.Clock.fixed(FIXED_INSTANT, FIXED_TIME_ZONE));
+        jwtClock = new JwtClock(java.time.Clock.fixed(FIXED_INSTANT, FIXED_TIME_ZONE));
         tokenManager = new TokenManager(
                 ACCESS_TOKEN_EXPIRATION_TIME,
                 REFRESH_TOKEN_EXPIRATION_TIME,
                 SECRET_KEY,
-                clock);
+                jwtClock);
     }
 
     @DisplayName("액세스 토큰을 발급한다.")
@@ -136,7 +136,7 @@ class TokenManagerTest {
         String expiredAccessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
         // when & then
-        assertThat(accessTokenExpirationDate.toInstant()).isBefore(clock.now().toInstant());
+        assertThat(accessTokenExpirationDate.toInstant()).isBefore(jwtClock.now().toInstant());
         assertThatThrownBy(() -> tokenManager.validateToken(expiredAccessToken))
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessage(EXPIRED_TOKEN.getErrorMessage());
@@ -184,7 +184,7 @@ class TokenManagerTest {
         String expiredAccessToken = createTestAccessToken(issueDate, accessTokenExpirationDate);
 
         // when & then
-        assertThat(accessTokenExpirationDate.toInstant()).isBefore(clock.now().toInstant());
+        assertThat(accessTokenExpirationDate.toInstant()).isBefore(jwtClock.now().toInstant());
         assertThatThrownBy(() -> tokenManager.getTokenClaims(expiredAccessToken))
                 .isInstanceOf(AuthenticationException.class)
                 .hasMessage(EXPIRED_TOKEN.getErrorMessage());
@@ -223,7 +223,7 @@ class TokenManagerTest {
     }
 
     private Claims getTestTokenClaims(String token) {
-        return Jwts.parser().clock(clock).verifyWith(SECRET_KEY).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser().clock(jwtClock).verifyWith(SECRET_KEY).build().parseSignedClaims(token).getPayload();
     }
 
     private Date roundOffMillis(Date date) {
