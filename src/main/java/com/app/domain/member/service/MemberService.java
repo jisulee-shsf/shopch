@@ -26,8 +26,8 @@ public class MemberService {
     @Transactional
     public Long registerMember(Member member) {
         validateDuplicateMember(member);
-        memberRepository.save(member);
-        return member.getId();
+        Member savedMember = memberRepository.save(member);
+        return savedMember.getId();
     }
 
     public Member findMemberById(Long memberId) {

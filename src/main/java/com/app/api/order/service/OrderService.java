@@ -45,8 +45,8 @@ public class OrderService {
         orderProducts.add(orderProduct);
 
         Order order = Order.create(member, now, orderProducts);
-        orderRepository.save(order);
-        return OrderResponse.of(order);
+        Order savedOrder = orderRepository.save(order);
+        return OrderResponse.of(savedOrder);
     }
 
     @Transactional
