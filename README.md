@@ -12,3 +12,6 @@
 
 ## Infrastructure
 <img src="https://github.com/user-attachments/assets/b91c1558-3af9-4f10-b25e-08f4b853a461" width="812px">
+
+## CI/CD Pipeline
+<img src="https://github.com/user-attachments/assets/90480fda-ed44-472b-b8aa-c94032d0cdb0" width="828px">
