@@ -9,3 +9,6 @@
 
 ## Tech Stack
 <img src="https://github.com/user-attachments/assets/4d6f3128-47a5-46bf-a4f6-d6bbb3f49ad3">
+
+## Infrastructure
+<img src="https://github.com/user-attachments/assets/b91c1558-3af9-4f10-b25e-08f4b853a461" width="812px">
