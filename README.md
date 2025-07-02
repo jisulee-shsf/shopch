@@ -8,10 +8,10 @@
 - 추후 협업을 대비해 이슈와 PR을 생성하여 체계적으로 관리했습니다.
 
 ## Tech Stack
-<img src="https://github.com/user-attachments/assets/4d6f3128-47a5-46bf-a4f6-d6bbb3f49ad3">
+![Image](https://github.com/user-attachments/assets/eb644ea7-0f0f-42e7-b8cc-daf5f097542a)
 
 ## Infrastructure
-<img src="https://github.com/user-attachments/assets/b91c1558-3af9-4f10-b25e-08f4b853a461" width="812px">
+<img src="https://github.com/user-attachments/assets/4185f76a-9f02-4d46-b298-f1f72869fbfa" width="812">
 
 ## CI/CD Pipeline
-<img src="https://github.com/user-attachments/assets/90480fda-ed44-472b-b8aa-c94032d0cdb0" width="828px">
+<img src="https://github.com/user-attachments/assets/99e39d72-1c11-4f7c-bc1f-1c148a7a23fe" width="828">
