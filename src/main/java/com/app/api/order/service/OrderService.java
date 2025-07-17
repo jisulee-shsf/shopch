@@ -38,7 +38,7 @@ public class OrderService {
     @Transactional
     public OrderResponse createOrder(Long memberId, LocalDateTime now, OrderCreateServiceRequest request) {
         Member member = memberService.findMemberById(memberId);
-        Product product = productService.findProductById(request.getProductId());
+        Product product = productService.getProductById(request.getProductId());
 
         List<OrderProduct> orderProducts = new ArrayList<>();
         OrderProduct orderProduct = OrderProduct.create(product, request.getOrderQuantity());
@@ -52,7 +52,7 @@ public class OrderService {
     @Transactional
     public void cancelOrder(Long memberId, Long orderId) {
         Member member = memberService.findMemberById(memberId);
-        Order order = findOrderById(orderId);
+        Order order = getOrderById(orderId);
         validateMember(member, order.getMember());
 
         order.cancel();
@@ -63,7 +63,7 @@ public class OrderService {
         return PageResponse.of(orders.map(OrderResponse::of));
     }
 
-    private Order findOrderById(Long orderId) {
+    private Order getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(ORDER_NOT_FOUND));
     }
