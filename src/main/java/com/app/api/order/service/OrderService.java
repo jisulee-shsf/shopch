@@ -59,8 +59,8 @@ public class OrderService {
     }
 
     public PageResponse<OrderResponse> findOrders(OrderServiceSearchCondition searchCondition, Pageable pageable) {
-        Page<Order> pageOrders = orderRepository.findAllBySearchCondition(searchCondition, pageable);
-        return PageResponse.of(pageOrders.map(OrderResponse::of));
+        Page<Order> orders = orderRepository.findAllBySearchCondition(searchCondition, pageable);
+        return PageResponse.of(orders.map(OrderResponse::of));
     }
 
     private Order findOrderById(Long orderId) {
