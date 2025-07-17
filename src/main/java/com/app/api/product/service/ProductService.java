@@ -43,7 +43,7 @@ public class ProductService {
     }
 
     public PageResponse<ProductResponse> findSellingProducts(Pageable pageable) {
-        Page<Product> pageProducts = productRepository.findAllByProductSellingStatusIn(ProductSellingStatus.forDisplay(), pageable);
-        return PageResponse.of(pageProducts.map(ProductResponse::of));
+        Page<Product> products = productRepository.findAllByProductSellingStatusIn(ProductSellingStatus.forDisplay(), pageable);
+        return PageResponse.of(products.map(ProductResponse::of));
     }
 }
