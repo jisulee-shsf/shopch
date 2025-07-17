@@ -13,10 +13,10 @@ import javax.crypto.SecretKey;
 @Configuration
 public class TokenConfig {
 
-    @Value("${token.access-token-expiration-duration}")
+    @Value("${token.access-token-expiration-time}")
     private Long accessTokenExpirationTime;
 
-    @Value("${token.refresh-token-expiration-duration}")
+    @Value("${token.refresh-token-expiration-time}")
     private Long refreshTokenExpirationTime;
 
     @Value("${token.secret}")
