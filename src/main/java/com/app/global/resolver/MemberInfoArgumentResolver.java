@@ -27,9 +27,8 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
-        String accessToken = authorizationHeader.split(" ")[1];
+        String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader((HttpServletRequest) webRequest.getNativeRequest());
+        String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
 
         Claims claims = tokenManager.getTokenClaims(accessToken);
         Long memberId = claims.get("memberId", Long.class);

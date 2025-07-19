@@ -15,7 +15,12 @@ public class AuthorizationHeaderUtils {
         return request.getHeader(HttpHeaders.AUTHORIZATION);
     }
 
-    public static void validateAuthorizationHeader(String authorizationHeader) {
+    public static String extractToken(String authorizationHeader) {
+        validateAuthorizationHeader(authorizationHeader);
+        return authorizationHeader.split(" ")[1];
+    }
+
+    private static void validateAuthorizationHeader(String authorizationHeader) {
         if (!StringUtils.hasText(authorizationHeader)) {
             throw new AuthenticationException(MISSING_AUTHORIZATION_HEADER);
         }

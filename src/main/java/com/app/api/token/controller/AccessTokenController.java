@@ -20,9 +20,7 @@ public class AccessTokenController {
     @PostMapping("/api/access-token/issue")
     public ResponseEntity<AccessTokenResponse> createAccessToken(HttpServletRequest request) {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
-        AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);
-
-        String refreshToken = authorizationHeader.split(" ")[1];
+        String refreshToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
         return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, new Date()));
     }
 }

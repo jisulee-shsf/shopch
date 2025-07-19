@@ -22,9 +22,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
-        AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);
+        String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
 
-        String accessToken = authorizationHeader.split(" ")[1];
         tokenManager.validateToken(accessToken);
 
         Claims claims = tokenManager.getTokenClaims(accessToken);
