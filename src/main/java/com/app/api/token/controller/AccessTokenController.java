@@ -5,7 +5,6 @@ import com.app.api.token.service.dto.response.AccessTokenResponse;
 import com.app.global.util.AuthorizationHeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +19,7 @@ public class AccessTokenController {
 
     @PostMapping("/api/access-token/issue")
     public ResponseEntity<AccessTokenResponse> createAccessToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
         AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);
 
         String refreshToken = authorizationHeader.split(" ")[1];

@@ -7,7 +7,6 @@ import com.app.global.util.AuthorizationHeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +23,7 @@ public class OauthLoginController {
     @PostMapping("/api/oauth/login")
     public ResponseEntity<OauthLoginResponse> oauthLogin(HttpServletRequest httpServletRequest,
                                                          @Valid @RequestBody OauthLoginRequest oauthLoginRequest) {
-        String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(httpServletRequest);
         AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);
 
         String accessToken = authorizationHeader.split(" ")[1];
