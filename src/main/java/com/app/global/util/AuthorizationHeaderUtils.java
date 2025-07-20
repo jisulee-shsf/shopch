@@ -17,7 +17,7 @@ public class AuthorizationHeaderUtils {
 
     public static String extractToken(String authorizationHeader) {
         validateAuthorizationHeader(authorizationHeader);
-        return authorizationHeader.split(" ")[1];
+        return splitAuthorizationHeader(authorizationHeader)[1];
     }
 
     private static void validateAuthorizationHeader(String authorizationHeader) {
@@ -25,9 +25,13 @@ public class AuthorizationHeaderUtils {
             throw new AuthenticationException(MISSING_AUTHORIZATION_HEADER);
         }
 
-        String[] authorizations = authorizationHeader.split(" ");
+        String[] authorizations = splitAuthorizationHeader(authorizationHeader);
         if (authorizations.length < 2 || !authorizations[0].equals(GrantType.BEARER.getType())) {
             throw new AuthenticationException(INVALID_GRANT_TYPE);
         }
+    }
+
+    private static String[] splitAuthorizationHeader(String authorizationHeader) {
+        return authorizationHeader.split(" ");
     }
 }
