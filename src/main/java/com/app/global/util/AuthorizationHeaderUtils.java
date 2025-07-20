@@ -21,17 +21,25 @@ public class AuthorizationHeaderUtils {
     }
 
     private static void validateAuthorizationHeader(String authorizationHeader) {
-        if (!StringUtils.hasText(authorizationHeader)) {
+        if (hasNoAuthorizationHeader(authorizationHeader)) {
             throw new AuthenticationException(MISSING_AUTHORIZATION_HEADER);
         }
 
         String[] authorizations = splitAuthorizationHeader(authorizationHeader);
-        if (authorizations.length < 2 || !authorizations[0].equals(GrantType.BEARER.getType())) {
+        if (isInvalidAuthorizationHeader(authorizations)) {
             throw new AuthenticationException(INVALID_GRANT_TYPE);
         }
     }
 
     private static String[] splitAuthorizationHeader(String authorizationHeader) {
         return authorizationHeader.split(" ");
+    }
+
+    private static boolean hasNoAuthorizationHeader(String authorizationHeader) {
+        return !StringUtils.hasText(authorizationHeader);
+    }
+
+    private static boolean isInvalidAuthorizationHeader(String[] authorizations) {
+        return authorizations.length < 2 || !authorizations[0].equals(GrantType.BEARER.getType());
     }
 }
