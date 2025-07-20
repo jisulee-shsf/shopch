@@ -12,34 +12,38 @@ import static com.app.global.error.ErrorType.MISSING_AUTHORIZATION_HEADER;
 public class AuthorizationHeaderUtils {
 
     public static String getAuthorizationHeader(HttpServletRequest request) {
-        return request.getHeader(HttpHeaders.AUTHORIZATION);
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        validateAuthorizationHeader(authorizationHeader);
+        return authorizationHeader;
     }
 
     public static String extractToken(String authorizationHeader) {
-        validateAuthorizationHeader(authorizationHeader);
-        return splitAuthorizationHeader(authorizationHeader)[1];
+        String[] authorizationHeaderElements = splitAuthorizationHeader(authorizationHeader);
+        validateAuthorizationHeaderFormat(authorizationHeaderElements);
+        return authorizationHeaderElements[1];
     }
 
     private static void validateAuthorizationHeader(String authorizationHeader) {
         if (hasNoAuthorizationHeader(authorizationHeader)) {
             throw new AuthenticationException(MISSING_AUTHORIZATION_HEADER);
         }
-
-        String[] authorizationHeaderElements = splitAuthorizationHeader(authorizationHeader);
-        if (isInvalidAuthorizationHeader(authorizationHeaderElements)) {
-            throw new AuthenticationException(INVALID_GRANT_TYPE);
-        }
-    }
-
-    private static String[] splitAuthorizationHeader(String authorizationHeader) {
-        return authorizationHeader.split(" ");
     }
 
     private static boolean hasNoAuthorizationHeader(String authorizationHeader) {
         return !StringUtils.hasText(authorizationHeader);
     }
 
-    private static boolean isInvalidAuthorizationHeader(String[] authorizationHeaderElements) {
+    private static String[] splitAuthorizationHeader(String authorizationHeader) {
+        return authorizationHeader.split(" ");
+    }
+
+    private static void validateAuthorizationHeaderFormat(String[] authorizationHeaderElements) {
+        if (isInvalidAuthorizationHeaderFormat(authorizationHeaderElements)) {
+            throw new AuthenticationException(INVALID_GRANT_TYPE);
+        }
+    }
+
+    private static boolean isInvalidAuthorizationHeaderFormat(String[] authorizationHeaderElements) {
         return authorizationHeaderElements.length < 2
                 || !authorizationHeaderElements[0].equals(GrantType.BEARER.getType());
     }
