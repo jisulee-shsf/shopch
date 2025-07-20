@@ -11,6 +11,11 @@ import static com.app.global.error.ErrorType.MISSING_AUTHORIZATION_HEADER;
 
 public class AuthorizationHeaderUtils {
 
+    private static final String DELIMITER = " ";
+    private static final int MIN_ARRAY_LENGTH = 2;
+    private static final int GRANT_TYPE_INDEX = 0;
+    private static final int TOKEN_INDEX = 1;
+
     public static String getAuthorizationHeader(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         validateAuthorizationHeader(authorizationHeader);
@@ -20,7 +25,7 @@ public class AuthorizationHeaderUtils {
     public static String extractToken(String authorizationHeader) {
         String[] authorizationHeaderElements = splitAuthorizationHeader(authorizationHeader);
         validateAuthorizationHeaderFormat(authorizationHeaderElements);
-        return authorizationHeaderElements[1];
+        return authorizationHeaderElements[TOKEN_INDEX];
     }
 
     private static void validateAuthorizationHeader(String authorizationHeader) {
@@ -34,7 +39,7 @@ public class AuthorizationHeaderUtils {
     }
 
     private static String[] splitAuthorizationHeader(String authorizationHeader) {
-        return authorizationHeader.split(" ");
+        return authorizationHeader.split(DELIMITER);
     }
 
     private static void validateAuthorizationHeaderFormat(String[] authorizationHeaderElements) {
@@ -44,7 +49,7 @@ public class AuthorizationHeaderUtils {
     }
 
     private static boolean isInvalidAuthorizationHeaderFormat(String[] authorizationHeaderElements) {
-        return authorizationHeaderElements.length < 2
-                || !authorizationHeaderElements[0].equals(GrantType.BEARER.getType());
+        return authorizationHeaderElements.length < MIN_ARRAY_LENGTH
+                || !authorizationHeaderElements[GRANT_TYPE_INDEX].equals(GrantType.BEARER.getType());
     }
 }
