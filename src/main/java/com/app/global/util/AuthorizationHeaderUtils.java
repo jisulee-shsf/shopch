@@ -25,8 +25,8 @@ public class AuthorizationHeaderUtils {
             throw new AuthenticationException(MISSING_AUTHORIZATION_HEADER);
         }
 
-        String[] authorizations = splitAuthorizationHeader(authorizationHeader);
-        if (isInvalidAuthorizationHeader(authorizations)) {
+        String[] authorizationHeaderElements = splitAuthorizationHeader(authorizationHeader);
+        if (isInvalidAuthorizationHeader(authorizationHeaderElements)) {
             throw new AuthenticationException(INVALID_GRANT_TYPE);
         }
     }
@@ -39,7 +39,8 @@ public class AuthorizationHeaderUtils {
         return !StringUtils.hasText(authorizationHeader);
     }
 
-    private static boolean isInvalidAuthorizationHeader(String[] authorizations) {
-        return authorizations.length < 2 || !authorizations[0].equals(GrantType.BEARER.getType());
+    private static boolean isInvalidAuthorizationHeader(String[] authorizationHeaderElements) {
+        return authorizationHeaderElements.length < 2
+                || !authorizationHeaderElements[0].equals(GrantType.BEARER.getType());
     }
 }
