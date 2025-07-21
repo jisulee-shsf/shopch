@@ -23,7 +23,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
         String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
+        validateAccessToken(accessToken);
+        return true;
+    }
 
+    private void validateAccessToken(String accessToken) {
         tokenManager.validateToken(accessToken);
 
         Claims claims = tokenManager.getTokenClaims(accessToken);
@@ -31,6 +35,5 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if (!TokenType.isAccessToken(tokenType)) {
             throw new AuthenticationException(INVALID_TOKEN_TYPE);
         }
-        return true;
     }
 }
