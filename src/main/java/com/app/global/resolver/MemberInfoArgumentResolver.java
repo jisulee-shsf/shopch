@@ -16,13 +16,15 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final String CLAIM_KEY_MEMBER_ID = "memberId";
+    private static final String CLAIM_KEY_ROLE = "role";
+
     private final TokenManager tokenManager;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        boolean hasMemberInfoAnnotation = parameter.hasParameterAnnotation(MemberInfo.class);
-        boolean hasMemberInfoRequest = MemberInfoRequest.class.isAssignableFrom(parameter.getParameterType());
-        return hasMemberInfoAnnotation && hasMemberInfoRequest;
+        return parameter.hasParameterAnnotation(MemberInfo.class)
+                && MemberInfoRequest.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
@@ -35,8 +37,8 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
     private MemberInfoRequest extractMemberInfo(String accessToken) {
         Claims claims = tokenManager.getTokenClaims(accessToken);
         return MemberInfoRequest.builder()
-                .id(claims.get("memberId", Long.class))
-                .role(claims.get("role", String.class))
+                .id(claims.get(CLAIM_KEY_MEMBER_ID, Long.class))
+                .role(claims.get(CLAIM_KEY_ROLE, String.class))
                 .build();
     }
 }
