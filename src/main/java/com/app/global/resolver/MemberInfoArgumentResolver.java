@@ -29,14 +29,14 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader((HttpServletRequest) webRequest.getNativeRequest());
         String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
+        return extractMemberInfo(accessToken);
+    }
 
+    private MemberInfoRequest extractMemberInfo(String accessToken) {
         Claims claims = tokenManager.getTokenClaims(accessToken);
-        Long memberId = claims.get("memberId", Long.class);
-        String role = claims.get("role", String.class);
-
         return MemberInfoRequest.builder()
-                .id(memberId)
-                .role(role)
+                .id(claims.get("memberId", Long.class))
+                .role(claims.get("role", String.class))
                 .build();
     }
 }
