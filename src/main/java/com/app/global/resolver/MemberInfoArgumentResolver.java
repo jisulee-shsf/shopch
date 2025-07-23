@@ -24,7 +24,7 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(MemberInfo.class)
-                && MemberInfoRequest.class.isAssignableFrom(parameter.getParameterType());
+                && MemberInfoDto.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
@@ -34,9 +34,9 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
         return extractMemberInfo(accessToken);
     }
 
-    private MemberInfoRequest extractMemberInfo(String accessToken) {
+    private MemberInfoDto extractMemberInfo(String accessToken) {
         Claims claims = tokenManager.getTokenClaims(accessToken);
-        return MemberInfoRequest.builder()
+        return MemberInfoDto.builder()
                 .id(claims.get(CLAIM_KEY_MEMBER_ID, Long.class))
                 .role(claims.get(CLAIM_KEY_ROLE, String.class))
                 .build();
