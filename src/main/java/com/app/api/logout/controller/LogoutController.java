@@ -1,10 +1,9 @@
 package com.app.api.logout.controller;
 
 import com.app.api.logout.service.LogoutService;
-import com.app.global.util.AuthorizationHeaderUtils;
-import jakarta.servlet.http.HttpServletRequest;
+import com.app.global.resolver.MemberInfo;
+import com.app.global.resolver.MemberInfoRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,12 +17,9 @@ public class LogoutController {
     private final LogoutService logoutService;
 
     @PostMapping("/api/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        AuthorizationHeaderUtils.validateAuthorizationHeader(authorizationHeader);
-
-        String accessToken = authorizationHeader.split(" ")[1];
-        logoutService.logout(accessToken, LocalDateTime.now());
+    public ResponseEntity<Void> logout(@MemberInfo MemberInfoRequest memberInfo) {
+        LocalDateTime logoutDateTime = LocalDateTime.now();
+        logoutService.logout(memberInfo.getId(), logoutDateTime);
         return ResponseEntity.noContent().build();
     }
 }
