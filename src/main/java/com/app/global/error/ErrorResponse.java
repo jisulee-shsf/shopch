@@ -9,8 +9,11 @@ import java.util.stream.Collectors;
 @Getter
 public class ErrorResponse {
 
-    private String errorCode;
-    private String errorMessage;
+    private static final String ERROR_MESSAGE_FORMAT = "[%s] %s";
+    private static final String ERROR_MESSAGE_DELIMITER = ", ";
+
+    private final String errorCode;
+    private final String errorMessage;
 
     @Builder
     private ErrorResponse(String errorCode, String errorMessage) {
@@ -34,7 +37,7 @@ public class ErrorResponse {
 
     private static String createErrorMessage(BindingResult bindingResult) {
         return bindingResult.getFieldErrors().stream()
-                .map(fieldError -> String.format("[%s] %s", fieldError.getField(), fieldError.getDefaultMessage()))
-                .collect(Collectors.joining(", "));
+                .map(fieldError -> String.format(ERROR_MESSAGE_FORMAT, fieldError.getField(), fieldError.getDefaultMessage()))
+                .collect(Collectors.joining(ERROR_MESSAGE_DELIMITER));
     }
 }
