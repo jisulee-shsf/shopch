@@ -28,9 +28,16 @@ public class ErrorResponse {
                 .build();
     }
 
-    public static ErrorResponse of(String errorCode, BindingResult bindingResult) {
+    public static ErrorResponse of(int errorCode, String errorMessage) {
         return ErrorResponse.builder()
-                .errorCode(errorCode)
+                .errorCode(String.valueOf(errorCode))
+                .errorMessage(errorMessage)
+                .build();
+    }
+
+    public static ErrorResponse of(int errorCode, BindingResult bindingResult) {
+        return ErrorResponse.builder()
+                .errorCode(String.valueOf(errorCode))
                 .errorMessage(createErrorMessage(bindingResult))
                 .build();
     }
