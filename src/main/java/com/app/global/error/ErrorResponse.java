@@ -3,9 +3,8 @@ package com.app.global.error;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class ErrorResponse {
@@ -34,21 +33,8 @@ public class ErrorResponse {
     }
 
     private static String createErrorMessage(BindingResult bindingResult) {
-        StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        for (FieldError fieldError : fieldErrors) {
-            if (!isFirst) {
-                sb.append(", ");
-            } else {
-                isFirst = false;
-            }
-            sb.append("[");
-            sb.append(fieldError.getField());
-            sb.append("] ");
-            sb.append(fieldError.getDefaultMessage());
-        }
-        return sb.toString();
+        return bindingResult.getFieldErrors().stream()
+                .map(fieldError -> String.format("[%s] %s", fieldError.getField(), fieldError.getDefaultMessage()))
+                .collect(Collectors.joining(", "));
     }
 }
