@@ -10,15 +10,17 @@ import org.springframework.http.HttpStatus;
 @Slf4j
 public class FeignExceptionErrorDecoder implements ErrorDecoder {
 
-    private ErrorDecoder errorDecoder = new Default();
+    private static final String ERROR_LOG_FORMAT = "[{}] {} {}";
+
+    private final ErrorDecoder errorDecoder = new Default();
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        log.error("{} 요청 실패, status = {}, reason = {}", methodKey, response.status(), response.reason());
+        log.error(ERROR_LOG_FORMAT, methodKey, response.status(), response.reason());
 
-        FeignException feignException = FeignException.errorStatus(methodKey, response);
         HttpStatus httpStatus = HttpStatus.valueOf(response.status());
         if (httpStatus.is5xxServerError()) {
+            FeignException feignException = FeignException.errorStatus(methodKey, response);
             return new RetryableException(
                     response.status(),
                     feignException.getMessage(),
