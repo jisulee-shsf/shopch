@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = EnumValidator.class)
-public @interface ValidEnum {
+@Constraint(validatedBy = EnumValueValidator.class)
+public @interface EnumValue {
 
     String message() default "유효한 Enum 값이 아닙니다.";
 
