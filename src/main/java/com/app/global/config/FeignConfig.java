@@ -1,6 +1,7 @@
 package com.app.global.config;
 
 import com.app.global.error.FeignClientExceptionErrorDecoder;
+import feign.RequestInterceptor;
 import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 @Configuration
@@ -16,7 +18,7 @@ import org.springframework.http.MediaType;
 @Import(FeignClientsConfiguration.class)
 public class FeignConfig {
 
-    public static final String APPLICATION_FORM_URLENCODED_WITH_UTF8 = MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=utf-8";
+    public static final String APPLICATION_FORM_URLENCODED_UTF8 = MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=utf-8";
 
     @Value("${retry.period}")
     private Long period;
@@ -26,6 +28,13 @@ public class FeignConfig {
 
     @Value("${retry.max-attempts}")
     private Integer maxAttempts;
+
+    @Bean
+    public RequestInterceptor requestInterceptor() {
+        return requestTemplate -> {
+            requestTemplate.header(HttpHeaders.CONTENT_TYPE, APPLICATION_FORM_URLENCODED_UTF8);
+        };
+    }
 
     @Bean
     public ErrorDecoder errorDecoder() {
