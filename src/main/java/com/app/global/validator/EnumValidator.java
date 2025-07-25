@@ -2,6 +2,7 @@ package com.app.global.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 
@@ -16,10 +17,18 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (value == null || value.trim().isEmpty())
+        if (hasNoText(value)) {
             return true;
+        }
+        return isEnumConstant(value);
+    }
 
+    private boolean hasNoText(String value) {
+        return !StringUtils.hasText(value);
+    }
+
+    private boolean isEnumConstant(String value) {
         return Arrays.stream(enumClass.getEnumConstants())
-                .anyMatch(enumValue -> enumValue.name().equals(value));
+                .anyMatch(enumConstant -> enumConstant.name().equalsIgnoreCase(value));
     }
 }
