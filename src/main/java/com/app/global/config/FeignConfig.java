@@ -1,6 +1,6 @@
 package com.app.global.config;
 
-import com.app.global.error.FeignClientExceptionErrorDecoder;
+import com.app.global.error.FeignExceptionErrorDecoder;
 import feign.RequestInterceptor;
 import feign.Retryer;
 import feign.codec.ErrorDecoder;
@@ -38,7 +38,7 @@ public class FeignConfig {
 
     @Bean
     public ErrorDecoder errorDecoder() {
-        return new FeignClientExceptionErrorDecoder();
+        return new FeignExceptionErrorDecoder();
     }
 
     @Bean
