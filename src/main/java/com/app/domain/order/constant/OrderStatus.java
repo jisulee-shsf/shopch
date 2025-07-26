@@ -6,6 +6,6 @@ public enum OrderStatus {
     CANCELED;
 
     public static OrderStatus from(String orderStatus) {
-        return OrderStatus.valueOf(orderStatus);
+        return OrderStatus.valueOf(orderStatus.toUpperCase());
     }
 }

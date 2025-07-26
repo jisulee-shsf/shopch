@@ -6,6 +6,6 @@ public enum MemberType {
     GOOGLE;
 
     public static MemberType from(String memberType) {
-        return MemberType.valueOf(memberType);
+        return MemberType.valueOf(memberType.toUpperCase());
     }
 }

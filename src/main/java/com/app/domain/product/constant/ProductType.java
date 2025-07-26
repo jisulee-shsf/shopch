@@ -7,6 +7,6 @@ public enum ProductType {
     PRODUCT_C;
 
     public static ProductType from(String productType) {
-        return ProductType.valueOf(productType);
+        return ProductType.valueOf(productType.toUpperCase());
     }
 }
