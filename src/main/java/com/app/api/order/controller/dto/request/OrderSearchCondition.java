@@ -1,6 +1,7 @@
 package com.app.api.order.controller.dto.request;
 
 import com.app.api.order.service.dto.request.OrderServiceSearchCondition;
+import com.app.domain.order.constant.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,7 +20,7 @@ public class OrderSearchCondition {
     public OrderServiceSearchCondition toServiceSearchCondition() {
         return OrderServiceSearchCondition.builder()
                 .memberName(memberName)
-                .orderStatus(orderStatus)
+                .orderStatus(OrderStatus.from(orderStatus))
                 .build();
     }
 }

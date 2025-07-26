@@ -46,7 +46,7 @@ class OauthLoginServiceTest extends IntegrationTestSupport {
         Member member = createTestMember("member@email.com");
         memberRepository.save(member);
 
-        OauthLoginServiceRequest request = new OauthLoginServiceRequest("KAKAO");
+        OauthLoginServiceRequest request = new OauthLoginServiceRequest(KAKAO);
 
         KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse(member.getEmail());
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))
@@ -72,7 +72,7 @@ class OauthLoginServiceTest extends IntegrationTestSupport {
     @Test
     void oauthLogin_NotRegisteredMember() {
         // given
-        OauthLoginServiceRequest request = new OauthLoginServiceRequest("KAKAO");
+        OauthLoginServiceRequest request = new OauthLoginServiceRequest(KAKAO);
 
         KakaoUserInfoResponse userInfoResponse = createTestKakaoInfoResponse("member@email.com");
         given(kakaoUserInfoClient.getKakaoUserInfo(anyString()))

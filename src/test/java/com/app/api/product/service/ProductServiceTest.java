@@ -46,7 +46,7 @@ class ProductServiceTest extends IntegrationTestSupport {
         // given
         ProductCreateServiceRequest request = ProductCreateServiceRequest.builder()
                 .name("product")
-                .productType(PRODUCT_A.name())
+                .productType(PRODUCT_A)
                 .price(10000)
                 .stockQuantity(1)
                 .build();
@@ -83,7 +83,7 @@ class ProductServiceTest extends IntegrationTestSupport {
 
         ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B.name())
+                .productType(PRODUCT_B)
                 .price(20000)
                 .stockQuantity(2)
                 .build();
@@ -113,7 +113,7 @@ class ProductServiceTest extends IntegrationTestSupport {
         // given
         ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
                 .name("updatedProduct")
-                .productType(PRODUCT_B.name())
+                .productType(PRODUCT_B)
                 .price(20000)
                 .stockQuantity(2)
                 .build();

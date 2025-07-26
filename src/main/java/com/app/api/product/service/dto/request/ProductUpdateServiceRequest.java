@@ -1,5 +1,6 @@
 package com.app.api.product.service.dto.request;
 
+import com.app.domain.product.constant.ProductType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,12 +8,12 @@ import lombok.Getter;
 public class ProductUpdateServiceRequest {
 
     private String name;
-    private String productType;
+    private ProductType productType;
     private Integer price;
     private Integer stockQuantity;
 
     @Builder
-    private ProductUpdateServiceRequest(String name, String productType, Integer price, Integer stockQuantity) {
+    private ProductUpdateServiceRequest(String name, ProductType productType, Integer price, Integer stockQuantity) {
         this.name = name;
         this.productType = productType;
         this.price = price;

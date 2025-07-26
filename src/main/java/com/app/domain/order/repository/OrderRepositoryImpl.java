@@ -50,7 +50,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         return StringUtils.hasText(memberName) ? order.member.name.eq(memberName) : null;
     }
 
-    private BooleanExpression orderStatusEq(String orderStatus) {
-        return StringUtils.hasText(orderStatus) ? order.orderStatus.eq(OrderStatus.from(orderStatus)) : null;
+    private BooleanExpression orderStatusEq(OrderStatus orderStatus) {
+        return orderStatus != null ? order.orderStatus.eq(orderStatus) : null;
     }
 }

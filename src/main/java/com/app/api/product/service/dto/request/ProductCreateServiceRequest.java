@@ -9,12 +9,12 @@ import lombok.Getter;
 public class ProductCreateServiceRequest {
 
     private String name;
-    private String productType;
+    private ProductType productType;
     private Integer price;
     private Integer stockQuantity;
 
     @Builder
-    private ProductCreateServiceRequest(String name, String productType, Integer price, Integer stockQuantity) {
+    private ProductCreateServiceRequest(String name, ProductType productType, Integer price, Integer stockQuantity) {
         this.name = name;
         this.productType = productType;
         this.price = price;
@@ -22,6 +22,6 @@ public class ProductCreateServiceRequest {
     }
 
     public Product toEntity() {
-        return Product.create(name, ProductType.from(productType), price, stockQuantity);
+        return Product.create(name, productType, price, stockQuantity);
     }
 }

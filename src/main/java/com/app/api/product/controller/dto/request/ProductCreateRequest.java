@@ -2,7 +2,7 @@ package com.app.api.product.controller.dto.request;
 
 import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
 import com.app.domain.product.constant.ProductType;
-import com.app.global.validator.ValidEnum;
+import com.app.global.validator.EnumValue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -18,7 +18,7 @@ public class ProductCreateRequest {
     private String name;
 
     @NotBlank(message = "상품 타입은 필수입니다.")
-    @ValidEnum(enumClass = ProductType.class, message = "유효한 상품 타입이 아닙니다.")
+    @EnumValue(enumClass = ProductType.class, message = "유효한 상품 타입이 아닙니다.")
     private String productType;
 
     @NotNull(message = "등록 상품 가격은 필수입니다.")
@@ -40,7 +40,7 @@ public class ProductCreateRequest {
     public ProductCreateServiceRequest toServiceRequest() {
         return ProductCreateServiceRequest.builder()
                 .name(name)
-                .productType(productType)
+                .productType(ProductType.from(productType))
                 .price(price)
                 .stockQuantity(stockQuantity)
                 .build();

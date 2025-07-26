@@ -113,7 +113,7 @@ class OrderRepositoryImplTest extends IntegrationTestSupport {
 
         OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName(null)
-                .orderStatus(INIT.name())
+                .orderStatus(INIT)
                 .build();
 
         // when
@@ -152,7 +152,7 @@ class OrderRepositoryImplTest extends IntegrationTestSupport {
 
         OrderServiceSearchCondition searchCondition = OrderServiceSearchCondition.builder()
                 .memberName("memberA")
-                .orderStatus(INIT.name())
+                .orderStatus(INIT)
                 .build();
 
         // when
