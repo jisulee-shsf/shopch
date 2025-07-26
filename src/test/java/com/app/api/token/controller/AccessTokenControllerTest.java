@@ -26,8 +26,8 @@ class AccessTokenControllerTest extends ControllerTestSupport {
     @Test
     void createAccessToken() throws Exception {
         // given
-        LocalDateTime issueDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
-        LocalDateTime accessTokenExpirationDateTime = issueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS);
+        LocalDateTime reissueDateTime = LocalDateTime.ofInstant(FIXED_INSTANT, FIXED_TIME_ZONE);
+        LocalDateTime accessTokenExpirationDateTime = reissueDateTime.plus(ACCESS_TOKEN_EXPIRATION_TIME, MILLIS);
 
         AccessTokenResponse response = AccessTokenResponse.builder()
                 .grantType(BEARER.getType())

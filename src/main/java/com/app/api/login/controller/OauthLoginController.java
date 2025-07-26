@@ -25,6 +25,7 @@ public class OauthLoginController {
                                                          @Valid @RequestBody OauthLoginRequest oauthLoginRequest) {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(httpServletRequest);
         String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
-        return ResponseEntity.ok(oauthLoginService.oauthLogin(oauthLoginRequest.toServiceRequest(), accessToken, new Date()));
+        Date issueDate = new Date();
+        return ResponseEntity.ok(oauthLoginService.oauthLogin(oauthLoginRequest.toServiceRequest(), accessToken, issueDate));
     }
 }

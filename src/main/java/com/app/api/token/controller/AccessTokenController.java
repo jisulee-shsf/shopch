@@ -21,6 +21,7 @@ public class AccessTokenController {
     public ResponseEntity<AccessTokenResponse> createAccessToken(HttpServletRequest request) {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
         String refreshToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
-        return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, new Date()));
+        Date reissueDate = new Date();
+        return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, reissueDate));
     }
 }
