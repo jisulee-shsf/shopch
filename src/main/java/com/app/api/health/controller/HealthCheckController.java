@@ -14,14 +14,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HealthCheckController {
 
+    private static final String SERVER_ID = UUID.randomUUID().toString();
+
     private final Environment environment;
-    private final String serverId = UUID.randomUUID().toString();
 
     @GetMapping("/api/health")
     public ResponseEntity<HealthCheckResponse> healthCheck() {
         return ResponseEntity.ok(HealthCheckResponse.builder()
-                .health("OK")
-                .serverId(serverId)
+                .serverId(SERVER_ID)
                 .activeProfiles(Arrays.asList(environment.getActiveProfiles()))
                 .build());
     }

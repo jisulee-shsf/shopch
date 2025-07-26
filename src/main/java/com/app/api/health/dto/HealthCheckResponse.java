@@ -8,13 +8,11 @@ import java.util.List;
 @Getter
 public class HealthCheckResponse {
 
-    private String health;
     private String serverId;
     private List<String> activeProfiles;
 
     @Builder
-    private HealthCheckResponse(String health, String serverId, List<String> activeProfiles) {
-        this.health = health;
+    private HealthCheckResponse(String serverId, List<String> activeProfiles) {
         this.serverId = serverId;
         this.activeProfiles = activeProfiles;
     }
