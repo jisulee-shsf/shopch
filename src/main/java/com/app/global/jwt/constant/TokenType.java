@@ -12,7 +12,7 @@ public enum TokenType {
         return TokenType.valueOf(tokenType.toUpperCase());
     }
 
-    public static boolean isAccessToken(String tokenType) {
-        return ACCESS.name().equals(tokenType);
+    public boolean isNotAccess() {
+        return this != ACCESS;
     }
 }

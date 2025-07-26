@@ -1,5 +1,6 @@
 package com.app.global.interceptor;
 
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.service.TokenManager;
@@ -10,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import static com.app.global.error.ErrorType.INVALID_TOKEN_TYPE;
 
 @Component
 @RequiredArgsConstructor
@@ -31,10 +30,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         tokenManager.validateToken(accessToken);
 
         Claims claims = tokenManager.getTokenClaims(accessToken);
-        String tokenType = claims.getSubject();
-        if (TokenType.isAccessToken(tokenType)) {
-            return;
+        TokenType tokenType = TokenType.from(claims.getSubject());
+        if (tokenType.isNotAccess()) {
+            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
         }
-        throw new AuthenticationException(INVALID_TOKEN_TYPE);
     }
 }
