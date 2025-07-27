@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.app.global.error.ErrorType.*;
 
@@ -30,16 +29,12 @@ public class MemberService {
         return savedMember.getId();
     }
 
-    public Member findMemberById(Long memberId) {
+    public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
     }
 
-    public Optional<Member> findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email);
-    }
-
-    public Member findMemberByRefreshToken(String refreshToken) {
+    public Member getMemberByRefreshToken(String refreshToken) {
         Member member = memberRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
         validateRefreshTokenExpirationDateTime(member.getRefreshTokenExpirationDateTime());

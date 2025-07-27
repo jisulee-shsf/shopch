@@ -37,7 +37,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse createOrder(Long memberId, LocalDateTime now, OrderCreateServiceRequest request) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         Product product = productService.getProductById(request.getProductId());
 
         List<OrderProduct> orderProducts = new ArrayList<>();
@@ -51,7 +51,7 @@ public class OrderService {
 
     @Transactional
     public void cancelOrder(Long memberId, Long orderId) {
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberById(memberId);
         Order order = getOrderById(orderId);
         validateMember(member, order.getMember());
 

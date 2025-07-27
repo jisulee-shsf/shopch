@@ -14,6 +14,6 @@ public class MemberInfoService {
     private final MemberService memberService;
 
     public MemberInfoResponse getMemberInfo(Long memberId) {
-        return MemberInfoResponse.of(memberService.findMemberById(memberId));
+        return MemberInfoResponse.of(memberService.getMemberById(memberId));
     }
 }
