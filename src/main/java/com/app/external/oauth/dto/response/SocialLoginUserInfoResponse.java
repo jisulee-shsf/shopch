@@ -12,10 +12,10 @@ public class SocialLoginUserInfoResponse {
     private String name;
     private String email;
     private String profile;
-    private String memberType;
+    private MemberType memberType;
 
     @Builder
-    private SocialLoginUserInfoResponse(String name, String email, String profile, String memberType) {
+    private SocialLoginUserInfoResponse(String name, String email, String profile, MemberType memberType) {
         this.name = name;
         this.email = email;
         this.profile = profile;
@@ -23,6 +23,6 @@ public class SocialLoginUserInfoResponse {
     }
 
     public Member toEntity(Role role) {
-        return Member.create(name, email, role, profile, MemberType.from(memberType));
+        return Member.create(name, email, role, profile, memberType);
     }
 }

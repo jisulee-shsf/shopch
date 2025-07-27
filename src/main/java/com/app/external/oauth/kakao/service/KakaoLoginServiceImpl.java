@@ -26,7 +26,7 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
                 .name(account.getProfile().getNickname())
                 .email(StringUtils.hasText(email) ? email : String.valueOf(response.getId()))
                 .profile(account.getProfile().getThumbnailImageUrl())
-                .memberType(MemberType.KAKAO.name())
+                .memberType(MemberType.KAKAO)
                 .build();
     }
 }
