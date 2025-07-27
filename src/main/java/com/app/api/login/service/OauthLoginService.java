@@ -5,7 +5,7 @@ import com.app.api.login.service.dto.response.OauthLoginResponse;
 import com.app.domain.member.constant.MemberType;
 import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
-import com.app.domain.member.service.MemberService;
+import com.app.domain.member.repository.MemberRepository;
 import com.app.external.oauth.dto.response.SocialLoginUserInfoResponse;
 import com.app.external.oauth.service.SocialLoginService;
 import com.app.external.oauth.service.SocialLoginServiceFactory;
@@ -16,20 +16,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class OauthLoginService {
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final TokenManager tokenManager;
 
     public OauthLoginResponse oauthLogin(OauthLoginServiceRequest request, String accessToken, Date issueDate) {
         SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(request.getMemberType(), accessToken);
 
-        Member member = getOrRegisterMember(userInfoResponse);
+        Member member = findOrSaveMember(userInfoResponse);
         TokenResponse tokenResponse = tokenManager.createToken(member.getId(), member.getRole(), issueDate);
         member.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
         return OauthLoginResponse.of(tokenResponse);
@@ -40,14 +39,8 @@ public class OauthLoginService {
         return service.getUserInfo(accessToken);
     }
 
-    private Member getOrRegisterMember(SocialLoginUserInfoResponse response) {
-        Optional<Member> optionalMember = memberService.findMemberByEmail(response.getEmail());
-        if (optionalMember.isPresent()) {
-            return optionalMember.get();
-        } else {
-            Member member = response.toEntity(Role.USER);
-            memberService.registerMember(member);
-            return member;
-        }
+    private Member findOrSaveMember(SocialLoginUserInfoResponse response) {
+        return memberRepository.findByEmail(response.getEmail())
+                .orElseGet(() -> memberRepository.save(response.toEntity(Role.USER)));
     }
 }
