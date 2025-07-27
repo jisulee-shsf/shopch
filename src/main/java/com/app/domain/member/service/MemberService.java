@@ -47,8 +47,7 @@ public class MemberService {
     }
 
     private void validateDuplicateMember(Member member) {
-        Optional<Member> optionalMember = memberRepository.findByEmail(member.getEmail());
-        if (optionalMember.isPresent()) {
+        if (memberRepository.existsByEmail(member.getEmail())) {
             throw new BusinessException(ALREADY_REGISTERED_MEMBER);
         }
     }
