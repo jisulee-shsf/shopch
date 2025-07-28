@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class KakaoTokenController {
 
+    private static final String GRANT_TYPE = "authorization_code";
+
     private final KakaoTokenClient kakaoTokenClient;
 
     @Value("${kakao.client.id}")
@@ -27,7 +29,7 @@ public class KakaoTokenController {
     @GetMapping("/oauth/kakao/callback")
     public ResponseEntity<KakaoTokenResponse> loginCallback(String code) {
         KakaoTokenRequest request = KakaoTokenRequest.builder()
-                .grant_type("authorization_code")
+                .grant_type(GRANT_TYPE)
                 .client_id(clientId)
                 .redirect_uri(redirectUri)
                 .code(code)

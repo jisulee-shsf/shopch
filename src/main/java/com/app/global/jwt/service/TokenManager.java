@@ -23,6 +23,9 @@ import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 @RequiredArgsConstructor
 public class TokenManager {
 
+    private static final String CLAIM_MEMBER_ID_KEY = "memberId";
+    private static final String CLAIM_ROLE_KEY = "role";
+
     private final Long accessTokenExpirationTime;
     private final Long refreshTokenExpirationTime;
     private final SecretKey secretKey;
@@ -53,8 +56,8 @@ public class TokenManager {
                 .subject(TokenType.ACCESS.name())
                 .issuedAt(issueDate)
                 .expiration(expirationDate)
-                .claim("memberId", memberId)
-                .claim("role", role)
+                .claim(CLAIM_MEMBER_ID_KEY, memberId)
+                .claim(CLAIM_ROLE_KEY, role)
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
     }
@@ -68,7 +71,7 @@ public class TokenManager {
                 .subject(TokenType.REFRESH.name())
                 .issuedAt(issueDate)
                 .expiration(expirationDate)
-                .claim("memberId", memberId)
+                .claim(CLAIM_MEMBER_ID_KEY, memberId)
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
     }
@@ -91,8 +94,8 @@ public class TokenManager {
     public MemberInfoDto extractMemberInfo(String token) {
         Claims claims = extractClaims(token);
         return MemberInfoDto.builder()
-                .id(claims.get("memberId", Long.class))
-                .role(Role.from(claims.get("role", String.class)))
+                .id(claims.get(CLAIM_MEMBER_ID_KEY, Long.class))
+                .role(Role.from(claims.get(CLAIM_ROLE_KEY, String.class)))
                 .build();
     }
 
