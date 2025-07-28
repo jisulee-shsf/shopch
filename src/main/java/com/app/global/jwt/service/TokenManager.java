@@ -1,6 +1,7 @@
 package com.app.global.jwt.service;
 
 import com.app.domain.member.constant.Role;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.GrantType;
 import com.app.global.jwt.constant.TokenType;
@@ -42,9 +43,6 @@ public class TokenManager {
                 .claim("memberId", memberId)
                 .claim("role", role)
                 .signWith(secretKey, Jwts.SIG.HS512)
-                .header()
-                .add("typ", "JWT")
-                .and()
                 .compact();
     }
 
@@ -55,9 +53,6 @@ public class TokenManager {
                 .expiration(expirationDate)
                 .claim("memberId", memberId)
                 .signWith(secretKey, Jwts.SIG.HS512)
-                .header()
-                .add("typ", "JWT")
-                .and()
                 .compact();
     }
 
@@ -77,9 +72,14 @@ public class TokenManager {
                 .build();
     }
 
-    public void validateToken(String token) {
+    public Claims extractClaims(String token) {
         try {
-            Jwts.parser().clock(jwtClock).verifyWith(secretKey).build().parseSignedClaims(token);
+            return Jwts.parser()
+                    .clock(jwtClock)
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException(EXPIRED_TOKEN);
         } catch (Exception e) {
@@ -87,15 +87,24 @@ public class TokenManager {
         }
     }
 
-    public Claims getTokenClaims(String token) {
-        Claims claims;
-        try {
-            claims = Jwts.parser().clock(jwtClock).verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
-        } catch (ExpiredJwtException e) {
-            throw new AuthenticationException(EXPIRED_TOKEN);
-        } catch (Exception e) {
-            throw new AuthenticationException(INVALID_TOKEN);
+    public void validateAccessToken(String accessToken) {
+        TokenType tokenType = extractTokenType(accessToken);
+        validateTokenType(tokenType, TokenType.ACCESS);
+    }
+
+    public void validateRefreshToken(String refreshToken) {
+        TokenType tokenType = extractTokenType(refreshToken);
+        validateTokenType(tokenType, TokenType.REFRESH);
+    }
+
+    private TokenType extractTokenType(String token) {
+        Claims claims = extractClaims(token);
+        return TokenType.from(claims.getSubject());
+    }
+
+    private void validateTokenType(TokenType actualTokenType, TokenType expectedTokenType) {
+        if (actualTokenType.isDifferent(expectedTokenType)) {
+            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
         }
-        return claims;
     }
 }

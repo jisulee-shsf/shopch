@@ -1,11 +1,7 @@
 package com.app.global.interceptor;
 
-import com.app.global.error.ErrorType;
-import com.app.global.error.exception.AuthenticationException;
-import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.service.TokenManager;
 import com.app.global.util.AuthorizationHeaderUtils;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +18,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
         String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
-        validateAccessToken(accessToken);
+        tokenManager.validateAccessToken(accessToken);
         return true;
-    }
-
-    private void validateAccessToken(String accessToken) {
-        tokenManager.validateToken(accessToken);
-
-        Claims claims = tokenManager.getTokenClaims(accessToken);
-        TokenType tokenType = TokenType.from(claims.getSubject());
-        if (tokenType.isNotAccess()) {
-            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
-        }
     }
 }

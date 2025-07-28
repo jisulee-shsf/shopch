@@ -21,8 +21,9 @@ public class AccessTokenService {
     private final TokenManager tokenManager;
 
     public AccessTokenResponse createAccessTokenByRefreshToken(String refreshToken, Date reissueDate) {
-        Member member = memberService.getMemberByRefreshToken(refreshToken);
+        tokenManager.validateRefreshToken(refreshToken);
 
+        Member member = memberService.getMemberByRefreshToken(refreshToken);
         Date accessTokenExpirationDate = tokenManager.createAccessTokenExpirationDate(reissueDate);
         String accessToken = tokenManager.createAccessToken(member.getId(), member.getRole(), reissueDate, accessTokenExpirationDate);
 

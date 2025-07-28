@@ -1,8 +1,5 @@
 package com.app.global.jwt.constant;
 
-import lombok.Getter;
-
-@Getter
 public enum TokenType {
 
     ACCESS,
@@ -12,7 +9,7 @@ public enum TokenType {
         return TokenType.valueOf(tokenType.toUpperCase());
     }
 
-    public boolean isNotAccess() {
-        return this != ACCESS;
+    public boolean isDifferent(TokenType tokenType) {
+        return this != tokenType;
     }
 }

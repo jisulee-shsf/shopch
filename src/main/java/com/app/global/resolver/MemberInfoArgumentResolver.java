@@ -31,11 +31,8 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader((HttpServletRequest) webRequest.getNativeRequest());
         String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
-        return extractMemberInfo(accessToken);
-    }
 
-    private MemberInfoDto extractMemberInfo(String accessToken) {
-        Claims claims = tokenManager.getTokenClaims(accessToken);
+        Claims claims = tokenManager.extractClaims(accessToken);
         return MemberInfoDto.builder()
                 .id(claims.get(CLAIM_KEY_MEMBER_ID, Long.class))
                 .role(claims.get(CLAIM_KEY_ROLE, String.class))
