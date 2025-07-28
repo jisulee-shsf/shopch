@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class OauthLoginResponse {
 
-    private String grantType;
+    private String authenticationScheme;
     private String accessToken;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime accessTokenExpirationDateTime;
@@ -19,8 +19,8 @@ public class OauthLoginResponse {
     private LocalDateTime refreshTokenExpirationDateTime;
 
     @Builder
-    private OauthLoginResponse(String grantType, String accessToken, LocalDateTime accessTokenExpirationDateTime, String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
-        this.grantType = grantType;
+    private OauthLoginResponse(String authenticationScheme, String accessToken, LocalDateTime accessTokenExpirationDateTime, String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
+        this.authenticationScheme = authenticationScheme;
         this.accessToken = accessToken;
         this.accessTokenExpirationDateTime = accessTokenExpirationDateTime;
         this.refreshToken = refreshToken;
@@ -29,7 +29,7 @@ public class OauthLoginResponse {
 
     public static OauthLoginResponse of(TokenResponse tokenResponse) {
         return OauthLoginResponse.builder()
-                .grantType(tokenResponse.getGrantType())
+                .authenticationScheme(tokenResponse.getAuthenticationScheme())
                 .accessToken(tokenResponse.getAccessToken())
                 .accessTokenExpirationDateTime(tokenResponse.getAccessTokenExpirationDateTime())
                 .refreshToken(tokenResponse.getRefreshToken())

@@ -3,7 +3,7 @@ package com.app.api.token.service;
 import com.app.api.token.service.dto.response.AccessTokenResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
-import com.app.global.jwt.constant.GrantType;
+import com.app.global.jwt.constant.AuthenticationScheme;
 import com.app.global.jwt.service.TokenManager;
 import com.app.global.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class AccessTokenService {
         String accessToken = tokenManager.createAccessToken(member.getId(), member.getRole(), reissueDate, accessTokenExpirationDate);
 
         return AccessTokenResponse.builder()
-                .grantType(GrantType.BEARER.getType())
+                .authenticationScheme(AuthenticationScheme.BEARER.getText())
                 .accessToken(accessToken)
                 .accessTokenExpirationDateTime(DateTimeUtils.convertDateToLocalDateTime(accessTokenExpirationDate))
                 .build();

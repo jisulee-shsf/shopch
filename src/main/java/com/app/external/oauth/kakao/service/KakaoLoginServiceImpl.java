@@ -5,7 +5,7 @@ import com.app.external.oauth.dto.response.SocialLoginUserInfoResponse;
 import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
 import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
 import com.app.external.oauth.service.SocialLoginService;
-import com.app.global.jwt.constant.GrantType;
+import com.app.global.jwt.constant.AuthenticationScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,7 +18,7 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
 
     @Override
     public SocialLoginUserInfoResponse getUserInfo(String accessToken) {
-        KakaoUserInfoResponse response = kakaoUserInfoClient.getKakaoUserInfo(GrantType.BEARER.getType() + " " + accessToken);
+        KakaoUserInfoResponse response = kakaoUserInfoClient.getKakaoUserInfo(AuthenticationScheme.BEARER.getText() + " " + accessToken);
         KakaoUserInfoResponse.KakaoAccount account = response.getKakaoAccount();
         String email = account.getEmail();
 

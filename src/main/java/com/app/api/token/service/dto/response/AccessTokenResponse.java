@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 @Getter
 public class AccessTokenResponse {
 
-    private String grantType;
+    private String authenticationScheme;
     private String accessToken;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime accessTokenExpirationDateTime;
 
     @Builder
-    private AccessTokenResponse(String grantType, String accessToken, LocalDateTime accessTokenExpirationDateTime) {
-        this.grantType = grantType;
+    private AccessTokenResponse(String authenticationScheme, String accessToken, LocalDateTime accessTokenExpirationDateTime) {
+        this.authenticationScheme = authenticationScheme;
         this.accessToken = accessToken;
         this.accessTokenExpirationDateTime = accessTokenExpirationDateTime;
     }

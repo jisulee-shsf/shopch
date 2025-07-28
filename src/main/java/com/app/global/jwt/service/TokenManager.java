@@ -3,7 +3,7 @@ package com.app.global.jwt.service;
 import com.app.domain.member.constant.Role;
 import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
-import com.app.global.jwt.constant.GrantType;
+import com.app.global.jwt.constant.AuthenticationScheme;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.dto.TokenResponse;
 import com.app.global.resolver.MemberInfoDto;
@@ -39,7 +39,7 @@ public class TokenManager {
         String refreshToken = createRefreshToken(memberId, issueDate, refreshTokenExpirationDate);
 
         return TokenResponse.builder()
-                .grantType(GrantType.BEARER.getType())
+                .authenticationScheme(AuthenticationScheme.BEARER.getText())
                 .accessToken(accessToken)
                 .accessTokenExpirationDateTime(convertDateToLocalDateTime(accessTokenExpirationDate))
                 .refreshToken(refreshToken)

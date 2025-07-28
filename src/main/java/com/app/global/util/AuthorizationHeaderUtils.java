@@ -1,7 +1,7 @@
 package com.app.global.util;
 
 import com.app.global.error.exception.AuthenticationException;
-import com.app.global.jwt.constant.GrantType;
+import com.app.global.jwt.constant.AuthenticationScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
@@ -13,7 +13,7 @@ public class AuthorizationHeaderUtils {
 
     private static final String DELIMITER = " ";
     private static final int MIN_ARRAY_LENGTH = 2;
-    private static final int GRANT_TYPE_INDEX = 0;
+    private static final int AUTHENTICATION_SCHEME_INDEX = 0;
     private static final int TOKEN_INDEX = 1;
 
     public static String getAuthorizationHeader(HttpServletRequest request) {
@@ -50,6 +50,6 @@ public class AuthorizationHeaderUtils {
 
     private static boolean isInvalidAuthorizationHeaderFormat(String[] authorizationHeaderElements) {
         return authorizationHeaderElements.length < MIN_ARRAY_LENGTH
-                || !authorizationHeaderElements[GRANT_TYPE_INDEX].equals(GrantType.BEARER.getType());
+                || !authorizationHeaderElements[AUTHENTICATION_SCHEME_INDEX].equals(AuthenticationScheme.BEARER.getText());
     }
 }
