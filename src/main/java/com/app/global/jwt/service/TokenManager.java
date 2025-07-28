@@ -6,7 +6,7 @@ import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.GrantType;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.dto.TokenResponse;
-import com.app.global.util.DateTimeUtils;
+import com.app.global.resolver.MemberInfoDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -18,6 +18,7 @@ import java.util.Date;
 
 import static com.app.global.error.ErrorType.EXPIRED_TOKEN;
 import static com.app.global.error.ErrorType.INVALID_TOKEN;
+import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 
 @RequiredArgsConstructor
 public class TokenManager {
@@ -27,12 +28,24 @@ public class TokenManager {
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public Date createAccessTokenExpirationDate(Date issueDate) {
-        return Date.from(issueDate.toInstant().plusMillis(accessTokenExpirationTime));
+    public TokenResponse createToken(Long memberId, Role role, Date issueDate) {
+        Date accessTokenExpirationDate = createAccessTokenExpirationDate(issueDate);
+        String accessToken = createAccessToken(memberId, role, issueDate, accessTokenExpirationDate);
+
+        Date refreshTokenExpirationDate = createRefreshTokenExpirationDate(issueDate);
+        String refreshToken = createRefreshToken(memberId, issueDate, refreshTokenExpirationDate);
+
+        return TokenResponse.builder()
+                .grantType(GrantType.BEARER.getType())
+                .accessToken(accessToken)
+                .accessTokenExpirationDateTime(convertDateToLocalDateTime(accessTokenExpirationDate))
+                .refreshToken(refreshToken)
+                .refreshTokenExpirationDateTime(convertDateToLocalDateTime(refreshTokenExpirationDate))
+                .build();
     }
 
-    public Date createRefreshTokenExpirationDate(Date issueDate) {
-        return Date.from(issueDate.toInstant().plusMillis(refreshTokenExpirationTime));
+    public Date createAccessTokenExpirationDate(Date issueDate) {
+        return Date.from(issueDate.toInstant().plusMillis(accessTokenExpirationTime));
     }
 
     public String createAccessToken(Long memberId, Role role, Date issueDate, Date expirationDate) {
@@ -46,6 +59,10 @@ public class TokenManager {
                 .compact();
     }
 
+    public Date createRefreshTokenExpirationDate(Date issueDate) {
+        return Date.from(issueDate.toInstant().plusMillis(refreshTokenExpirationTime));
+    }
+
     public String createRefreshToken(Long memberId, Date issueDate, Date expirationDate) {
         return Jwts.builder()
                 .subject(TokenType.REFRESH.name())
@@ -54,22 +71,6 @@ public class TokenManager {
                 .claim("memberId", memberId)
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
-    }
-
-    public TokenResponse createToken(Long memberId, Role role, Date issueDate) {
-        Date accessTokenExpirationDate = createAccessTokenExpirationDate(issueDate);
-        Date refreshTokenExpirationDate = createRefreshTokenExpirationDate(issueDate);
-
-        String accessToken = createAccessToken(memberId, role, issueDate, accessTokenExpirationDate);
-        String refreshToken = createRefreshToken(memberId, issueDate, refreshTokenExpirationDate);
-
-        return TokenResponse.builder()
-                .grantType(GrantType.BEARER.getType())
-                .accessToken(accessToken)
-                .accessTokenExpirationDateTime(DateTimeUtils.convertDateToLocalDateTime(accessTokenExpirationDate))
-                .refreshToken(refreshToken)
-                .refreshTokenExpirationDateTime(DateTimeUtils.convertDateToLocalDateTime(refreshTokenExpirationDate))
-                .build();
     }
 
     public Claims extractClaims(String token) {
@@ -85,6 +86,14 @@ public class TokenManager {
         } catch (Exception e) {
             throw new AuthenticationException(INVALID_TOKEN);
         }
+    }
+
+    public MemberInfoDto extractMemberInfo(String token) {
+        Claims claims = extractClaims(token);
+        return MemberInfoDto.builder()
+                .id(claims.get("memberId", Long.class))
+                .role(Role.from(claims.get("role", String.class)))
+                .build();
     }
 
     public void validateAccessToken(String accessToken) {

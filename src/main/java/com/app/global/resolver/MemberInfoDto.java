@@ -1,5 +1,6 @@
 package com.app.global.resolver;
 
+import com.app.domain.member.constant.Role;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,10 +8,10 @@ import lombok.Getter;
 public class MemberInfoDto {
 
     private Long id;
-    private String role;
+    private Role role;
 
     @Builder
-    private MemberInfoDto(Long id, String role) {
+    private MemberInfoDto(Long id, Role role) {
         this.id = id;
         this.role = role;
     }

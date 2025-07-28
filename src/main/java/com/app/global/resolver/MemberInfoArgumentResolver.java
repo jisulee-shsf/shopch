@@ -2,7 +2,6 @@ package com.app.global.resolver;
 
 import com.app.global.jwt.service.TokenManager;
 import com.app.global.util.AuthorizationHeaderUtils;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -16,9 +15,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String CLAIM_KEY_MEMBER_ID = "memberId";
-    private static final String CLAIM_KEY_ROLE = "role";
-
     private final TokenManager tokenManager;
 
     @Override
@@ -31,11 +27,6 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader((HttpServletRequest) webRequest.getNativeRequest());
         String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
-
-        Claims claims = tokenManager.extractClaims(accessToken);
-        return MemberInfoDto.builder()
-                .id(claims.get(CLAIM_KEY_MEMBER_ID, Long.class))
-                .role(claims.get(CLAIM_KEY_ROLE, String.class))
-                .build();
+        return tokenManager.extractMemberInfo(accessToken);
     }
 }
