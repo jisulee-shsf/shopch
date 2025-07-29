@@ -31,22 +31,22 @@ import static com.app.global.error.ErrorType.ORDER_NOT_FOUND;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final MemberService memberService;
     private final ProductService productService;
+    private final MemberService memberService;
     private final OrderRepository orderRepository;
 
     @Transactional
-    public OrderResponse createOrder(Long memberId, LocalDateTime now, OrderCreateServiceRequest request) {
-        Member member = memberService.getMemberById(memberId);
+    public OrderResponse createOrder(Long memberId, LocalDateTime orderDateTime, OrderCreateServiceRequest request) {
         Product product = productService.getProductById(request.getProductId());
+        OrderProduct orderProduct = OrderProduct.create(product, request.getOrderQuantity());
 
         List<OrderProduct> orderProducts = new ArrayList<>();
-        OrderProduct orderProduct = OrderProduct.create(product, request.getOrderQuantity());
         orderProducts.add(orderProduct);
 
-        Order order = Order.create(member, now, orderProducts);
-        Order savedOrder = orderRepository.save(order);
-        return OrderResponse.of(savedOrder);
+        Member member = memberService.getMemberById(memberId);
+        Order order = Order.create(member, orderDateTime, orderProducts);
+
+        return OrderResponse.of(orderRepository.save(order));
     }
 
     @Transactional
