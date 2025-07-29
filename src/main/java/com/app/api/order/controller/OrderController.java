@@ -37,7 +37,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<OrderResponse>> findOrders(OrderSearchCondition searchCondition,
+    public ResponseEntity<PageResponse<OrderResponse>> findOrders(@Valid OrderSearchCondition searchCondition,
                                                                   Pageable pageable) {
         return ResponseEntity.ok(orderService.findOrders(searchCondition.toServiceSearchCondition(), pageable));
     }
