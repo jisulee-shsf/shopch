@@ -29,7 +29,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.updateProduct(productId, request.toServiceRequest()));
     }
 
-    @GetMapping
+    @GetMapping("/selling")
     public ResponseEntity<PageResponse<ProductResponse>> findSellingProducts(Pageable pageable) {
         return ResponseEntity.ok(productService.findSellingProducts(pageable));
     }
