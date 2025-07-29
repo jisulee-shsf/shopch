@@ -26,8 +26,7 @@ public class ProductService {
     @Transactional
     public ProductResponse createProduct(ProductCreateServiceRequest request) {
         Product product = request.toEntity();
-        Product savedProduct = productRepository.save(product);
-        return ProductResponse.of(savedProduct);
+        return ProductResponse.of(productRepository.save(product));
     }
 
     @Transactional
@@ -43,7 +42,7 @@ public class ProductService {
     }
 
     public PageResponse<ProductResponse> findSellingProducts(Pageable pageable) {
-        Page<Product> products = productRepository.findAllByProductSellingStatusIn(ProductSellingStatus.forDisplay(), pageable);
-        return PageResponse.of(products.map(ProductResponse::of));
+        Page<Product> sellingProducts = productRepository.findAllByProductSellingStatusIn(ProductSellingStatus.forDisplay(), pageable);
+        return PageResponse.of(sellingProducts.map(ProductResponse::of));
     }
 }
