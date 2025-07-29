@@ -10,6 +10,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuditorAwareImpl implements AuditorAware<String> {
 
+    private static final String DEFAULT_AUDITOR = "Unknown";
+
     private final HttpServletRequest httpServletRequest;
 
     @Override
@@ -18,6 +20,6 @@ public class AuditorAwareImpl implements AuditorAware<String> {
         if (StringUtils.hasText(requestUri)) {
             return Optional.of(requestUri);
         }
-        return Optional.of("Unknown");
+        return Optional.of(DEFAULT_AUDITOR);
     }
 }
