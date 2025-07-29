@@ -14,10 +14,10 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        String modifiedBy = httpServletRequest.getRequestURI();
-        if (!StringUtils.hasText(modifiedBy)) {
-            modifiedBy = "Unknown";
+        String requestUri = httpServletRequest.getRequestURI();
+        if (StringUtils.hasText(requestUri)) {
+            return Optional.of(requestUri);
         }
-        return Optional.of(modifiedBy);
+        return Optional.of("Unknown");
     }
 }
