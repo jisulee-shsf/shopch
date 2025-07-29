@@ -72,6 +72,10 @@ public class Order extends BaseEntity {
         orderProducts.forEach(OrderProduct::cancel);
     }
 
+    public boolean isNotOwner(Long memberId) {
+        return !member.getId().equals(memberId);
+    }
+
     private int getTotalOrderPrice(List<OrderProduct> orderProducts) {
         return orderProducts.stream()
                 .mapToInt(OrderProduct::calculateTotalPrice)

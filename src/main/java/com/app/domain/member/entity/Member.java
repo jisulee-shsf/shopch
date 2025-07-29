@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -70,9 +69,5 @@ public class Member extends BaseEntity {
 
     public void expireRefreshToken(LocalDateTime now) {
         refreshTokenExpirationDateTime = now;
-    }
-
-    public boolean isSameId(Long memberId) {
-        return Objects.equals(id, memberId);
     }
 }

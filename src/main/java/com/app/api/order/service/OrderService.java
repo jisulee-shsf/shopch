@@ -51,9 +51,8 @@ public class OrderService {
 
     @Transactional
     public void cancelOrder(Long memberId, Long orderId) {
-        Member member = memberService.getMemberById(memberId);
         Order order = getOrderById(orderId);
-        validateMember(member, order.getMember());
+        validateOwner(order, memberId);
 
         order.cancel();
     }
@@ -68,8 +67,8 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException(ORDER_NOT_FOUND));
     }
 
-    private void validateMember(Member member, Member orderedMember) {
-        if (!member.isSameId(orderedMember.getId())) {
+    private void validateOwner(Order order, Long memberId) {
+        if (order.isNotOwner(memberId)) {
             throw new ForbiddenException(FORBIDDEN_ORDER_CANCELLATION);
         }
     }
