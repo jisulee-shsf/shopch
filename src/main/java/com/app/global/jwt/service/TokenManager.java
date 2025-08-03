@@ -11,7 +11,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -20,16 +23,27 @@ import static com.app.global.error.ErrorType.EXPIRED_TOKEN;
 import static com.app.global.error.ErrorType.INVALID_TOKEN;
 import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
 
-@RequiredArgsConstructor
+@Component
 public class TokenManager {
 
     private static final String CLAIM_MEMBER_ID_KEY = "memberId";
     private static final String CLAIM_ROLE_KEY = "role";
 
-    private final Long accessTokenExpirationTime;
-    private final Long refreshTokenExpirationTime;
+    private final long accessTokenValidityInMillis;
+    private final long refreshTokenValidityInMillis;
     private final SecretKey secretKey;
     private final Clock jwtClock;
+
+    public TokenManager(@Value("${jwt.access-token-validity}") long accessTokenValidityInMillis,
+                        @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInMillis,
+                        @Value("${jwt.base64-encoded-secret-string}") String tokenSecret,
+                        Clock jwtClock
+    ) {
+        this.accessTokenValidityInMillis = accessTokenValidityInMillis;
+        this.refreshTokenValidityInMillis = refreshTokenValidityInMillis;
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(tokenSecret));
+        this.jwtClock = jwtClock;
+    }
 
     public TokenResponse createToken(Long memberId, Role role, Date issueDate) {
         Date accessTokenExpirationDate = createAccessTokenExpirationDate(issueDate);
@@ -48,7 +62,7 @@ public class TokenManager {
     }
 
     public Date createAccessTokenExpirationDate(Date issueDate) {
-        return Date.from(issueDate.toInstant().plusMillis(accessTokenExpirationTime));
+        return Date.from(issueDate.toInstant().plusMillis(accessTokenValidityInMillis));
     }
 
     public String createAccessToken(Long memberId, Role role, Date issueDate, Date expirationDate) {
@@ -63,7 +77,7 @@ public class TokenManager {
     }
 
     public Date createRefreshTokenExpirationDate(Date issueDate) {
-        return Date.from(issueDate.toInstant().plusMillis(refreshTokenExpirationTime));
+        return Date.from(issueDate.toInstant().plusMillis(refreshTokenValidityInMillis));
     }
 
     public String createRefreshToken(Long memberId, Date issueDate, Date expirationDate) {
