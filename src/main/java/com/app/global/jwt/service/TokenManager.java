@@ -7,21 +7,17 @@ import com.app.global.jwt.constant.AuthenticationScheme;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.dto.TokenResponse;
 import com.app.global.resolver.MemberInfoDto;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Clock;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
+import com.app.global.util.DateTimeUtils;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
 import java.util.Date;
-
-import static com.app.global.error.ErrorType.EXPIRED_TOKEN;
-import static com.app.global.error.ErrorType.INVALID_TOKEN;
-import static com.app.global.util.DateTimeUtils.convertDateToLocalDateTime;
+import java.util.Objects;
 
 @Component
 public class TokenManager {
@@ -45,52 +41,79 @@ public class TokenManager {
         this.jwtClock = jwtClock;
     }
 
-    public TokenResponse createToken(Long memberId, Role role, Date issueDate) {
-        Date accessTokenExpirationDate = createAccessTokenExpirationDate(issueDate);
-        String accessToken = createAccessToken(memberId, role, issueDate, accessTokenExpirationDate);
+    public TokenResponse createTokenResponse(Long memberId, Role role, Date issueDate) {
+        String accessToken = createAccessToken(memberId, role, issueDate);
+        LocalDateTime accessTokenExpirationDateTime = extractExpiration(accessToken);
 
-        Date refreshTokenExpirationDate = createRefreshTokenExpirationDate(issueDate);
-        String refreshToken = createRefreshToken(memberId, issueDate, refreshTokenExpirationDate);
+        String refreshToken = createRefreshToken(memberId, issueDate);
+        LocalDateTime refreshTokenExpirationDateTime = extractExpiration(refreshToken);
 
         return TokenResponse.builder()
                 .authenticationScheme(AuthenticationScheme.BEARER.getText())
                 .accessToken(accessToken)
-                .accessTokenExpirationDateTime(convertDateToLocalDateTime(accessTokenExpirationDate))
+                .accessTokenExpirationDateTime(accessTokenExpirationDateTime)
                 .refreshToken(refreshToken)
-                .refreshTokenExpirationDateTime(convertDateToLocalDateTime(refreshTokenExpirationDate))
+                .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
                 .build();
     }
 
-    public Date createAccessTokenExpirationDate(Date issueDate) {
-        return Date.from(issueDate.toInstant().plusMillis(accessTokenValidityInMillis));
+    public String createAccessToken(Long memberId, Role role, Date issueDate) {
+        return createToken(memberId, role, issueDate, TokenType.ACCESS, accessTokenValidityInMillis);
     }
 
-    public String createAccessToken(Long memberId, Role role, Date issueDate, Date expirationDate) {
-        return Jwts.builder()
-                .subject(TokenType.ACCESS.name())
+    public void validateAccessToken(String accessToken) {
+        validateToken(accessToken, TokenType.ACCESS);
+    }
+
+    public void validateRefreshToken(String refreshToken) {
+        validateToken(refreshToken, TokenType.REFRESH);
+    }
+
+    public LocalDateTime extractExpiration(String token) {
+        Claims claims = extractValidatedClaims(token);
+        return DateTimeUtils.convertDateToLocalDateTime(claims.getExpiration());
+    }
+
+    public MemberInfoDto extractMemberInfo(String accessToken) {
+        Claims claims = extractValidatedClaims(accessToken);
+        Long memberId = claims.get(CLAIM_MEMBER_ID_KEY, Long.class);
+        Role role = Role.from(claims.get(CLAIM_ROLE_KEY, String.class));
+
+        return MemberInfoDto.builder()
+                .id(memberId)
+                .role(role)
+                .build();
+    }
+
+    private String createRefreshToken(Long memberId, Date issueDate) {
+        return createToken(memberId, null, issueDate, TokenType.REFRESH, refreshTokenValidityInMillis);
+    }
+
+    private String createToken(Long memberId, Role role, Date issueDate, TokenType tokenType, long validityInMillis) {
+        Date expirationDate = new Date(issueDate.getTime() + validityInMillis);
+        JwtBuilder jwtBuilder = Jwts.builder()
+                .subject(tokenType.name())
                 .issuedAt(issueDate)
                 .expiration(expirationDate)
                 .claim(CLAIM_MEMBER_ID_KEY, memberId)
-                .claim(CLAIM_ROLE_KEY, role)
-                .signWith(secretKey, Jwts.SIG.HS512)
-                .compact();
+                .signWith(secretKey);
+
+        if (Objects.nonNull(role)) {
+            jwtBuilder.claim(CLAIM_ROLE_KEY, role);
+        }
+        return jwtBuilder.compact();
     }
 
-    public Date createRefreshTokenExpirationDate(Date issueDate) {
-        return Date.from(issueDate.toInstant().plusMillis(refreshTokenValidityInMillis));
+    private void validateToken(String token, TokenType expectedTokenType) {
+        Claims claims = extractValidatedClaims(token);
+        TokenType actualTokenType = TokenType.from(claims.getSubject());
+
+        if (actualTokenType.isDifferent(expectedTokenType)) {
+            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
+        }
     }
 
-    public String createRefreshToken(Long memberId, Date issueDate, Date expirationDate) {
-        return Jwts.builder()
-                .subject(TokenType.REFRESH.name())
-                .issuedAt(issueDate)
-                .expiration(expirationDate)
-                .claim(CLAIM_MEMBER_ID_KEY, memberId)
-                .signWith(secretKey, Jwts.SIG.HS512)
-                .compact();
-    }
-
-    public Claims extractClaims(String token) {
+    private Claims extractValidatedClaims(String token) {
         try {
             return Jwts.parser()
                     .clock(jwtClock)
@@ -99,38 +122,9 @@ public class TokenManager {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new AuthenticationException(EXPIRED_TOKEN);
+            throw new AuthenticationException(ErrorType.EXPIRED_TOKEN);
         } catch (Exception e) {
-            throw new AuthenticationException(INVALID_TOKEN);
-        }
-    }
-
-    public MemberInfoDto extractMemberInfo(String token) {
-        Claims claims = extractClaims(token);
-        return MemberInfoDto.builder()
-                .id(claims.get(CLAIM_MEMBER_ID_KEY, Long.class))
-                .role(Role.from(claims.get(CLAIM_ROLE_KEY, String.class)))
-                .build();
-    }
-
-    public void validateAccessToken(String accessToken) {
-        TokenType tokenType = extractTokenType(accessToken);
-        validateTokenType(tokenType, TokenType.ACCESS);
-    }
-
-    public void validateRefreshToken(String refreshToken) {
-        TokenType tokenType = extractTokenType(refreshToken);
-        validateTokenType(tokenType, TokenType.REFRESH);
-    }
-
-    private TokenType extractTokenType(String token) {
-        Claims claims = extractClaims(token);
-        return TokenType.from(claims.getSubject());
-    }
-
-    private void validateTokenType(TokenType actualTokenType, TokenType expectedTokenType) {
-        if (actualTokenType.isDifferent(expectedTokenType)) {
-            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
+            throw new AuthenticationException(ErrorType.INVALID_TOKEN);
         }
     }
 }

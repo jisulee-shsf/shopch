@@ -29,7 +29,7 @@ public class OauthLoginService {
         SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(request.getMemberType(), accessToken);
 
         Member member = findOrSaveMember(userInfoResponse);
-        TokenResponse tokenResponse = tokenManager.createToken(member.getId(), member.getRole(), issueDate);
+        TokenResponse tokenResponse = tokenManager.createTokenResponse(member.getId(), member.getRole(), issueDate);
         member.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
         return OauthLoginResponse.of(tokenResponse);
     }
