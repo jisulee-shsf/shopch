@@ -3,6 +3,7 @@ package com.app.api.login.controller;
 import com.app.api.login.controller.dto.request.OauthLoginRequest;
 import com.app.api.login.service.OauthLoginService;
 import com.app.api.login.service.dto.response.OauthLoginResponse;
+import com.app.global.jwt.service.TokenExtractor;
 import com.app.global.util.AuthorizationHeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,12 +20,13 @@ import java.util.Date;
 public class OauthLoginController {
 
     private final OauthLoginService oauthLoginService;
+    private final TokenExtractor tokenExtractor;
 
     @PostMapping("/api/oauth/login")
     public ResponseEntity<OauthLoginResponse> oauthLogin(HttpServletRequest httpServletRequest,
                                                          @Valid @RequestBody OauthLoginRequest oauthLoginRequest) {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(httpServletRequest);
-        String accessToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
+        String accessToken = tokenExtractor.extractToken(authorizationHeader);
         Date issueDate = new Date();
         return ResponseEntity.ok(oauthLoginService.oauthLogin(oauthLoginRequest.toServiceRequest(), accessToken, issueDate));
     }

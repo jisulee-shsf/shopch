@@ -2,6 +2,7 @@ package com.app.api.token.controller;
 
 import com.app.api.token.service.AccessTokenService;
 import com.app.api.token.service.dto.response.AccessTokenResponse;
+import com.app.global.jwt.service.TokenExtractor;
 import com.app.global.util.AuthorizationHeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,13 @@ import java.util.Date;
 public class AccessTokenController {
 
     private final AccessTokenService accessTokenService;
+    private final TokenExtractor tokenExtractor;
 
     @PostMapping("/api/access-token/issue")
     public ResponseEntity<AccessTokenResponse> createAccessToken(HttpServletRequest request) {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
-        String refreshToken = AuthorizationHeaderUtils.extractToken(authorizationHeader);
-        Date reissueDate = new Date();
-        return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, reissueDate));
+        String refreshToken = tokenExtractor.extractToken(authorizationHeader);
+        Date issueDate = new Date();
+        return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, issueDate));
     }
 }
