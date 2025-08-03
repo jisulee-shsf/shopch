@@ -5,11 +5,11 @@ import com.app.domain.member.entity.Member;
 import com.app.domain.member.service.MemberService;
 import com.app.global.jwt.constant.AuthenticationScheme;
 import com.app.global.jwt.service.TokenManager;
-import com.app.global.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -20,17 +20,17 @@ public class AccessTokenService {
     private final MemberService memberService;
     private final TokenManager tokenManager;
 
-    public AccessTokenResponse createAccessTokenByRefreshToken(String refreshToken, Date reissueDate) {
+    public AccessTokenResponse createAccessTokenByRefreshToken(String refreshToken, Date issueDate) {
         tokenManager.validateRefreshToken(refreshToken);
 
         Member member = memberService.getMemberByRefreshToken(refreshToken);
-        Date accessTokenExpirationDate = tokenManager.createAccessTokenExpirationDate(reissueDate);
-        String accessToken = tokenManager.createAccessToken(member.getId(), member.getRole(), reissueDate, accessTokenExpirationDate);
+        String accessToken = tokenManager.createAccessToken(member.getId(), member.getRole(), issueDate);
+        LocalDateTime expirationDateTime = tokenManager.extractExpiration(accessToken);
 
         return AccessTokenResponse.builder()
                 .authenticationScheme(AuthenticationScheme.BEARER.getText())
                 .accessToken(accessToken)
-                .accessTokenExpirationDateTime(DateTimeUtils.convertDateToLocalDateTime(accessTokenExpirationDate))
+                .accessTokenExpirationDateTime(expirationDateTime)
                 .build();
     }
 }
