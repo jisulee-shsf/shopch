@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.global.error.ErrorType.FORBIDDEN_ORDER_CANCELLATION;
+import static com.app.global.error.ErrorType.ORDER_CANCELLATION_DENIED;
 import static com.app.global.error.ErrorType.ORDER_NOT_FOUND;
 
 @Service
@@ -69,7 +69,7 @@ public class OrderService {
 
     private void validateOwner(Order order, Long memberId) {
         if (order.isNotOwner(memberId)) {
-            throw new ForbiddenException(FORBIDDEN_ORDER_CANCELLATION);
+            throw new ForbiddenException(ORDER_CANCELLATION_DENIED);
         }
     }
 }
