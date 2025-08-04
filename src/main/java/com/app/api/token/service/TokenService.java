@@ -20,7 +20,7 @@ public class TokenService {
     private final MemberService memberService;
     private final TokenManager tokenManager;
 
-    public AccessTokenResponse createAccessTokenByRefreshToken(String refreshToken, Date issueDate) {
+    public AccessTokenResponse refreshAccessToken(String refreshToken, Date issueDate) {
         tokenManager.validateRefreshToken(refreshToken);
 
         Member member = memberService.getMemberByRefreshToken(refreshToken);

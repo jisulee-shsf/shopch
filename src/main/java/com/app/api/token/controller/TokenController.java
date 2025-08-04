@@ -19,11 +19,11 @@ public class TokenController {
     private final TokenService tokenService;
     private final TokenExtractor tokenExtractor;
 
-    @PostMapping("/api/access-token/issue")
-    public ResponseEntity<AccessTokenResponse> createAccessToken(HttpServletRequest request) {
+    @PostMapping("/api/token/refresh")
+    public ResponseEntity<AccessTokenResponse> refreshAccessToken(HttpServletRequest request) {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
         String refreshToken = tokenExtractor.extractToken(authorizationHeader);
         Date issueDate = new Date();
-        return ResponseEntity.ok(tokenService.createAccessTokenByRefreshToken(refreshToken, issueDate));
+        return ResponseEntity.ok(tokenService.refreshAccessToken(refreshToken, issueDate));
     }
 }
