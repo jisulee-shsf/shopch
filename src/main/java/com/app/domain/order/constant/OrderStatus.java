@@ -8,4 +8,8 @@ public enum OrderStatus {
     public static OrderStatus from(String orderStatus) {
         return OrderStatus.valueOf(orderStatus.toUpperCase());
     }
+
+    public boolean isCanceled() {
+        return this == CANCELED;
+    }
 }
