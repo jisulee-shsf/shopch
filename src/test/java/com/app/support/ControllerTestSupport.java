@@ -12,7 +12,7 @@ import com.app.api.order.service.OrderService;
 import com.app.api.product.controller.ProductController;
 import com.app.api.product.service.ProductService;
 import com.app.api.token.controller.TokenController;
-import com.app.api.token.service.AccessTokenService;
+import com.app.api.token.service.TokenService;
 import com.app.web.client.KakaoTokenClient;
 import com.app.web.controller.KakaoTokenController;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,7 +66,7 @@ public abstract class ControllerTestSupport {
     protected MemberInfoService memberInfoService;
 
     @MockitoBean
-    protected AccessTokenService accessTokenService;
+    protected TokenService tokenService;
 
     @MockitoBean
     protected LogoutService logoutService;

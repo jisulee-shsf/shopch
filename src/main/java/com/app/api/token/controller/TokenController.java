@@ -1,6 +1,6 @@
 package com.app.api.token.controller;
 
-import com.app.api.token.service.AccessTokenService;
+import com.app.api.token.service.TokenService;
 import com.app.api.token.service.dto.response.AccessTokenResponse;
 import com.app.global.jwt.service.TokenExtractor;
 import com.app.global.util.AuthorizationHeaderUtils;
@@ -16,7 +16,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class TokenController {
 
-    private final AccessTokenService accessTokenService;
+    private final TokenService tokenService;
     private final TokenExtractor tokenExtractor;
 
     @PostMapping("/api/access-token/issue")
@@ -24,6 +24,6 @@ public class TokenController {
         String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
         String refreshToken = tokenExtractor.extractToken(authorizationHeader);
         Date issueDate = new Date();
-        return ResponseEntity.ok(accessTokenService.createAccessTokenByRefreshToken(refreshToken, issueDate));
+        return ResponseEntity.ok(tokenService.createAccessTokenByRefreshToken(refreshToken, issueDate));
     }
 }

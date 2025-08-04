@@ -15,7 +15,7 @@ import java.util.Date;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AccessTokenService {
+public class TokenService {
 
     private final MemberService memberService;
     private final TokenManager tokenManager;
