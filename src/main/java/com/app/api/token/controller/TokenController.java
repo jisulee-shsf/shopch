@@ -14,7 +14,7 @@ import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
-public class AccessTokenController {
+public class TokenController {
 
     private final AccessTokenService accessTokenService;
     private final TokenExtractor tokenExtractor;

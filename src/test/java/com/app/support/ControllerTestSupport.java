@@ -11,7 +11,7 @@ import com.app.api.order.controller.OrderController;
 import com.app.api.order.service.OrderService;
 import com.app.api.product.controller.ProductController;
 import com.app.api.product.service.ProductService;
-import com.app.api.token.controller.AccessTokenController;
+import com.app.api.token.controller.TokenController;
 import com.app.api.token.service.AccessTokenService;
 import com.app.web.client.KakaoTokenClient;
 import com.app.web.controller.KakaoTokenController;
@@ -33,7 +33,7 @@ import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
                 KakaoTokenController.class,
                 OauthLoginController.class,
                 MemberInfoController.class,
-                AccessTokenController.class,
+                TokenController.class,
                 LogoutController.class,
                 ProductController.class,
                 OrderController.class
