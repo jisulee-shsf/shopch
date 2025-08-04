@@ -9,5 +9,11 @@ public enum AuthenticationScheme {
 
     BEARER("Bearer");
 
+    private static final String SPACE = " ";
+
     private final String text;
+
+    public String getPrefix() {
+        return text + SPACE;
+    }
 }

@@ -18,7 +18,7 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
 
     @Override
     public SocialLoginUserInfoResponse getUserInfo(String accessToken) {
-        KakaoUserInfoResponse response = kakaoUserInfoClient.getKakaoUserInfo(AuthenticationScheme.BEARER.getText() + " " + accessToken);
+        KakaoUserInfoResponse response = kakaoUserInfoClient.getKakaoUserInfo(AuthenticationScheme.BEARER.getPrefix() + accessToken);
         KakaoUserInfoResponse.KakaoAccount account = response.getKakaoAccount();
         String email = account.getEmail();
 
