@@ -29,4 +29,9 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
                 .oauthType(OAuthType.KAKAO)
                 .build();
     }
+
+    @Override
+    public OAuthType getOauthType() {
+        return OAuthType.KAKAO;
+    }
 }
