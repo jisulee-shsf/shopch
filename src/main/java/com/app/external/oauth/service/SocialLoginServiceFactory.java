@@ -1,24 +1,27 @@
 package com.app.external.oauth.service;
 
 import com.app.domain.member.constant.OAuthType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-@Service
+@Component
 public class SocialLoginServiceFactory {
 
-    private static Map<String, SocialLoginService> socialLoginServices;
+    private final Map<OAuthType, SocialLoginService> socialLoginServiceMap;
 
-    public SocialLoginServiceFactory(Map<String, SocialLoginService> socialLoginServices) {
-        SocialLoginServiceFactory.socialLoginServices = socialLoginServices;
+    public SocialLoginServiceFactory(List<SocialLoginService> socialLoginServices) {
+        socialLoginServiceMap = socialLoginServices.stream()
+                .collect(Collectors.toMap(
+                        SocialLoginService::getOauthType,
+                        Function.identity())
+                );
     }
 
-    public static SocialLoginService getSocialLoginService(OAuthType oauthType) {
-        String socialLoginServiceBeanName = "";
-        if (oauthType.equals(OAuthType.KAKAO)) {
-            socialLoginServiceBeanName = "kakaoLoginServiceImpl";
-        }
-        return socialLoginServices.get(socialLoginServiceBeanName);
+    public SocialLoginService getSocialLoginService(OAuthType oauthType) {
+        return socialLoginServiceMap.get(oauthType);
     }
 }

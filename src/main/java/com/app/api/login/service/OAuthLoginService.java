@@ -23,6 +23,7 @@ import java.util.Date;
 public class OAuthLoginService {
 
     private final MemberRepository memberRepository;
+    private final SocialLoginServiceFactory socialLoginServiceFactory;
     private final TokenManager tokenManager;
 
     public OAuthLoginResponse oauthLogin(OAuthLoginServiceRequest request, String accessToken, Date issueDate) {
@@ -35,7 +36,7 @@ public class OAuthLoginService {
     }
 
     private SocialLoginUserInfoResponse getUserInfoFromSocialLoginService(OAuthType oauthtype, String accessToken) {
-        SocialLoginService service = SocialLoginServiceFactory.getSocialLoginService(oauthtype);
+        SocialLoginService service = socialLoginServiceFactory.getSocialLoginService(oauthtype);
         return service.getUserInfo(accessToken);
     }
 
