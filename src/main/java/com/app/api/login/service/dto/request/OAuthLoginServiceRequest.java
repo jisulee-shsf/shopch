@@ -4,11 +4,11 @@ import com.app.domain.member.constant.MemberType;
 import lombok.Getter;
 
 @Getter
-public class OauthLoginServiceRequest {
+public class OAuthLoginServiceRequest {
 
     private MemberType memberType;
 
-    public OauthLoginServiceRequest(MemberType memberType) {
+    public OAuthLoginServiceRequest(MemberType memberType) {
         this.memberType = memberType;
     }
 }

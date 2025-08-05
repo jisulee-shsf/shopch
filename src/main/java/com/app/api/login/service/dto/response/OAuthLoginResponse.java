@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class OauthLoginResponse {
+public class OAuthLoginResponse {
 
     private String authenticationScheme;
     private String accessToken;
@@ -19,7 +19,7 @@ public class OauthLoginResponse {
     private LocalDateTime refreshTokenExpirationDateTime;
 
     @Builder
-    private OauthLoginResponse(String authenticationScheme, String accessToken, LocalDateTime accessTokenExpirationDateTime, String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
+    private OAuthLoginResponse(String authenticationScheme, String accessToken, LocalDateTime accessTokenExpirationDateTime, String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
         this.authenticationScheme = authenticationScheme;
         this.accessToken = accessToken;
         this.accessTokenExpirationDateTime = accessTokenExpirationDateTime;
@@ -27,8 +27,8 @@ public class OauthLoginResponse {
         this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
     }
 
-    public static OauthLoginResponse of(TokenResponse tokenResponse) {
-        return OauthLoginResponse.builder()
+    public static OAuthLoginResponse of(TokenResponse tokenResponse) {
+        return OAuthLoginResponse.builder()
                 .authenticationScheme(tokenResponse.getAuthenticationScheme())
                 .accessToken(tokenResponse.getAccessToken())
                 .accessTokenExpirationDateTime(tokenResponse.getAccessTokenExpirationDateTime())
