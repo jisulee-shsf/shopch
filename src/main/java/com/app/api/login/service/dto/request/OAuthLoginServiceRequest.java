@@ -1,14 +1,14 @@
 package com.app.api.login.service.dto.request;
 
-import com.app.domain.member.constant.MemberType;
+import com.app.domain.member.constant.OAuthType;
 import lombok.Getter;
 
 @Getter
 public class OAuthLoginServiceRequest {
 
-    private MemberType memberType;
+    private OAuthType oAuthType;
 
-    public OAuthLoginServiceRequest(MemberType memberType) {
-        this.memberType = memberType;
+    public OAuthLoginServiceRequest(OAuthType oauthType) {
+        this.oAuthType = oauthType;
     }
 }

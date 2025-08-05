@@ -1,6 +1,6 @@
 package com.app.external.oauth.dto.response;
 
-import com.app.domain.member.constant.MemberType;
+import com.app.domain.member.constant.OAuthType;
 import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
 import lombok.Builder;
@@ -12,17 +12,17 @@ public class SocialLoginUserInfoResponse {
     private String name;
     private String email;
     private String profile;
-    private MemberType memberType;
+    private OAuthType oauthtype;
 
     @Builder
-    private SocialLoginUserInfoResponse(String name, String email, String profile, MemberType memberType) {
+    private SocialLoginUserInfoResponse(String name, String email, String profile, OAuthType oauthType) {
         this.name = name;
         this.email = email;
         this.profile = profile;
-        this.memberType = memberType;
+        this.oauthtype = oauthType;
     }
 
     public Member toEntity(Role role) {
-        return Member.create(name, email, role, profile, memberType);
+        return Member.create(name, email, role, profile, oauthtype);
     }
 }

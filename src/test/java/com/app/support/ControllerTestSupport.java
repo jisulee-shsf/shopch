@@ -1,8 +1,8 @@
 package com.app.support;
 
 import com.app.api.health.controller.HealthCheckController;
-import com.app.api.login.controller.OauthLoginController;
-import com.app.api.login.service.OauthLoginService;
+import com.app.api.login.controller.OAuthLoginController;
+import com.app.api.login.service.OAuthLoginService;
 import com.app.api.logout.controller.LogoutController;
 import com.app.api.logout.service.LogoutService;
 import com.app.api.member.controller.MemberInfoController;
@@ -31,7 +31,7 @@ import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
         controllers = {
                 HealthCheckController.class,
                 KakaoTokenController.class,
-                OauthLoginController.class,
+                OAuthLoginController.class,
                 MemberInfoController.class,
                 TokenController.class,
                 LogoutController.class,
@@ -60,7 +60,7 @@ public abstract class ControllerTestSupport {
     protected KakaoTokenClient kakaoTokenClient;
 
     @MockitoBean
-    protected OauthLoginService oauthLoginService;
+    protected OAuthLoginService oauthLoginService;
 
     @MockitoBean
     protected MemberInfoService memberInfoService;

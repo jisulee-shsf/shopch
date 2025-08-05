@@ -1,7 +1,7 @@
 package com.app.domain.member.entity;
 
 import com.app.domain.common.BaseEntity;
-import com.app.domain.member.constant.MemberType;
+import com.app.domain.member.constant.OAuthType;
 import com.app.domain.member.constant.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,30 +35,30 @@ public class Member extends BaseEntity {
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    private MemberType memberType;
+    private OAuthType oauthType;
 
     private String refreshToken;
     private LocalDateTime refreshTokenExpirationDateTime;
 
     @Builder(toBuilder = true)
-    private Member(String name, String email, Role role, String profile, MemberType memberType,
+    private Member(String name, String email, Role role, String profile, OAuthType oauthType,
                    String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
         this.name = name;
         this.email = email;
         this.role = role;
         this.profile = profile;
-        this.memberType = memberType;
+        this.oauthType = oauthType;
         this.refreshToken = refreshToken;
         this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
     }
 
-    public static Member create(String name, String email, Role role, String profile, MemberType memberType) {
+    public static Member create(String name, String email, Role role, String profile, OAuthType oAuthType) {
         return Member.builder()
                 .name(name)
                 .email(email)
                 .role(role)
                 .profile(profile)
-                .memberType(memberType)
+                .oauthType(oAuthType)
                 .build();
     }
 

@@ -1,7 +1,7 @@
 package com.app.api.login.controller.dto.request;
 
 import com.app.api.login.service.dto.request.OAuthLoginServiceRequest;
-import com.app.domain.member.constant.MemberType;
+import com.app.domain.member.constant.OAuthType;
 import com.app.global.validator.EnumValue;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OAuthLoginRequest {
 
-    @NotBlank(message = "회원 타입은 필수입니다.")
-    @EnumValue(enumClass = MemberType.class, message = "유효한 회원 타입이 아닙니다.")
-    private String memberType;
+    @NotBlank(message = "OAuth 타입은 필수입니다.")
+    @EnumValue(enumClass = OAuthType.class, message = "유효한 OAuth 타입이 아닙니다.")
+    private String oauthType;
 
-    public OAuthLoginRequest(String memberType) {
-        this.memberType = memberType;
+    public OAuthLoginRequest(String oauthType) {
+        this.oauthType = oauthType;
     }
 
     public OAuthLoginServiceRequest toServiceRequest() {
-        return new OAuthLoginServiceRequest(MemberType.from(memberType));
+        return new OAuthLoginServiceRequest(OAuthType.from(oauthType));
     }
 }
