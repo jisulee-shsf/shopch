@@ -1,6 +1,6 @@
 package com.app.external.oauth.kakao.service;
 
-import com.app.domain.member.constant.OAuthType;
+import com.app.domain.member.constant.OAuthProvider;
 import com.app.external.oauth.dto.response.SocialLoginUserInfoResponse;
 import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
 import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
@@ -26,12 +26,12 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
                 .name(account.getProfile().getNickname())
                 .email(StringUtils.hasText(email) ? email : String.valueOf(response.getId()))
                 .profile(account.getProfile().getThumbnailImageUrl())
-                .oauthType(OAuthType.KAKAO)
+                .oauthProvider(getOauthProvider())
                 .build();
     }
 
     @Override
-    public OAuthType getOauthType() {
-        return OAuthType.KAKAO;
+    public OAuthProvider getOauthProvider() {
+        return OAuthProvider.KAKAO;
     }
 }

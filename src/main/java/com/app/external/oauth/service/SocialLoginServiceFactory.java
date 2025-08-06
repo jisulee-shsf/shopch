@@ -1,6 +1,6 @@
 package com.app.external.oauth.service;
 
-import com.app.domain.member.constant.OAuthType;
+import com.app.domain.member.constant.OAuthProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,17 +11,17 @@ import java.util.stream.Collectors;
 @Component
 public class SocialLoginServiceFactory {
 
-    private final Map<OAuthType, SocialLoginService> socialLoginServiceMap;
+    private final Map<OAuthProvider, SocialLoginService> socialLoginServiceMap;
 
     public SocialLoginServiceFactory(List<SocialLoginService> socialLoginServices) {
         socialLoginServiceMap = socialLoginServices.stream()
                 .collect(Collectors.toMap(
-                        SocialLoginService::getOauthType,
+                        SocialLoginService::getOauthProvider,
                         Function.identity())
                 );
     }
 
-    public SocialLoginService getSocialLoginService(OAuthType oauthType) {
-        return socialLoginServiceMap.get(oauthType);
+    public SocialLoginService getSocialLoginService(OAuthProvider oauthProvider) {
+        return socialLoginServiceMap.get(oauthProvider);
     }
 }

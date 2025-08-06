@@ -2,7 +2,7 @@ package com.app.api.login.service;
 
 import com.app.api.login.service.dto.request.OAuthLoginServiceRequest;
 import com.app.api.login.service.dto.response.OAuthLoginResponse;
-import com.app.domain.member.constant.OAuthType;
+import com.app.domain.member.constant.OAuthProvider;
 import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
@@ -27,7 +27,7 @@ public class OAuthLoginService {
     private final TokenManager tokenManager;
 
     public OAuthLoginResponse oauthLogin(OAuthLoginServiceRequest request, String accessToken, Date issueDate) {
-        SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(request.getOAuthType(), accessToken);
+        SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(request.getOauthProvider(), accessToken);
 
         Member member = findOrSaveMember(userInfoResponse);
         TokenResponse tokenResponse = tokenManager.createTokenResponse(member.getId(), member.getRole(), issueDate);
@@ -35,8 +35,8 @@ public class OAuthLoginService {
         return OAuthLoginResponse.of(tokenResponse);
     }
 
-    private SocialLoginUserInfoResponse getUserInfoFromSocialLoginService(OAuthType oauthtype, String accessToken) {
-        SocialLoginService service = socialLoginServiceFactory.getSocialLoginService(oauthtype);
+    private SocialLoginUserInfoResponse getUserInfoFromSocialLoginService(OAuthProvider oauthProvider, String accessToken) {
+        SocialLoginService service = socialLoginServiceFactory.getSocialLoginService(oauthProvider);
         return service.getUserInfo(accessToken);
     }
 
