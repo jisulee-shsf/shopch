@@ -21,7 +21,7 @@ public class TokenExtractor {
 
     private void validateAuthorizationHeaderFormat(String[] authorizationHeaderElements) {
         if (isInvalidAuthorizationHeaderFormat(authorizationHeaderElements)) {
-            throw new AuthenticationException(ErrorType.INVALID_AUTHENTICATION_HEADER_FORMAT);
+            throw new AuthenticationException(ErrorType.INVALID_AUTHORIZATION_HEADER_FORMAT);
         }
     }
 
@@ -30,4 +30,3 @@ public class TokenExtractor {
                 || !authorizationHeaderElements[AUTHENTICATION_SCHEME_INDEX].equals(AuthenticationScheme.BEARER.getText());
     }
 }
-ø

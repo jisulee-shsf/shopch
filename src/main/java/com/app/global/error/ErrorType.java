@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorType {
 
     MISSING_AUTHORIZATION_HEADER(BAD_REQUEST, "A-001", "Authorization header가 존재하지 않습니다."),
-    INVALID_AUTHENTICATION_HEADER_FORMAT(BAD_REQUEST, "A-002", "유효하지 않은 Authorization header 형식입니다."),
+    INVALID_AUTHORIZATION_HEADER_FORMAT(BAD_REQUEST, "A-002", "유효하지 않은 Authorization header 형식입니다."),
     EXPIRED_TOKEN(UNAUTHORIZED, "A-003", "토큰이 만료되었습니다."),
     INVALID_TOKEN(UNAUTHORIZED, "A-004", "유효하지 않은 토큰입니다."),
     INVALID_TOKEN_TYPE(UNAUTHORIZED, "A-005", "유효하지 않은 토큰 타입입니다."),
