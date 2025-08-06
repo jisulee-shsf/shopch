@@ -10,12 +10,13 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public enum ErrorType {
 
-    MISSING_AUTHORIZATION_HEADER(BAD_REQUEST, "A-001", "Authorization header가 존재하지 않습니다."),
-    INVALID_AUTHORIZATION_HEADER_FORMAT(BAD_REQUEST, "A-002", "유효하지 않은 Authorization header 형식입니다."),
-    EXPIRED_TOKEN(UNAUTHORIZED, "A-003", "토큰이 만료되었습니다."),
-    INVALID_TOKEN(UNAUTHORIZED, "A-004", "유효하지 않은 토큰입니다."),
-    INVALID_TOKEN_TYPE(UNAUTHORIZED, "A-005", "유효하지 않은 토큰 타입입니다."),
-    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "A-006", "리프레시 토큰이 만료되었습니다."),
+    UNSUPPORTED_OAUTH_PROVIDER(BAD_REQUEST, "A-001", "지원하지 않는 OAuth provider입니다."),
+    MISSING_AUTHORIZATION_HEADER(BAD_REQUEST, "A-002", "Authorization header가 존재하지 않습니다."),
+    INVALID_AUTHORIZATION_HEADER_FORMAT(BAD_REQUEST, "A-003", "유효하지 않은 Authorization header 형식입니다."),
+    EXPIRED_TOKEN(UNAUTHORIZED, "A-004", "토큰이 만료되었습니다."),
+    INVALID_TOKEN(UNAUTHORIZED, "A-005", "유효하지 않은 토큰입니다."),
+    INVALID_TOKEN_TYPE(UNAUTHORIZED, "A-006", "유효하지 않은 토큰 타입입니다."),
+    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "A-007", "리프레시 토큰이 만료되었습니다."),
 
     ALREADY_REGISTERED_MEMBER(BAD_REQUEST, "M-001", "이미 가입된 회원입니다."),
     MEMBER_NOT_FOUND(BAD_REQUEST, "M-002", "회원이 존재하지 않습니다."),
