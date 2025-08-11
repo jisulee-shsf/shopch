@@ -43,10 +43,10 @@ public class TokenManager {
 
     public TokenResponse createTokenResponse(Long memberId, Role role, Date issueDate) {
         String accessToken = createAccessToken(memberId, role, issueDate);
-        LocalDateTime accessTokenExpirationDateTime = extractExpiration(accessToken);
+        LocalDateTime accessTokenExpirationDateTime = extractExpirationDateTime(accessToken);
 
         String refreshToken = createRefreshToken(memberId, issueDate);
-        LocalDateTime refreshTokenExpirationDateTime = extractExpiration(refreshToken);
+        LocalDateTime refreshTokenExpirationDateTime = extractExpirationDateTime(refreshToken);
 
         return TokenResponse.builder()
                 .authenticationScheme(AuthenticationScheme.BEARER.getText())
@@ -69,7 +69,7 @@ public class TokenManager {
         validateToken(refreshToken, TokenType.REFRESH);
     }
 
-    public LocalDateTime extractExpiration(String token) {
+    public LocalDateTime extractExpirationDateTime(String token) {
         Claims claims = extractValidatedClaims(token);
         return DateTimeUtils.convertDateToLocalDateTime(claims.getExpiration());
     }

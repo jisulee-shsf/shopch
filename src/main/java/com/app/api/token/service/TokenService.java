@@ -25,12 +25,12 @@ public class TokenService {
 
         Member member = memberService.getMemberByRefreshToken(refreshToken);
         String accessToken = tokenManager.createAccessToken(member.getId(), member.getRole(), issueDate);
-        LocalDateTime expirationDateTime = tokenManager.extractExpiration(accessToken);
+        LocalDateTime accessTokenExpirationDateTime = tokenManager.extractExpirationDateTime(accessToken);
 
         return AccessTokenResponse.builder()
                 .authenticationScheme(AuthenticationScheme.BEARER.getText())
                 .accessToken(accessToken)
-                .accessTokenExpirationDateTime(expirationDateTime)
+                .accessTokenExpirationDateTime(accessTokenExpirationDateTime)
                 .build();
     }
 }
