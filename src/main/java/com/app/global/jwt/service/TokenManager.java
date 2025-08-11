@@ -6,6 +6,7 @@ import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.AuthenticationScheme;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.dto.TokenResponse;
+import com.app.global.jwt.validator.ClaimsValidator;
 import com.app.global.resolver.MemberInfoDto;
 import com.app.global.util.DateTimeUtils;
 import io.jsonwebtoken.*;
@@ -28,16 +29,19 @@ public class TokenManager {
     private final long accessTokenValidityInMilliseconds;
     private final long refreshTokenValidityInMilliseconds;
     private final SecretKey secretKey;
+    private final ClaimsValidator claimsValidator;
     private final Clock jwtClock;
 
     public TokenManager(@Value("${jwt.access-token-validity}") long accessTokenValidityInMilliseconds,
                         @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInMilliseconds,
-                        @Value("${jwt.base64-encoded-secret-string}") String tokenSecret,
+                        @Value("${jwt.base64-encoded-token-secret}") String tokenSecret,
+                        ClaimsValidator claimsValidator,
                         Clock jwtClock
     ) {
         this.accessTokenValidityInMilliseconds = accessTokenValidityInMilliseconds;
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(tokenSecret));
+        this.claimsValidator = claimsValidator;
         this.jwtClock = jwtClock;
     }
 
@@ -70,18 +74,22 @@ public class TokenManager {
     }
 
     public LocalDateTime extractExpirationDateTime(String token) {
-        Claims claims = extractValidatedClaims(token);
-        return DateTimeUtils.convertDateToLocalDateTime(claims.getExpiration());
+        Claims claims = parseClaims(token);
+        Date expirationDate = claims.getExpiration();
+        claimsValidator.validateExpiration(expirationDate);
+
+        return DateTimeUtils.convertDateToLocalDateTime(expirationDate);
     }
 
     public MemberInfoDto extractMemberInfo(String accessToken) {
-        Claims claims = extractValidatedClaims(accessToken);
+        Claims claims = parseClaims(accessToken);
         Long memberId = claims.get(CLAIM_MEMBER_ID_KEY, Long.class);
-        Role role = Role.from(claims.get(CLAIM_ROLE_KEY, String.class));
+        String role = claims.get(CLAIM_ROLE_KEY, String.class);
+        claimsValidator.validateMemberInfo(memberId, role);
 
         return MemberInfoDto.builder()
                 .id(memberId)
-                .role(role)
+                .role(Role.from(role))
                 .build();
     }
 
@@ -105,15 +113,12 @@ public class TokenManager {
     }
 
     private void validateToken(String token, TokenType expectedTokenType) {
-        Claims claims = extractValidatedClaims(token);
-        TokenType actualTokenType = TokenType.from(claims.getSubject());
-
-        if (actualTokenType.isDifferent(expectedTokenType)) {
-            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
-        }
+        Claims claims = parseClaims(token);
+        String tokenType = claims.getSubject();
+        claimsValidator.validateTokenType(tokenType, expectedTokenType);
     }
 
-    private Claims extractValidatedClaims(String token) {
+    public Claims parseClaims(String token) {
         try {
             return Jwts.parser()
                     .clock(jwtClock)
@@ -123,7 +128,7 @@ public class TokenManager {
                     .getPayload();
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException(ErrorType.EXPIRED_TOKEN);
-        } catch (Exception e) {
+        } catch (JwtException e) {
             throw new AuthenticationException(ErrorType.INVALID_TOKEN);
         }
     }
