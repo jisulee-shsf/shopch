@@ -25,18 +25,18 @@ public class TokenManager {
     private static final String CLAIM_MEMBER_ID_KEY = "memberId";
     private static final String CLAIM_ROLE_KEY = "role";
 
-    private final long accessTokenValidityInMillis;
-    private final long refreshTokenValidityInMillis;
+    private final long accessTokenValidityInMilliseconds;
+    private final long refreshTokenValidityInMilliseconds;
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public TokenManager(@Value("${jwt.access-token-validity}") long accessTokenValidityInMillis,
-                        @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInMillis,
+    public TokenManager(@Value("${jwt.access-token-validity}") long accessTokenValidityInMilliseconds,
+                        @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInMilliseconds,
                         @Value("${jwt.base64-encoded-secret-string}") String tokenSecret,
                         Clock jwtClock
     ) {
-        this.accessTokenValidityInMillis = accessTokenValidityInMillis;
-        this.refreshTokenValidityInMillis = refreshTokenValidityInMillis;
+        this.accessTokenValidityInMilliseconds = accessTokenValidityInMilliseconds;
+        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(tokenSecret));
         this.jwtClock = jwtClock;
     }
@@ -58,7 +58,7 @@ public class TokenManager {
     }
 
     public String createAccessToken(Long memberId, Role role, Date issueDate) {
-        return createToken(memberId, role, issueDate, TokenType.ACCESS, accessTokenValidityInMillis);
+        return createToken(memberId, role, issueDate, TokenType.ACCESS, accessTokenValidityInMilliseconds);
     }
 
     public void validateAccessToken(String accessToken) {
@@ -86,11 +86,11 @@ public class TokenManager {
     }
 
     private String createRefreshToken(Long memberId, Date issueDate) {
-        return createToken(memberId, null, issueDate, TokenType.REFRESH, refreshTokenValidityInMillis);
+        return createToken(memberId, null, issueDate, TokenType.REFRESH, refreshTokenValidityInMilliseconds);
     }
 
-    private String createToken(Long memberId, Role role, Date issueDate, TokenType tokenType, long validityInMillis) {
-        Date expirationDate = new Date(issueDate.getTime() + validityInMillis);
+    private String createToken(Long memberId, Role role, Date issueDate, TokenType tokenType, long validityInMilliseconds) {
+        Date expirationDate = new Date(issueDate.getTime() + validityInMilliseconds);
         JwtBuilder jwtBuilder = Jwts.builder()
                 .subject(tokenType.name())
                 .issuedAt(issueDate)
