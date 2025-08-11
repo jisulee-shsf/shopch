@@ -1,11 +1,19 @@
 package com.app.domain.member.constant;
 
+import com.app.global.error.ErrorType;
+import com.app.global.error.exception.AuthenticationException;
+
+import java.util.Arrays;
+
 public enum Role {
 
     USER,
     ADMIN;
 
     public static Role from(String role) {
-        return Role.valueOf(role.toUpperCase());
+        return Arrays.stream(values())
+                .filter(value -> value.name().equalsIgnoreCase(role))
+                .findAny()
+                .orElseThrow(() -> new AuthenticationException(ErrorType.INVALID_ROLE));
     }
 }
