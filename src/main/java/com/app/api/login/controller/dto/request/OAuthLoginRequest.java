@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OAuthLoginRequest {
 
-    @NotBlank(message = "OAuth provider는 필수입니다.")
-    @EnumValue(enumClass = OAuthProvider.class, message = "유효한 OAuth provider가 아닙니다.")
+    @NotBlank(message = "OAuth 제공자는 필수입니다.")
+    @EnumValue(enumClass = OAuthProvider.class, message = "유효하지 않은 OAuth 제공자입니다.")
     private String oauthProvider;
 
     public OAuthLoginRequest(String oauthProvider) {

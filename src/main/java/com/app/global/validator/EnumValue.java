@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = EnumValueValidator.class)
 public @interface EnumValue {
 
-    String message() default "유효한 Enum 값이 아닙니다.";
+    String message() default "유효하지 않은 enum 상수명입니다.";
 
     Class<?>[] groups() default {};
 

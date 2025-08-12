@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 public class OrderSearchCondition {
 
     private String memberName;
-    @EnumValue(enumClass = OrderStatus.class, message = "유효한 주문 상태가 아닙니다.")
+    @EnumValue(enumClass = OrderStatus.class, message = "유효하지 않은 주문 상태입니다.")
     private String orderStatus;
 
     @Builder

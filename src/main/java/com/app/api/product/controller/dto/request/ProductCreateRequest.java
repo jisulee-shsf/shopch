@@ -18,7 +18,7 @@ public class ProductCreateRequest {
     private String name;
 
     @NotBlank(message = "상품 타입은 필수입니다.")
-    @EnumValue(enumClass = ProductType.class, message = "유효한 상품 타입이 아닙니다.")
+    @EnumValue(enumClass = ProductType.class, message = "유효하지 않은 상품 타입입니다.")
     private String productType;
 
     @NotNull(message = "등록 상품 가격은 필수입니다.")
