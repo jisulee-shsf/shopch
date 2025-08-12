@@ -6,7 +6,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 
-public class EnumValueValidator implements ConstraintValidator<ValueOfEnum, String> {
+public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, String> {
 
     private Class<? extends Enum<?>> enumClass;
 
