@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EnumValueValidator.class)
-public @interface EnumValue {
+public @interface ValueOfEnum {
 
     String message() default "유효하지 않은 enum 상수명입니다.";
 

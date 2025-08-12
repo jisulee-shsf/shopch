@@ -6,12 +6,12 @@ import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 
-public class EnumValueValidator implements ConstraintValidator<EnumValue, String> {
+public class EnumValueValidator implements ConstraintValidator<ValueOfEnum, String> {
 
     private Class<? extends Enum<?>> enumClass;
 
     @Override
-    public void initialize(EnumValue constraintAnnotation) {
+    public void initialize(ValueOfEnum constraintAnnotation) {
         enumClass = constraintAnnotation.enumClass();
     }
 
