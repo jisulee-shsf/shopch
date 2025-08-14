@@ -2,33 +2,27 @@ package com.app.global.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, String> {
 
-    private Class<? extends Enum<?>> enumClass;
+    private List<String> enumValues;
 
     @Override
     public void initialize(ValueOfEnum constraintAnnotation) {
-        enumClass = constraintAnnotation.enumClass();
+        enumValues = Arrays.stream(constraintAnnotation.enumClass().getEnumConstants())
+                .map(Enum::name)
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (hasNoText(value)) {
+        if (value == null || value.isBlank()) {
             return true;
         }
-        return isEnumConstant(value);
-    }
-
-    private boolean hasNoText(String value) {
-        return !StringUtils.hasText(value);
-    }
-
-    private boolean isEnumConstant(String value) {
-        return Arrays.stream(enumClass.getEnumConstants())
-                .anyMatch(enumConstant -> enumConstant.name().equalsIgnoreCase(value));
+        return enumValues.contains(value.toUpperCase());
     }
 }
