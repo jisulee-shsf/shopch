@@ -15,7 +15,7 @@ public class ClaimsValidator {
 
         TokenType actualTokenType = TokenType.from(tokenType);
         if (actualTokenType.isDifferent(expectedTokenType)) {
-            throw new AuthenticationException(ErrorType.TOKEN_TYPE_MISMATCH);
+            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
         }
     }
 
