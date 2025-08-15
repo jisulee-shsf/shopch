@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequiredArgsConstructor
 public class LogoutController {
@@ -18,8 +16,7 @@ public class LogoutController {
 
     @PostMapping("/api/logout")
     public ResponseEntity<Void> logout(@MemberInfo MemberInfoDto memberInfo) {
-        LocalDateTime logoutDateTime = LocalDateTime.now();
-        logoutService.logout(memberInfo.getId(), logoutDateTime);
+        logoutService.logout(memberInfo.getId());
         return ResponseEntity.noContent().build();
     }
 }

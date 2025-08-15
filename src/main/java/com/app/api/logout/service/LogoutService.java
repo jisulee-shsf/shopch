@@ -1,22 +1,20 @@
 package com.app.api.logout.service;
 
-import com.app.domain.member.entity.Member;
-import com.app.domain.member.service.MemberService;
+import com.app.domain.token.entity.RefreshToken;
+import com.app.domain.token.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class LogoutService {
 
-    private final MemberService memberService;
+    private final RefreshTokenService refreshTokenService;
 
-    public void logout(Long memberId, LocalDateTime logoutDateTime) {
-        Member member = memberService.getMemberById(memberId);
-        member.expireRefreshToken(logoutDateTime);
+    public void logout(Long memberId) {
+        RefreshToken refreshToken = refreshTokenService.getRefreshTokenByMemberId(memberId);
+        refreshTokenService.deleteRefreshToken(refreshToken);
     }
 }
