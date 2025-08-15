@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -37,19 +35,13 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private OAuthProvider oauthProvider;
 
-    private String refreshToken;
-    private LocalDateTime refreshTokenExpirationDateTime;
-
-    @Builder(toBuilder = true)
-    private Member(String name, String email, Role role, String profile, OAuthProvider oauthProvider,
-                   String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
+    @Builder
+    private Member(String name, String email, Role role, String profile, OAuthProvider oauthProvider) {
         this.name = name;
         this.email = email;
         this.role = role;
         this.profile = profile;
         this.oauthProvider = oauthProvider;
-        this.refreshToken = refreshToken;
-        this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
     }
 
     public static Member create(String name, String email, Role role, String profile, OAuthProvider oauthProvider) {
@@ -60,14 +52,5 @@ public class Member extends BaseEntity {
                 .profile(profile)
                 .oauthProvider(oauthProvider)
                 .build();
-    }
-
-    public void updateRefreshToken(String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
-        this.refreshToken = refreshToken;
-        this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
-    }
-
-    public void expireRefreshToken(LocalDateTime now) {
-        refreshTokenExpirationDateTime = now;
     }
 }

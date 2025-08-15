@@ -2,17 +2,14 @@ package com.app.domain.member.service;
 
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
-import com.app.global.error.exception.AuthenticationException;
+import com.app.global.error.ErrorType;
 import com.app.global.error.exception.BusinessException;
 import com.app.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
-import static com.app.global.error.ErrorType.*;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,36 +17,25 @@ import static com.app.global.error.ErrorType.*;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final Clock clock;
 
     @Transactional
-    public Long registerMember(Member member) {
+    public Member registerMember(Member member) {
         validateDuplicateMember(member);
-        Member savedMember = memberRepository.save(member);
-        return savedMember.getId();
+        return memberRepository.save(member);
+    }
+
+    public Optional<Member> findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
-    }
-
-    public Member getMemberByRefreshToken(String refreshToken) {
-        Member member = memberRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND));
-        validateRefreshTokenExpirationDateTime(member.getRefreshTokenExpirationDateTime());
-        return member;
+                .orElseThrow(() -> new EntityNotFoundException(ErrorType.MEMBER_NOT_FOUND));
     }
 
     private void validateDuplicateMember(Member member) {
         if (memberRepository.existsByEmail(member.getEmail())) {
-            throw new BusinessException(ALREADY_REGISTERED_MEMBER);
-        }
-    }
-
-    private void validateRefreshTokenExpirationDateTime(LocalDateTime refreshTokenExpirationDateTime) {
-        if (refreshTokenExpirationDateTime.isBefore(LocalDateTime.now(clock))) {
-            throw new AuthenticationException(EXPIRED_REFRESH_TOKEN);
+            throw new BusinessException(ErrorType.ALREADY_REGISTERED_MEMBER);
         }
     }
 }
