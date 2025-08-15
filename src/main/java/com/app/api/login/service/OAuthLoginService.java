@@ -5,7 +5,8 @@ import com.app.api.login.service.dto.response.OAuthLoginResponse;
 import com.app.domain.member.constant.OAuthProvider;
 import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
-import com.app.domain.member.repository.MemberRepository;
+import com.app.domain.member.service.MemberService;
+import com.app.domain.token.service.RefreshTokenService;
 import com.app.external.oauth.dto.response.SocialLoginUserInfoResponse;
 import com.app.external.oauth.service.SocialLoginService;
 import com.app.external.oauth.service.SocialLoginServiceFactory;
@@ -22,16 +23,18 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class OAuthLoginService {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final RefreshTokenService refreshTokenService;
     private final SocialLoginServiceFactory socialLoginServiceFactory;
     private final TokenManager tokenManager;
 
     public OAuthLoginResponse oauthLogin(OAuthLoginServiceRequest request, String accessToken, Date issueDate) {
         SocialLoginUserInfoResponse userInfoResponse = getUserInfoFromSocialLoginService(request.getOauthProvider(), accessToken);
+        Member member = findOrRegisterMember(userInfoResponse);
 
-        Member member = findOrSaveMember(userInfoResponse);
         TokenResponse tokenResponse = tokenManager.createTokenResponse(member.getId(), member.getRole(), issueDate);
-        member.updateRefreshToken(tokenResponse.getRefreshToken(), tokenResponse.getRefreshTokenExpirationDateTime());
+        updateOrRegisterRefreshToken(member, tokenResponse);
+
         return OAuthLoginResponse.of(tokenResponse);
     }
 
@@ -40,8 +43,15 @@ public class OAuthLoginService {
         return service.getUserInfo(accessToken);
     }
 
-    private Member findOrSaveMember(SocialLoginUserInfoResponse response) {
-        return memberRepository.findByEmail(response.getEmail())
-                .orElseGet(() -> memberRepository.save(response.toEntity(Role.USER)));
+    private Member findOrRegisterMember(SocialLoginUserInfoResponse response) {
+        return memberService.findMemberByEmail(response.getEmail())
+                .orElseGet(() -> memberService.registerMember(response.toEntity(Role.USER)));
+    }
+
+    private void updateOrRegisterRefreshToken(Member member, TokenResponse response) {
+        refreshTokenService.findRefreshTokenByMemberId(member.getId())
+                .ifPresentOrElse(
+                        refreshTokenEntity -> refreshTokenEntity.updateToken(response.getRefreshToken(), response.getRefreshTokenExpirationDateTime()),
+                        () -> refreshTokenService.registerRefreshToken(response.toEntity(member)));
     }
 }

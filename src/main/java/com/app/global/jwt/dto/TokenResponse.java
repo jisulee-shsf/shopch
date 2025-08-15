@@ -1,5 +1,7 @@
 package com.app.global.jwt.dto;
 
+import com.app.domain.member.entity.Member;
+import com.app.domain.token.entity.RefreshToken;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,5 +23,9 @@ public class TokenResponse {
         this.accessTokenExpirationDateTime = accessTokenExpirationDateTime;
         this.refreshToken = refreshToken;
         this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
+    }
+
+    public RefreshToken toEntity(Member member) {
+        return RefreshToken.create(member, refreshToken, refreshTokenExpirationDateTime);
     }
 }
