@@ -3,8 +3,11 @@ package com.app.global.util;
 import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorizationHeaderUtils {
 
     public static String getAuthorizationHeader(HttpServletRequest request) {

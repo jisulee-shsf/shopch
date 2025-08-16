@@ -2,8 +2,11 @@ package com.app.global.util;
 
 import com.app.global.error.ErrorType;
 import com.app.global.error.exception.IllegalArgumentException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationUtils {
 
     public static void notNull(Object object, ErrorType errorType) {
