@@ -1,5 +1,6 @@
 package com.app.global.validator;
 
+import com.app.global.util.ValidationUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -20,7 +21,7 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, St
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (value == null || value.isBlank()) {
+        if (ValidationUtils.hasNoText(value)) {
             return true;
         }
         return enumValues.contains(value.toUpperCase());

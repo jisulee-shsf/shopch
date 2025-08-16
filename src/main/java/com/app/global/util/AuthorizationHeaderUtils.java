@@ -14,7 +14,7 @@ public class AuthorizationHeaderUtils {
     }
 
     private static void validateAuthorizationHeader(String authorizationHeader) {
-        if (authorizationHeader == null || authorizationHeader.isBlank()) {
+        if (ValidationUtils.hasNoText(authorizationHeader)) {
             throw new AuthenticationException(ErrorType.MISSING_AUTHORIZATION_HEADER);
         }
     }

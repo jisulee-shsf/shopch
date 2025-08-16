@@ -3,6 +3,7 @@ package com.app.global.jwt.validator;
 import com.app.global.error.ErrorType;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.TokenType;
+import com.app.global.util.ValidationUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -11,7 +12,7 @@ import java.util.Date;
 public class ClaimsValidator {
 
     public void validateTokenType(String tokenType, TokenType expectedTokenType) {
-        validateNotNullOrBlank(tokenType);
+        ValidationUtils.hasText(tokenType, ErrorType.INVALID_CLAIM);
 
         TokenType actualTokenType = TokenType.from(tokenType);
         if (actualTokenType.isDifferent(expectedTokenType)) {
@@ -20,31 +21,11 @@ public class ClaimsValidator {
     }
 
     public void validateExpiration(Date expirationDate) {
-        validateNotNull(expirationDate);
+        ValidationUtils.notNull(expirationDate, ErrorType.INVALID_CLAIM);
     }
 
     public void validateMemberInfo(Long memberId, String role) {
-        validateMemberId(memberId);
-        validateRole(role);
-    }
-
-    private void validateNotNullOrBlank(String value) {
-        if (value == null || value.isBlank()) {
-            throw new AuthenticationException(ErrorType.INVALID_CLAIM);
-        }
-    }
-
-    private void validateNotNull(Object value) {
-        if (value == null) {
-            throw new AuthenticationException(ErrorType.INVALID_CLAIM);
-        }
-    }
-
-    private void validateMemberId(Long memberId) {
-        validateNotNull(memberId);
-    }
-
-    private void validateRole(String role) {
-        validateNotNullOrBlank(role);
+        ValidationUtils.notNull(memberId, ErrorType.INVALID_CLAIM);
+        ValidationUtils.hasText(role, ErrorType.INVALID_CLAIM);
     }
 }
