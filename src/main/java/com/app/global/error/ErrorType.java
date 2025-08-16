@@ -21,8 +21,7 @@ public enum ErrorType {
     EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "A-009", "만료된 리프레시 토큰입니다."),
     ORDER_CANCELLATION_DENIED(FORBIDDEN, "A-010", "주문을 취소할 수 없습니다."),
 
-    ALREADY_REGISTERED_REFRESH_TOKEN(BAD_REQUEST, "R-001", "이미 등록된 리프레시 토큰입니다."),
-    REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "R-002", "리프레시 토큰을 찾을 수 없습니다."),
+    REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "R-001", "리프레시 토큰을 찾을 수 없습니다."),
 
     ALREADY_REGISTERED_MEMBER(BAD_REQUEST, "M-001", "이미 등록된 회원입니다."),
     MEMBER_NOT_FOUND(NOT_FOUND, "M-002", "회원을 찾을 수 없습니다."),
