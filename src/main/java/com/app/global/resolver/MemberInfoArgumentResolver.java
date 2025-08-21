@@ -1,8 +1,7 @@
 package com.app.global.resolver;
 
-import com.app.global.jwt.service.TokenExtractor;
+import com.app.global.jwt.service.BearerTokenExtractor;
 import com.app.global.jwt.service.TokenManager;
-import com.app.global.util.AuthorizationHeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -16,7 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final TokenExtractor tokenExtractor;
+    private final BearerTokenExtractor bearerTokenExtractor;
     private final TokenManager tokenManager;
 
     @Override
@@ -27,9 +26,7 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String authorizationHeader = AuthorizationHeaderUtils.getAuthorizationHeader(request);
-        String accessToken = tokenExtractor.extractToken(authorizationHeader);
-        return tokenManager.extractMemberInfo(accessToken);
+        String accessToken = bearerTokenExtractor.extractToken((HttpServletRequest) webRequest.getNativeRequest());
+        return tokenManager.getMemberInfo(accessToken);
     }
 }
