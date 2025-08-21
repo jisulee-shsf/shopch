@@ -1,12 +1,11 @@
 package com.app.global.validator;
 
-import com.app.global.util.ValidationUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, String> {
 
@@ -16,12 +15,12 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, St
     public void initialize(ValueOfEnum constraintAnnotation) {
         enumValues = Arrays.stream(constraintAnnotation.enumClass().getEnumConstants())
                 .map(Enum::name)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (ValidationUtils.hasNoText(value)) {
+        if (!StringUtils.hasText(value)) {
             return true;
         }
         return enumValues.contains(value.toUpperCase());

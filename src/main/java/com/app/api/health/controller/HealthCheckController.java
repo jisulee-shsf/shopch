@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,9 +21,11 @@ public class HealthCheckController {
 
     @GetMapping("/api/health")
     public ResponseEntity<HealthCheckResponse> healthCheck() {
+        List<String> activeProfiles = Arrays.stream(environment.getActiveProfiles()).toList();
+
         return ResponseEntity.ok(HealthCheckResponse.builder()
                 .serverId(SERVER_ID)
-                .activeProfiles(Arrays.asList(environment.getActiveProfiles()))
+                .activeProfiles(activeProfiles)
                 .build());
     }
 }
