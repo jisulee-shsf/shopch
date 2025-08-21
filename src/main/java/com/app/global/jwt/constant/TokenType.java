@@ -17,7 +17,11 @@ public enum TokenType {
                 .orElseThrow(() -> new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE));
     }
 
+    public boolean isSame(TokenType tokenType) {
+        return this == tokenType;
+    }
+
     public boolean isDifferent(TokenType tokenType) {
-        return this != tokenType;
+        return !isSame(tokenType);
     }
 }
