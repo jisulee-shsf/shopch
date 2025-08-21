@@ -17,20 +17,17 @@ public class SocialLoginServiceFactory {
 
     public SocialLoginServiceFactory(List<SocialLoginService> socialLoginServices) {
         socialLoginServiceMap = socialLoginServices.stream()
-                .collect(Collectors.toMap(
-                        SocialLoginService::getOauthProvider,
+                .collect(Collectors.toUnmodifiableMap(
+                        SocialLoginService::oauthProvider,
                         Function.identity())
                 );
     }
 
     public SocialLoginService getSocialLoginService(OAuthProvider oauthProvider) {
-        if (isUnsupportedOauthProvider(oauthProvider)) {
+        SocialLoginService service = socialLoginServiceMap.get(oauthProvider);
+        if (service == null) {
             throw new BusinessException(ErrorType.UNSUPPORTED_OAUTH_PROVIDER);
         }
-        return socialLoginServiceMap.get(oauthProvider);
-    }
-
-    private boolean isUnsupportedOauthProvider(OAuthProvider oauthProvider) {
-        return !socialLoginServiceMap.containsKey(oauthProvider);
+        return service;
     }
 }
