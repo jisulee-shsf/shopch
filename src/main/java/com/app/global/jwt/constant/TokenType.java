@@ -13,7 +13,7 @@ public enum TokenType {
     public static TokenType from(String tokenType) {
         return Arrays.stream(values())
                 .filter(value -> value.name().equalsIgnoreCase(tokenType))
-                .findAny()
+                .findFirst()
                 .orElseThrow(() -> new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE));
     }
 

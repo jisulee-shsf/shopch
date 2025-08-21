@@ -13,7 +13,7 @@ public enum Role {
     public static Role from(String role) {
         return Arrays.stream(values())
                 .filter(value -> value.name().equalsIgnoreCase(role))
-                .findAny()
+                .findFirst()
                 .orElseThrow(() -> new AuthenticationException(ErrorType.INVALID_ROLE));
     }
 }
