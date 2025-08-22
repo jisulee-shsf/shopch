@@ -42,10 +42,10 @@ public class TokenManager {
 
     public TokenPair createTokenPair(Member member, Date issueDate) {
         String accessToken = createAccessToken(member, issueDate);
-        LocalDateTime accessTokenExpirationDateTime = getExpirationDateTime(accessToken);
+        LocalDateTime accessTokenExpirationDateTime = getExpiration(accessToken);
 
         String refreshToken = createRefreshToken(member, issueDate);
-        LocalDateTime refreshTokenExpirationDateTime = getExpirationDateTime(refreshToken);
+        LocalDateTime refreshTokenExpirationDateTime = getExpiration(refreshToken);
 
         return TokenPair.builder()
                 .accessToken(accessToken)
@@ -71,7 +71,7 @@ public class TokenManager {
         validateToken(refreshToken, TokenType.REFRESH);
     }
 
-    public LocalDateTime getExpirationDateTime(String token) {
+    public LocalDateTime getExpiration(String token) {
         Claims claims = getClaims(token);
         return claims.getExpiration()
                 .toInstant()
