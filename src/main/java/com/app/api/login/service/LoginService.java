@@ -11,7 +11,7 @@ import com.app.external.oauth.dto.response.UserInfo;
 import com.app.external.oauth.service.SocialLoginService;
 import com.app.external.oauth.service.SocialLoginServiceFactory;
 import com.app.global.jwt.dto.TokenPair;
-import com.app.global.jwt.service.TokenManager;
+import com.app.global.jwt.service.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +26,13 @@ public class LoginService {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
     private final SocialLoginServiceFactory socialLoginServiceFactory;
-    private final TokenManager tokenManager;
+    private final JwtProvider jwtProvider;
 
     public LoginResponse login(LoginServiceRequest request, Date issuedAt) {
         UserInfo userInfo = getUserInfoFromSocialLoginService(request.getOauthProvider(), request.getCode());
         Member member = getOrRegisterMember(userInfo);
 
-        TokenPair tokenPair = tokenManager.createTokenPair(member, issuedAt);
+        TokenPair tokenPair = jwtProvider.createTokenPair(member, issuedAt);
         updateOrRegisterRefreshToken(member, tokenPair);
 
         return LoginResponse.of(tokenPair);

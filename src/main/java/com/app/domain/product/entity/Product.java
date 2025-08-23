@@ -4,6 +4,7 @@ import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
 import com.app.domain.common.BaseEntity;
 import com.app.domain.product.constant.ProductSellingStatus;
 import com.app.domain.product.constant.ProductType;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,8 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
-
-import static com.app.global.error.ErrorType.OUT_OF_STOCK;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -68,7 +67,7 @@ public class Product extends BaseEntity {
 
     public void deductStockQuantity(int orderQuantity) {
         if (isStockQuantityLessThanOrderQuantity(orderQuantity)) {
-            throw new OutOfStockException(OUT_OF_STOCK);
+            throw new OutOfStockException(ErrorCode.OUT_OF_STOCK);
         }
         stockQuantity -= orderQuantity;
         changeProductSellingStatus();

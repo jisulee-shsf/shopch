@@ -20,7 +20,7 @@ public class TokenController {
 
     @PostMapping("/api/token/refresh")
     public ResponseEntity<AccessTokenResponse> refreshAccessToken(@Valid @RequestBody RefreshAccessTokenRequest request) {
-        Date issueDate = new Date();
-        return ResponseEntity.ok(tokenService.refreshAccessToken(request.toServiceRequest(), issueDate));
+        Date issuedAt = new Date();
+        return ResponseEntity.ok(tokenService.refreshAccessToken(request.toServiceRequest(), issuedAt));
     }
 }

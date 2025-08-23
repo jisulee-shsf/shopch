@@ -1,4 +1,4 @@
-package com.app.global.config.time;
+package com.app.global.config.clock;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,6 +1,6 @@
 package com.app.global.jwt.constant;
 
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.AuthenticationException;
 
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public enum TokenType {
         return Arrays.stream(values())
                 .filter(value -> value.name().equalsIgnoreCase(tokenType))
                 .findFirst()
-                .orElseThrow(() -> new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE));
+                .orElseThrow(() -> new AuthenticationException(ErrorCode.INVALID_TOKEN_TYPE));
     }
 
     public boolean isSame(TokenType tokenType) {

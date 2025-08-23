@@ -2,8 +2,8 @@ package com.app.global.jwt.service;
 
 import com.app.domain.member.constant.Role;
 import com.app.domain.member.entity.Member;
-import com.app.global.config.time.TimeConfig;
-import com.app.global.error.ErrorType;
+import com.app.global.config.clock.ClockConfig;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.TokenType;
 import com.app.global.jwt.dto.TokenPair;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
-public class TokenManager {
+public class JwtProvider {
 
     private static final String CLAIM_KEY_MEMBER_ID = "memberId";
     private static final String CLAIM_KEY_ROLE = "role";
@@ -29,10 +29,10 @@ public class TokenManager {
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public TokenManager(@Value("${jwt.access-token-validity}") long accessTokenValidityMillis,
-                        @Value("${jwt.refresh-token-validity}") long refreshTokenValidityMillis,
-                        @Value("${jwt.base64-encoded-token-secret}") String tokenSecret,
-                        Clock jwtClock
+    public JwtProvider(@Value("${jwt.access-token-validity}") long accessTokenValidityMillis,
+                       @Value("${jwt.refresh-token-validity}") long refreshTokenValidityMillis,
+                       @Value("${jwt.base64-encoded-token-secret}") String tokenSecret,
+                       Clock jwtClock
     ) {
         this.accessTokenValidityMillis = accessTokenValidityMillis;
         this.refreshTokenValidityMillis = refreshTokenValidityMillis;
@@ -75,7 +75,7 @@ public class TokenManager {
         Claims claims = getClaims(token);
         return claims.getExpiration()
                 .toInstant()
-                .atZone(TimeConfig.TIME_ZONE)
+                .atZone(ClockConfig.TIME_ZONE)
                 .toLocalDateTime();
     }
 
@@ -111,7 +111,7 @@ public class TokenManager {
         TokenType actualTokenType = TokenType.from(tokenType);
 
         if (actualTokenType.isDifferent(expectedTokenType)) {
-            throw new AuthenticationException(ErrorType.INVALID_TOKEN_TYPE);
+            throw new AuthenticationException(ErrorCode.INVALID_TOKEN_TYPE);
         }
     }
 
@@ -124,9 +124,9 @@ public class TokenManager {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new AuthenticationException(ErrorType.EXPIRED_TOKEN);
+            throw new AuthenticationException(ErrorCode.EXPIRED_TOKEN);
         } catch (JwtException e) {
-            throw new AuthenticationException(ErrorType.INVALID_TOKEN);
+            throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
         }
     }
 }

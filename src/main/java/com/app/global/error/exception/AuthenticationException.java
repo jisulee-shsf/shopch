@@ -1,10 +1,10 @@
 package com.app.global.error.exception;
 
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 
 public class AuthenticationException extends BusinessException {
 
-    public AuthenticationException(ErrorType errorType) {
-        super(errorType);
+    public AuthenticationException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

@@ -1,7 +1,7 @@
 package com.app.global.interceptor;
 
 import com.app.global.jwt.service.BearerTokenExtractor;
-import com.app.global.jwt.service.TokenManager;
+import com.app.global.jwt.service.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +13,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final BearerTokenExtractor bearerTokenExtractor;
-    private final TokenManager tokenManager;
+    private final JwtProvider jwtProvider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = bearerTokenExtractor.extractToken(request);
-        tokenManager.validateAccessToken(accessToken);
+        jwtProvider.validateAccessToken(accessToken);
         return true;
     }
 }

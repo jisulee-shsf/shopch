@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.global.error.ErrorType.ALREADY_CANCELED_ORDER;
+import static com.app.global.error.ErrorCode.ALREADY_CANCELED_ORDER;
 
 @Entity
 @Table(name = "orders")
@@ -34,7 +34,7 @@ public class Order extends BaseEntity {
     private Member member;
 
     @Column(nullable = false)
-    private LocalDateTime orderDateTime;
+    private LocalDateTime orderedAt;
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
@@ -47,18 +47,18 @@ public class Order extends BaseEntity {
     private int totalOrderPrice;
 
     @Builder
-    private Order(Member member, LocalDateTime orderDateTime, OrderStatus orderStatus, List<OrderProduct> orderProducts) {
+    private Order(Member member, LocalDateTime orderedAt, OrderStatus orderStatus, List<OrderProduct> orderProducts) {
         this.member = member;
-        this.orderDateTime = orderDateTime;
+        this.orderedAt = orderedAt;
         this.orderStatus = orderStatus;
         this.totalOrderPrice = getTotalOrderPrice(orderProducts);
         orderProducts.forEach(this::changeOrderProduct);
     }
 
-    public static Order create(Member member, LocalDateTime orderDateTime, List<OrderProduct> orderProducts) {
+    public static Order create(Member member, LocalDateTime orderedAt, List<OrderProduct> orderProducts) {
         return Order.builder()
                 .member(member)
-                .orderDateTime(orderDateTime)
+                .orderedAt(orderedAt)
                 .orderStatus(OrderStatus.INIT)
                 .orderProducts(orderProducts)
                 .build();

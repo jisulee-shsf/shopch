@@ -11,6 +11,7 @@ import com.app.domain.order.entity.Order;
 import com.app.domain.order.repository.OrderRepository;
 import com.app.domain.orderProduct.entity.OrderProduct;
 import com.app.domain.product.entity.Product;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.EntityNotFoundException;
 import com.app.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.global.error.ErrorType.ORDER_CANCELLATION_DENIED;
-import static com.app.global.error.ErrorType.ORDER_NOT_FOUND;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -36,7 +34,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public OrderResponse createOrder(Long memberId, LocalDateTime orderDateTime, OrderCreateServiceRequest request) {
+    public OrderResponse createOrder(Long memberId, LocalDateTime orderedAt, OrderCreateServiceRequest request) {
         Product product = productService.getProductById(request.getProductId());
         OrderProduct orderProduct = OrderProduct.create(product, request.getOrderQuantity());
 
@@ -44,7 +42,7 @@ public class OrderService {
         orderProducts.add(orderProduct);
 
         Member member = memberService.getMemberById(memberId);
-        Order order = Order.create(member, orderDateTime, orderProducts);
+        Order order = Order.create(member, orderedAt, orderProducts);
 
         return OrderResponse.of(orderRepository.save(order));
     }
@@ -64,12 +62,12 @@ public class OrderService {
 
     private Order getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(ORDER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND));
     }
 
     private void validateOwner(Order order, Long memberId) {
         if (order.isNotOwner(memberId)) {
-            throw new ForbiddenException(ORDER_CANCELLATION_DENIED);
+            throw new ForbiddenException(ErrorCode.ORDER_CANCELLATION_DENIED);
         }
     }
 }

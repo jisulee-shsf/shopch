@@ -2,7 +2,7 @@ package com.app.domain.member.service;
 
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.BusinessException;
 import com.app.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +30,12 @@ public class MemberService {
 
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorType.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     private void validateDuplicateMember(Member member) {
         if (memberRepository.existsByEmail(member.getEmail())) {
-            throw new BusinessException(ErrorType.ALREADY_REGISTERED_MEMBER);
+            throw new BusinessException(ErrorCode.ALREADY_REGISTERED_MEMBER);
         }
     }
 }

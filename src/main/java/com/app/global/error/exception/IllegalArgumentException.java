@@ -1,10 +1,10 @@
 package com.app.global.error.exception;
 
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 
 public class IllegalArgumentException extends BusinessException {
 
-    public IllegalArgumentException(ErrorType errorType) {
-        super(errorType);
+    public IllegalArgumentException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

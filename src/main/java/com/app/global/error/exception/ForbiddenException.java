@@ -1,10 +1,10 @@
 package com.app.global.error.exception;
 
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 
 public class ForbiddenException extends BusinessException {
 
-    public ForbiddenException(ErrorType errorType) {
-        super(errorType);
+    public ForbiddenException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

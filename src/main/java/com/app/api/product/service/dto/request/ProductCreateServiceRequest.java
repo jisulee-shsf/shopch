@@ -21,7 +21,7 @@ public class ProductCreateServiceRequest {
         this.stockQuantity = stockQuantity;
     }
 
-    public Product toEntity() {
+    public Product toProduct() {
         return Product.create(name, productType, price, stockQuantity);
     }
 }

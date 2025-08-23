@@ -2,7 +2,7 @@ package com.app.domain.token.service;
 
 import com.app.domain.token.entity.RefreshToken;
 import com.app.domain.token.repository.RefreshTokenRepository;
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +37,12 @@ public class RefreshTokenService {
 
     public RefreshToken getRefreshTokenByMemberId(Long memberId) {
         return refreshTokenRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorType.REFRESH_TOKEN_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
     }
 
     public RefreshToken getRefreshTokenByToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorType.REFRESH_TOKEN_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         validateRefreshTokenExpiration(refreshToken, LocalDateTime.now(clock));
         return refreshToken;
@@ -50,7 +50,7 @@ public class RefreshTokenService {
 
     private void validateRefreshTokenExpiration(RefreshToken refreshToken, LocalDateTime now) {
         if (refreshToken.isExpired(now)) {
-            throw new AuthenticationException(ErrorType.EXPIRED_REFRESH_TOKEN);
+            throw new AuthenticationException(ErrorCode.EXPIRED_REFRESH_TOKEN);
         }
     }
 }

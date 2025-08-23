@@ -1,10 +1,10 @@
 package com.app.global.error.exception;
 
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 
 public class OutOfStockException extends BusinessException {
 
-    public OutOfStockException(ErrorType errorType) {
-        super(errorType);
+    public OutOfStockException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

@@ -1,6 +1,6 @@
 package com.app.domain.member.constant;
 
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.AuthenticationException;
 
 import java.util.Arrays;
@@ -14,6 +14,6 @@ public enum Role {
         return Arrays.stream(values())
                 .filter(value -> value.name().equalsIgnoreCase(role))
                 .findFirst()
-                .orElseThrow(() -> new AuthenticationException(ErrorType.INVALID_ROLE));
+                .orElseThrow(() -> new AuthenticationException(ErrorCode.INVALID_ROLE));
     }
 }

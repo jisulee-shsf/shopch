@@ -1,4 +1,4 @@
-package com.app.global.config.time;
+package com.app.global.config.clock;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.ZoneId;
 
 @Configuration
-public class TimeConfig {
+public class ClockConfig {
 
     public final static ZoneId TIME_ZONE = ZoneId.systemDefault();
 

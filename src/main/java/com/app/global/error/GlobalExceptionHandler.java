@@ -47,9 +47,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.error(e.getClass().getSimpleName(), e);
-        ErrorType errorType = e.getErrorType();
-        return ResponseEntity.status(errorType.getHttpStatus())
-                .body(ErrorResponse.of(errorType.getErrorCode(), e.getMessage()));
+        ErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode.getCode(), e.getMessage()));
     }
 
     @ExceptionHandler

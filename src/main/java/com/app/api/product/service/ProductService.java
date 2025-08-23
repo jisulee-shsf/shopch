@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.app.global.error.ErrorType.PRODUCT_NOT_FOUND;
+import static com.app.global.error.ErrorCode.PRODUCT_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,7 +25,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse createProduct(ProductCreateServiceRequest request) {
-        Product product = request.toEntity();
+        Product product = request.toProduct();
         return ProductResponse.of(productRepository.save(product));
     }
 

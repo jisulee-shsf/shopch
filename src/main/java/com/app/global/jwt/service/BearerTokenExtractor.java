@@ -1,6 +1,6 @@
 package com.app.global.jwt.service;
 
-import com.app.global.error.ErrorType;
+import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.AuthenticationScheme;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,16 +19,19 @@ public class BearerTokenExtractor {
 
     public String extractToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        validateAuthorizationHeader(authorizationHeader);
 
+        return authorizationHeader.substring(authenticationScheme.getPrefix().length()).trim();
+    }
+
+    private void validateAuthorizationHeader(String authorizationHeader) {
         if (hasNoAuthorizationHeader(authorizationHeader)) {
-            throw new AuthenticationException(ErrorType.MISSING_AUTHORIZATION_HEADER);
+            throw new AuthenticationException(ErrorCode.MISSING_AUTHORIZATION_HEADER);
         }
 
         if (hasInvalidAuthenticationScheme(authorizationHeader)) {
-            throw new AuthenticationException(ErrorType.INVALID_AUTHORIZATION_HEADER);
+            throw new AuthenticationException(ErrorCode.INVALID_AUTHORIZATION_HEADER);
         }
-
-        return authorizationHeader.substring(authenticationScheme.getPrefix().length()).trim();
     }
 
     private boolean hasNoAuthorizationHeader(String authorizationHeader) {

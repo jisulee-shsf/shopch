@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @Configuration
 @EnableJpaAuditing
 @RequiredArgsConstructor
-public class JpaConfig {
+public class AuditingConfig {
 
     private final HttpServletRequest httpServletRequest;
 

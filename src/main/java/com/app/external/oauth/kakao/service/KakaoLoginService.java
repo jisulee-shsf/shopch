@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-public class KakaoLoginServiceImpl implements SocialLoginService {
+public class KakaoLoginService implements SocialLoginService {
 
     private final String clientId;
     private final String redirectUri;
@@ -23,11 +23,11 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
     private final KakaoTokenClient kakaoTokenClient;
     private final KakaoUserInfoClient kakaoUserInfoClient;
 
-    public KakaoLoginServiceImpl(@Value("${kakao.client.id}") String clientId,
-                                 @Value("${kakao.redirect.uri}") String redirectUri,
-                                 @Value("${kakao.client.secret}") String clientSecret,
-                                 KakaoTokenClient kakaoTokenClient,
-                                 KakaoUserInfoClient kakaoUserInfoClient
+    public KakaoLoginService(@Value("${kakao.client.id}") String clientId,
+                             @Value("${kakao.redirect.uri}") String redirectUri,
+                             @Value("${kakao.client.secret}") String clientSecret,
+                             KakaoTokenClient kakaoTokenClient,
+                             KakaoUserInfoClient kakaoUserInfoClient
     ) {
         this.clientId = clientId;
         this.redirectUri = redirectUri;

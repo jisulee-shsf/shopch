@@ -5,7 +5,7 @@ import com.app.api.token.service.dto.response.AccessTokenResponse;
 import com.app.domain.member.entity.Member;
 import com.app.domain.token.entity.RefreshToken;
 import com.app.domain.token.service.RefreshTokenService;
-import com.app.global.jwt.service.TokenManager;
+import com.app.global.jwt.service.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +19,17 @@ import java.util.Date;
 public class TokenService {
 
     private final RefreshTokenService refreshTokenService;
-    private final TokenManager tokenManager;
+    private final JwtProvider jwtProvider;
 
-    public AccessTokenResponse refreshAccessToken(RefreshAccessTokenServiceRequest request, Date issueDate) {
+    public AccessTokenResponse refreshAccessToken(RefreshAccessTokenServiceRequest request, Date issuedAt) {
         String refreshToken = request.getRefreshToken();
-        tokenManager.validateRefreshToken(refreshToken);
+        jwtProvider.validateRefreshToken(refreshToken);
 
         RefreshToken refreshTokenEntity = refreshTokenService.getRefreshTokenByToken(refreshToken);
         Member member = refreshTokenEntity.getMember();
 
-        String accessToken = tokenManager.createAccessToken(member, issueDate);
-        LocalDateTime accessTokenExpiresAt = tokenManager.getExpiration(accessToken);
+        String accessToken = jwtProvider.createAccessToken(member, issuedAt);
+        LocalDateTime accessTokenExpiresAt = jwtProvider.getExpiresAt(accessToken);
 
         return AccessTokenResponse.of(accessToken, accessTokenExpiresAt);
     }
