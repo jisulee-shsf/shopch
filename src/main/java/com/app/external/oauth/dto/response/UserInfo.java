@@ -7,22 +7,22 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SocialLoginUserInfoResponse {
+public class UserInfo {
 
-    private String name;
-    private String email;
-    private String profile;
-    private OAuthProvider oauthProvider;
+    private final String name;
+    private final String email;
+    private final String profile;
+    private final OAuthProvider oauthProvider;
 
     @Builder
-    private SocialLoginUserInfoResponse(String name, String email, String profile, OAuthProvider oauthProvider) {
+    private UserInfo(String name, String email, String profile, OAuthProvider oauthProvider) {
         this.name = name;
         this.email = email;
         this.profile = profile;
         this.oauthProvider = oauthProvider;
     }
 
-    public Member toEntity(Role role) {
+    public Member toMember(Role role) {
         return Member.create(name, email, role, profile, oauthProvider);
     }
 }

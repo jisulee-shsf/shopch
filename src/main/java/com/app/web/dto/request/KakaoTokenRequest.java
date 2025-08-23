@@ -6,18 +6,29 @@ import lombok.Getter;
 @Getter
 public class KakaoTokenRequest {
 
-    private String grant_type;
-    private String client_id;
-    private String redirect_uri;
-    private String code;
-    private String client_secret;
+    private static final String GRANT_TYPE = "authorization_code";
+
+    private final String grant_type;
+    private final String client_id;
+    private final String redirect_uri;
+    private final String code;
+    private final String client_secret;
 
     @Builder
-    private KakaoTokenRequest(String grant_type, String client_id, String redirect_uri, String code, String client_secret) {
-        this.grant_type = grant_type;
-        this.client_id = client_id;
-        this.redirect_uri = redirect_uri;
+    private KakaoTokenRequest(String clientId, String redirectUri, String code, String clientSecret) {
+        grant_type = GRANT_TYPE;
+        client_id = clientId;
+        redirect_uri = redirectUri;
         this.code = code;
-        this.client_secret = client_secret;
+        client_secret = clientSecret;
+    }
+
+    public static KakaoTokenRequest of(String clientId, String redirectUri, String code, String clientSecret) {
+        return KakaoTokenRequest.builder()
+                .clientId(clientId)
+                .redirectUri(redirectUri)
+                .code(code)
+                .clientSecret(clientSecret)
+                .build();
     }
 }

@@ -24,43 +24,43 @@ public class TokenManager {
     private static final String CLAIM_KEY_MEMBER_ID = "memberId";
     private static final String CLAIM_KEY_ROLE = "role";
 
-    private final long accessTokenValidityInMilliseconds;
-    private final long refreshTokenValidityInMilliseconds;
+    private final long accessTokenValidityMillis;
+    private final long refreshTokenValidityMillis;
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public TokenManager(@Value("${jwt.access-token-validity}") long accessTokenValidityInMilliseconds,
-                        @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInMilliseconds,
+    public TokenManager(@Value("${jwt.access-token-validity}") long accessTokenValidityMillis,
+                        @Value("${jwt.refresh-token-validity}") long refreshTokenValidityMillis,
                         @Value("${jwt.base64-encoded-token-secret}") String tokenSecret,
                         Clock jwtClock
     ) {
-        this.accessTokenValidityInMilliseconds = accessTokenValidityInMilliseconds;
-        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
+        this.accessTokenValidityMillis = accessTokenValidityMillis;
+        this.refreshTokenValidityMillis = refreshTokenValidityMillis;
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(tokenSecret));
         this.jwtClock = jwtClock;
     }
 
-    public TokenPair createTokenPair(Member member, Date issueDate) {
-        String accessToken = createAccessToken(member, issueDate);
-        LocalDateTime accessTokenExpirationDateTime = getExpiration(accessToken);
+    public TokenPair createTokenPair(Member member, Date issuedAt) {
+        String accessToken = createAccessToken(member, issuedAt);
+        LocalDateTime accessTokenExpiresAt = getExpiresAt(accessToken);
 
-        String refreshToken = createRefreshToken(member, issueDate);
-        LocalDateTime refreshTokenExpirationDateTime = getExpiration(refreshToken);
+        String refreshToken = createRefreshToken(member, issuedAt);
+        LocalDateTime refreshTokenExpiresAt = getExpiresAt(refreshToken);
 
         return TokenPair.builder()
                 .accessToken(accessToken)
-                .accessTokenExpirationDateTime(accessTokenExpirationDateTime)
+                .accessTokenExpiresAt(accessTokenExpiresAt)
                 .refreshToken(refreshToken)
-                .refreshTokenExpirationDateTime(refreshTokenExpirationDateTime)
+                .refreshTokenExpiresAt(refreshTokenExpiresAt)
                 .build();
     }
 
-    public String createAccessToken(Member member, Date issueDate) {
-        return createToken(member, issueDate, TokenType.ACCESS, accessTokenValidityInMilliseconds);
+    public String createAccessToken(Member member, Date issuedAt) {
+        return createToken(member, issuedAt, TokenType.ACCESS, accessTokenValidityMillis);
     }
 
-    public String createRefreshToken(Member member, Date issueDate) {
-        return createToken(member, issueDate, TokenType.REFRESH, refreshTokenValidityInMilliseconds);
+    public String createRefreshToken(Member member, Date issuedAt) {
+        return createToken(member, issuedAt, TokenType.REFRESH, refreshTokenValidityMillis);
     }
 
     public void validateAccessToken(String accessToken) {
@@ -71,7 +71,7 @@ public class TokenManager {
         validateToken(refreshToken, TokenType.REFRESH);
     }
 
-    public LocalDateTime getExpiration(String token) {
+    public LocalDateTime getExpiresAt(String token) {
         Claims claims = getClaims(token);
         return claims.getExpiration()
                 .toInstant()
@@ -90,12 +90,12 @@ public class TokenManager {
                 .build();
     }
 
-    private String createToken(Member member, Date issueDate, TokenType tokenType, long validityInMilliseconds) {
-        Date expirationDate = new Date(issueDate.getTime() + validityInMilliseconds);
+    private String createToken(Member member, Date issuedAt, TokenType tokenType, long validityMillis) {
+        Date expiration = new Date(issuedAt.getTime() + validityMillis);
         JwtBuilder jwtBuilder = Jwts.builder()
                 .subject(tokenType.name())
-                .issuedAt(issueDate)
-                .expiration(expirationDate)
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .claim(CLAIM_KEY_MEMBER_ID, member.getId())
                 .signWith(secretKey);
 

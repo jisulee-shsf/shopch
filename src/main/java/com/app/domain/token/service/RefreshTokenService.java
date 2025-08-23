@@ -40,14 +40,15 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorType.REFRESH_TOKEN_NOT_FOUND));
     }
 
-    public RefreshToken getRefreshTokenByToken(String refreshToken) {
-        RefreshToken refreshTokenEntity = refreshTokenRepository.findByToken(refreshToken)
+    public RefreshToken getRefreshTokenByToken(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorType.REFRESH_TOKEN_NOT_FOUND));
-        validateRefreshTokenExpirationDateTime(refreshTokenEntity, LocalDateTime.now(clock));
-        return refreshTokenEntity;
+
+        validateRefreshTokenExpiration(refreshToken, LocalDateTime.now(clock));
+        return refreshToken;
     }
 
-    private void validateRefreshTokenExpirationDateTime(RefreshToken refreshToken, LocalDateTime now) {
+    private void validateRefreshTokenExpiration(RefreshToken refreshToken, LocalDateTime now) {
         if (refreshToken.isExpired(now)) {
             throw new AuthenticationException(ErrorType.EXPIRED_REFRESH_TOKEN);
         }

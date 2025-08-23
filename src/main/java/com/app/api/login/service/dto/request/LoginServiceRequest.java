@@ -1,14 +1,18 @@
 package com.app.api.login.service.dto.request;
 
 import com.app.domain.member.constant.OAuthProvider;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class OAuthLoginServiceRequest {
+public class LoginServiceRequest {
 
     private OAuthProvider oauthProvider;
+    private String code;
 
-    public OAuthLoginServiceRequest(OAuthProvider oauthProvider) {
+    @Builder
+    private LoginServiceRequest(OAuthProvider oauthProvider, String code) {
         this.oauthProvider = oauthProvider;
+        this.code = code;
     }
 }

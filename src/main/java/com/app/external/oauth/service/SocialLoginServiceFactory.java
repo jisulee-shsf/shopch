@@ -2,7 +2,7 @@ package com.app.external.oauth.service;
 
 import com.app.domain.member.constant.OAuthProvider;
 import com.app.global.error.ErrorType;
-import com.app.global.error.exception.BusinessException;
+import com.app.global.error.exception.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class SocialLoginServiceFactory {
     public SocialLoginService getSocialLoginService(OAuthProvider oauthProvider) {
         SocialLoginService service = socialLoginServiceMap.get(oauthProvider);
         if (service == null) {
-            throw new BusinessException(ErrorType.UNSUPPORTED_OAUTH_PROVIDER);
+            throw new AuthenticationException(ErrorType.UNSUPPORTED_OAUTH_PROVIDER);
         }
         return service;
     }

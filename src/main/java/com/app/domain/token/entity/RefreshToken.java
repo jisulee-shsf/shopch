@@ -28,29 +28,29 @@ public class RefreshToken extends BaseEntity {
     private String token;
 
     @Column(nullable = false)
-    private LocalDateTime expirationDateTime;
+    private LocalDateTime expiresAt;
 
     @Builder
-    private RefreshToken(Member member, String token, LocalDateTime expirationDateTime) {
+    private RefreshToken(Member member, String token, LocalDateTime expiresAt) {
         this.member = member;
         this.token = token;
-        this.expirationDateTime = expirationDateTime;
+        this.expiresAt = expiresAt;
     }
 
-    public static RefreshToken create(Member member, String token, LocalDateTime expirationDateTime) {
+    public static RefreshToken create(Member member, String token, LocalDateTime expiresAt) {
         return RefreshToken.builder()
                 .member(member)
                 .token(token)
-                .expirationDateTime(expirationDateTime)
+                .expiresAt(expiresAt)
                 .build();
     }
 
-    public void updateToken(String token, LocalDateTime expirationDateTime) {
+    public void updateToken(String token, LocalDateTime expiresAt) {
         this.token = token;
-        this.expirationDateTime = expirationDateTime;
+        this.expiresAt = expiresAt;
     }
 
     public boolean isExpired(LocalDateTime now) {
-        return now.isAfter(expirationDateTime);
+        return now.isAfter(expiresAt);
     }
 }

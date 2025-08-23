@@ -11,19 +11,19 @@ import java.time.LocalDateTime;
 public class TokenPair {
 
     private final String accessToken;
-    private final LocalDateTime accessTokenExpirationDateTime;
+    private final LocalDateTime accessTokenExpiresAt;
     private final String refreshToken;
-    private final LocalDateTime refreshTokenExpirationDateTime;
+    private final LocalDateTime refreshTokenExpiresAt;
 
     @Builder
-    private TokenPair(String accessToken, LocalDateTime accessTokenExpirationDateTime, String refreshToken, LocalDateTime refreshTokenExpirationDateTime) {
+    private TokenPair(String accessToken, LocalDateTime accessTokenExpiresAt, String refreshToken, LocalDateTime refreshTokenExpiresAt) {
         this.accessToken = accessToken;
-        this.accessTokenExpirationDateTime = accessTokenExpirationDateTime;
+        this.accessTokenExpiresAt = accessTokenExpiresAt;
         this.refreshToken = refreshToken;
-        this.refreshTokenExpirationDateTime = refreshTokenExpirationDateTime;
+        this.refreshTokenExpiresAt = refreshTokenExpiresAt;
     }
 
-    public RefreshToken toEntity(Member member) {
-        return RefreshToken.create(member, refreshToken, refreshTokenExpirationDateTime);
+    public RefreshToken toRefreshToken(Member member) {
+        return RefreshToken.create(member, refreshToken, refreshTokenExpiresAt);
     }
 }
