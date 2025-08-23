@@ -21,12 +21,12 @@ public class ProductCreateRequest {
     @ValueOfEnum(enumClass = ProductType.class, message = "유효하지 않은 상품 타입입니다.")
     private String productType;
 
-    @NotNull(message = "등록 상품 가격은 필수입니다.")
-    @Positive(message = "등록 상품 가격은 양수여야 합니다.")
+    @NotNull(message = "상품 가격은 필수입니다.")
+    @Positive(message = "상품 가격은 양수여야 합니다.")
     private Integer price;
 
-    @NotNull(message = "등록 상품 재고 수량은 필수입니다.")
-    @Positive(message = "등록 상품 재고 수량은 양수여야 합니다.")
+    @NotNull(message = "상품 재고 수량은 필수입니다.")
+    @Positive(message = "상품 등록 시 재고 수량은 양수여야 합니다.")
     private Integer stockQuantity;
 
     @Builder

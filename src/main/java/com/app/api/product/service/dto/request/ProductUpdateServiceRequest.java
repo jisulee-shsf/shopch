@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class ProductUpdateServiceRequest {
 
-    private String name;
-    private ProductType productType;
-    private Integer price;
-    private Integer stockQuantity;
+    private final String name;
+    private final ProductType productType;
+    private final Integer price;
+    private final Integer stockQuantity;
 
     @Builder
     private ProductUpdateServiceRequest(String name, ProductType productType, Integer price, Integer stockQuantity) {

@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class OrderCreateServiceRequest {
 
-    private Long productId;
-    private Integer orderQuantity;
+    private final Long productId;
+    private final Integer orderQuantity;
 
     @Builder
     private OrderCreateServiceRequest(Long productId, Integer orderQuantity) {

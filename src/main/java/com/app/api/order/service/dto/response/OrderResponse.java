@@ -12,13 +12,15 @@ import java.util.stream.Collectors;
 @Getter
 public class OrderResponse {
 
-    private Long orderId;
-    private String memberName;
+    private final Long orderId;
+    private final String memberName;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime orderedAt;
-    private String orderStatus;
-    private int totalOrderPrice;
-    private List<OrderProductResponse> orderProducts;
+    private final LocalDateTime orderedAt;
+
+    private final String orderStatus;
+    private final int totalOrderPrice;
+    private final List<OrderProductResponse> orderProducts;
 
     @Builder
     private OrderResponse(Long orderId, String memberName, LocalDateTime orderedAt, String orderStatus, int totalOrderPrice,

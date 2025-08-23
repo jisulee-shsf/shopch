@@ -3,8 +3,10 @@ package com.app.external.oauth.kakao.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class KakaoUserInfoResponse {
 
     private Long id;
@@ -19,6 +21,7 @@ public class KakaoUserInfoResponse {
     }
 
     @Getter
+    @NoArgsConstructor
     public static class KakaoAccount {
 
         private String email;
@@ -31,6 +34,7 @@ public class KakaoUserInfoResponse {
         }
 
         @Getter
+        @NoArgsConstructor
         public static class Profile {
 
             private String nickname;

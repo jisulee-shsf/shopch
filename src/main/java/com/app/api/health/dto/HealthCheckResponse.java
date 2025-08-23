@@ -8,8 +8,8 @@ import java.util.List;
 @Getter
 public class HealthCheckResponse {
 
-    private String serverId;
-    private List<String> activeProfiles;
+    private final String serverId;
+    private final List<String> activeProfiles;
 
     @Builder
     private HealthCheckResponse(String serverId, List<String> activeProfiles) {

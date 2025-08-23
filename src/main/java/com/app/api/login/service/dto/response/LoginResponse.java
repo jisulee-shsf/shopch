@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 @Getter
 public class LoginResponse {
 
-    private String accessToken;
+    private final String accessToken;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime accessTokenExpiresAt;
+    private final LocalDateTime accessTokenExpiresAt;
 
-    private String refreshToken;
+    private final String refreshToken;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime refreshTokenExpiresAt;
+    private final LocalDateTime refreshTokenExpiresAt;
 
     @Builder
     private LoginResponse(String accessToken, LocalDateTime accessTokenExpiresAt, String refreshToken, LocalDateTime refreshTokenExpiresAt) {

@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class LoginServiceRequest {
 
-    private OAuthProvider oauthProvider;
-    private String code;
+    private final OAuthProvider oauthProvider;
+    private final String code;
 
     @Builder
     private LoginServiceRequest(OAuthProvider oauthProvider, String code) {

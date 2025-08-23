@@ -22,12 +22,12 @@ public class ProductUpdateRequest {
     @ValueOfEnum(enumClass = ProductType.class, message = "유효하지 않은 상품 타입입니다.")
     private String productType;
 
-    @NotNull(message = "수정 상품 가격은 필수입니다.")
-    @Positive(message = "수정 상품 가격은 양수여야 합니다.")
+    @NotNull(message = "상품 가격은 필수입니다.")
+    @Positive(message = "상품 가격은 양수여야 합니다.")
     private Integer price;
 
-    @NotNull(message = "수정 상품 재고 수량은 필수입니다.")
-    @PositiveOrZero(message = "수정 상품 재고 수량은 0 이상이어야 합니다.")
+    @NotNull(message = "상품 재고 수량은 필수입니다.")
+    @PositiveOrZero(message = "상품 수정 시 재고 수량은 0 이상이어야 합니다.")
     private Integer stockQuantity;
 
     @Builder

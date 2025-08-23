@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class OrderProductResponse {
 
-    private Long productId;
-    private String productName;
-    private int orderPrice;
-    private int orderQuantity;
+    private final Long productId;
+    private final String productName;
+    private final int orderPrice;
+    private final int orderQuantity;
 
     @Builder
     private OrderProductResponse(Long productId, String productName, int orderPrice, int orderQuantity) {

@@ -9,11 +9,11 @@ import java.util.List;
 @Getter
 public class PageResponse<T> {
 
-    private List<T> content;
-    private int size;
-    private int number;
-    private long totalElements;
-    private int totalPages;
+    private final List<T> content;
+    private final int size;
+    private final int number;
+    private final long totalElements;
+    private final int totalPages;
 
     @Builder
     private PageResponse(List<T> content, int size, int number, long totalElements, int totalPages) {

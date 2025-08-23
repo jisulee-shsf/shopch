@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public class OrderServiceSearchCondition {
 
-    private String memberName;
-    private OrderStatus orderStatus;
+    private final String memberName;
+    private final OrderStatus orderStatus;
 
     @Builder
     private OrderServiceSearchCondition(String memberName, OrderStatus orderStatus) {
