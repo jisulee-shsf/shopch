@@ -81,6 +81,9 @@ public class JwtProvider {
 
     public MemberInfoDto getMemberInfo(String accessToken) {
         Claims claims = getClaims(accessToken);
+        TokenType tokenType = TokenType.from(claims.getSubject());
+        validateTokenType(tokenType, TokenType.ACCESS);
+
         Long memberId = claims.get(CLAIM_KEY_MEMBER_ID, Long.class);
         String role = claims.get(CLAIM_KEY_ROLE, String.class);
 
@@ -107,9 +110,11 @@ public class JwtProvider {
 
     private void validateToken(String token, TokenType expectedTokenType) {
         Claims claims = getClaims(token);
-        String tokenType = claims.getSubject();
-        TokenType actualTokenType = TokenType.from(tokenType);
+        TokenType actualTokenType = TokenType.from(claims.getSubject());
+        validateTokenType(actualTokenType, expectedTokenType);
+    }
 
+    public void validateTokenType(TokenType actualTokenType, TokenType expectedTokenType) {
         if (actualTokenType.isDifferent(expectedTokenType)) {
             throw new AuthenticationException(ErrorCode.INVALID_TOKEN_TYPE);
         }
