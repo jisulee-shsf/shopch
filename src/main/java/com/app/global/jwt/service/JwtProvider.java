@@ -115,7 +115,7 @@ public class JwtProvider {
     }
 
     public void validateTokenType(TokenType actualTokenType, TokenType expectedTokenType) {
-        if (actualTokenType.isDifferent(expectedTokenType)) {
+        if (expectedTokenType.isDifferent(actualTokenType)) {
             throw new AuthenticationException(ErrorCode.INVALID_TOKEN_TYPE);
         }
     }
