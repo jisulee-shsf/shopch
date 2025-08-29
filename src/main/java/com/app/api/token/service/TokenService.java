@@ -25,7 +25,7 @@ public class TokenService {
         String refreshToken = request.getRefreshToken();
         jwtProvider.validateRefreshToken(refreshToken);
 
-        RefreshToken refreshTokenEntity = refreshTokenService.getRefreshTokenByToken(refreshToken);
+        RefreshToken refreshTokenEntity = refreshTokenService.getRefreshToken(refreshToken);
         Member member = refreshTokenEntity.getMember();
 
         String accessToken = jwtProvider.createAccessToken(member, issuedAt);

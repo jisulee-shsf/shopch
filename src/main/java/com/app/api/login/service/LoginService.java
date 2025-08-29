@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -44,14 +45,21 @@ public class LoginService {
     }
 
     private Member getOrRegisterMember(UserInfo userInfo) {
-        return memberService.findMemberByEmail(userInfo.getEmail())
+        return memberService.findActiveMember(userInfo.getOauthId(), userInfo.getOauthProvider())
                 .orElseGet(() -> memberService.registerMember(userInfo.toMember(Role.USER)));
     }
 
     private void updateOrRegisterRefreshToken(Member member, TokenPair tokenPair) {
-        refreshTokenService.findRefreshTokenByMemberId(member.getId())
+        refreshTokenService.findRefreshToken(member.getId())
                 .ifPresentOrElse(
                         refreshToken -> refreshToken.updateToken(tokenPair.getRefreshToken(), tokenPair.getRefreshTokenExpiresAt()),
                         () -> refreshTokenService.registerRefreshToken(tokenPair.toRefreshToken(member)));
+    }
+
+    public void deleteAccount(Long memberId, LocalDateTime deletedAt) {
+        refreshTokenService.deleteRefreshToken(memberId);
+
+        Member member = memberService.getMember(memberId);
+        member.updateDeletedAt(deletedAt);
     }
 }

@@ -8,10 +8,20 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                name = "oauth_member_unique",
+                columnNames = {"oauth_id", "oauth_provider", "deleted_at"}
+        )}
+)
+@SQLRestriction(value = "deleted_at IS NULL")
 public class Member extends BaseEntity {
 
     @Id
@@ -20,37 +30,48 @@ public class Member extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    private String oauthId;
+
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
+
+    private String imageUrl;
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    private String profile;
-
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private OAuthProvider oauthProvider;
 
+    private LocalDateTime deletedAt;
+
     @Builder
-    private Member(String name, String email, Role role, String profile, OAuthProvider oauthProvider) {
+    private Member(String oauthId, String name, String email, String imageUrl, Role role, OAuthProvider oauthProvider) {
+        this.oauthId = oauthId;
         this.name = name;
         this.email = email;
+        this.imageUrl = imageUrl;
         this.role = role;
-        this.profile = profile;
         this.oauthProvider = oauthProvider;
     }
 
-    public static Member create(String name, String email, Role role, String profile, OAuthProvider oauthProvider) {
+    public static Member create(String oauthId, String name, String email, String imageUrl, Role role, OAuthProvider oauthProvider) {
         return Member.builder()
+                .oauthId(oauthId)
                 .name(name)
                 .email(email)
+                .imageUrl(imageUrl)
                 .role(role)
-                .profile(profile)
                 .oauthProvider(oauthProvider)
                 .build();
+    }
+
+    public void updateDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

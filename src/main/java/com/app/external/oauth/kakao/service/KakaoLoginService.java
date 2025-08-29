@@ -11,7 +11,6 @@ import com.app.web.dto.request.KakaoTokenRequest;
 import com.app.web.dto.response.KakaoTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class KakaoLoginService implements SocialLoginService {
@@ -19,13 +18,12 @@ public class KakaoLoginService implements SocialLoginService {
     private final String clientId;
     private final String redirectUri;
     private final String clientSecret;
-
     private final KakaoTokenClient kakaoTokenClient;
     private final KakaoUserInfoClient kakaoUserInfoClient;
 
-    public KakaoLoginService(@Value("${kakao.client.id}") String clientId,
-                             @Value("${kakao.redirect.uri}") String redirectUri,
-                             @Value("${kakao.client.secret}") String clientSecret,
+    public KakaoLoginService(@Value("${oauth.provider.kakao.client-id}") String clientId,
+                             @Value("${oauth.provider.kakao.redirect-uri}") String redirectUri,
+                             @Value("${oauth.provider.kakao.client-secret}") String clientSecret,
                              KakaoTokenClient kakaoTokenClient,
                              KakaoUserInfoClient kakaoUserInfoClient
     ) {
@@ -43,18 +41,14 @@ public class KakaoLoginService implements SocialLoginService {
 
     @Override
     public UserInfo getUserInfo(String code) {
-        KakaoTokenRequest request = KakaoTokenRequest.of(clientId, redirectUri, code, clientSecret);
-        KakaoTokenResponse response = kakaoTokenClient.requestKakaoToken(request);
+        String accessToken = requestAccessToken(code);
+        KakaoUserInfoResponse userInfoResponse = kakaoUserInfoClient.getKakaoUserInfo(AuthenticationScheme.BEARER.getPrefix() + accessToken);
+        return UserInfo.of(userInfoResponse, oauthProvider());
+    }
 
-        KakaoUserInfoResponse userInfo = kakaoUserInfoClient.getKakaoUserInfo(AuthenticationScheme.BEARER.getPrefix() + response.getAccessToken());
-        KakaoUserInfoResponse.KakaoAccount account = userInfo.getKakaoAccount();
-        String email = account.getEmail();
-
-        return UserInfo.builder()
-                .name(account.getProfile().getNickname())
-                .email(StringUtils.hasText(email) ? email : String.valueOf(userInfo.getId()))
-                .profile(account.getProfile().getThumbnailImageUrl())
-                .oauthProvider(oauthProvider())
-                .build();
+    public String requestAccessToken(String code) {
+        KakaoTokenRequest tokenRequest = KakaoTokenRequest.of(clientId, redirectUri, code, clientSecret);
+        KakaoTokenResponse tokenResponse = kakaoTokenClient.requestKakaoToken(tokenRequest);
+        return tokenResponse.getAccessToken();
     }
 }

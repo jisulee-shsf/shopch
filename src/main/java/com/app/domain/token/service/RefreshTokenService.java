@@ -27,20 +27,15 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public void deleteRefreshToken(RefreshToken refreshToken) {
-        refreshTokenRepository.delete(refreshToken);
+    public void deleteRefreshToken(Long memberId) {
+        refreshTokenRepository.deleteByMember_Id(memberId);
     }
 
-    public Optional<RefreshToken> findRefreshTokenByMemberId(Long memberId) {
-        return refreshTokenRepository.findByMemberId(memberId);
+    public Optional<RefreshToken> findRefreshToken(Long memberId) {
+        return refreshTokenRepository.findByMember_Id(memberId);
     }
 
-    public RefreshToken getRefreshTokenByMemberId(Long memberId) {
-        return refreshTokenRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
-    }
-
-    public RefreshToken getRefreshTokenByToken(String token) {
+    public RefreshToken getRefreshToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 

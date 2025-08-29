@@ -1,5 +1,6 @@
 package com.app.external.oauth.kakao.dto.response;
 
+import com.app.external.oauth.dto.OAuthUserInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,12 +8,32 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class KakaoUserInfoResponse {
+public class KakaoUserInfoResponse implements OAuthUserInfo {
 
     private Long id;
 
+    @Override
+    public String getOauthId() {
+        return String.valueOf(id);
+    }
+
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
+
+    @Override
+    public String getName() {
+        return kakaoAccount.getProfile().getNickname();
+    }
+
+    @Override
+    public String getEmail() {
+        return kakaoAccount.getEmail();
+    }
+
+    @Override
+    public String getImageUrl() {
+        return kakaoAccount.getProfile().getThumbnailImageUrl();
+    }
 
     @Builder
     private KakaoUserInfoResponse(Long id, KakaoAccount kakaoAccount) {

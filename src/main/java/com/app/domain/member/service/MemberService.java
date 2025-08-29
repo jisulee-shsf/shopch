@@ -1,9 +1,9 @@
 package com.app.domain.member.service;
 
+import com.app.domain.member.constant.OAuthProvider;
 import com.app.domain.member.entity.Member;
 import com.app.domain.member.repository.MemberRepository;
 import com.app.global.error.ErrorCode;
-import com.app.global.error.exception.BusinessException;
 import com.app.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,22 +20,15 @@ public class MemberService {
 
     @Transactional
     public Member registerMember(Member member) {
-        validateDuplicateMember(member);
         return memberRepository.save(member);
     }
 
-    public Optional<Member> findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Optional<Member> findActiveMember(String oauthId, OAuthProvider oAuthProvider) {
+        return memberRepository.findByOauthIdAndOauthProvider(oauthId, oAuthProvider);
     }
 
-    public Member getMemberById(Long memberId) {
+    public Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-    }
-
-    private void validateDuplicateMember(Member member) {
-        if (memberRepository.existsByEmail(member.getEmail())) {
-            throw new BusinessException(ErrorCode.ALREADY_REGISTERED_MEMBER);
-        }
     }
 }
