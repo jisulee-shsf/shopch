@@ -21,7 +21,7 @@ public class HealthCheckController {
 
     @GetMapping("/api/health")
     public ResponseEntity<HealthCheckResponse> healthCheck() {
-        List<String> activeProfiles = Arrays.stream(environment.getActiveProfiles()).toList();
+        List<String> activeProfiles = Arrays.asList(environment.getActiveProfiles());
 
         return ResponseEntity.ok(HealthCheckResponse.builder()
                 .serverId(SERVER_ID)

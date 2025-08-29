@@ -24,9 +24,9 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@MemberInfo MemberInfoDto memberInfo,
-                                                     @Valid @RequestBody OrderCreateRequest orderCreateRequest) {
+                                                     @Valid @RequestBody OrderCreateRequest request) {
         LocalDateTime orderedAt = LocalDateTime.now();
-        return ResponseEntity.ok(orderService.createOrder(memberInfo.getId(), orderedAt, orderCreateRequest.toServiceRequest()));
+        return ResponseEntity.ok(orderService.createOrder(memberInfo.getId(), orderedAt, request.toServiceRequest()));
     }
 
     @PostMapping("/{orderId}/cancel")

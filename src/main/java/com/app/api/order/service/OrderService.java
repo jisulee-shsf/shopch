@@ -41,7 +41,7 @@ public class OrderService {
         List<OrderProduct> orderProducts = new ArrayList<>();
         orderProducts.add(orderProduct);
 
-        Member member = memberService.getMemberById(memberId);
+        Member member = memberService.getMember(memberId);
         Order order = Order.create(member, orderedAt, orderProducts);
 
         return OrderResponse.of(orderRepository.save(order));

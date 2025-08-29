@@ -23,15 +23,14 @@ public class JwtProvider {
 
     private static final String CLAIM_KEY_MEMBER_ID = "memberId";
     private static final String CLAIM_KEY_ROLE = "role";
-
     private final long accessTokenValidityMillis;
     private final long refreshTokenValidityMillis;
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public JwtProvider(@Value("${jwt.access-token-validity}") long accessTokenValidityMillis,
-                       @Value("${jwt.refresh-token-validity}") long refreshTokenValidityMillis,
-                       @Value("${jwt.base64-encoded-token-secret}") String tokenSecret,
+    public JwtProvider(@Value("${jwt.access-token.validity}") long accessTokenValidityMillis,
+                       @Value("${jwt.refresh-token.validity}") long refreshTokenValidityMillis,
+                       @Value("${jwt.token-secret}") String tokenSecret,
                        Clock jwtClock
     ) {
         this.accessTokenValidityMillis = accessTokenValidityMillis;

@@ -18,22 +18,20 @@ import org.springframework.http.MediaType;
 @Import(FeignClientsConfiguration.class)
 public class FeignConfig {
 
-    public static final String APPLICATION_FORM_URLENCODED_UTF8 = MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=utf-8";
+    public static final String APPLICATION_FORM_URLENCODED_UTF8_VALUE = MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=utf-8";
 
     @Value("${retry.period}")
-    private Long period;
+    private long period;
 
     @Value("${retry.max-period}")
-    private Long maxPeriod;
+    private long maxPeriod;
 
     @Value("${retry.max-attempts}")
-    private Integer maxAttempts;
+    private int maxAttempts;
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return requestTemplate -> {
-            requestTemplate.header(HttpHeaders.CONTENT_TYPE, APPLICATION_FORM_URLENCODED_UTF8);
-        };
+        return requestTemplate -> requestTemplate.header(HttpHeaders.CONTENT_TYPE, APPLICATION_FORM_URLENCODED_UTF8_VALUE);
     }
 
     @Bean

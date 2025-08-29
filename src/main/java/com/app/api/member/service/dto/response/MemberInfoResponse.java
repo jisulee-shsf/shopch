@@ -10,15 +10,15 @@ public class MemberInfoResponse {
     private final Long id;
     private final String name;
     private final String email;
-    private final String profile;
+    private final String imageUrl;
     private final String role;
 
     @Builder
-    private MemberInfoResponse(Long id, String name, String email, String profile, String role) {
+    private MemberInfoResponse(Long id, String name, String email, String imageUrl, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.profile = profile;
+        this.imageUrl = imageUrl;
         this.role = role;
     }
 
@@ -27,7 +27,7 @@ public class MemberInfoResponse {
                 .id(member.getId())
                 .name(member.getName())
                 .email(member.getEmail())
-                .profile(member.getProfile())
+                .imageUrl(member.getImageUrl())
                 .role(member.getRole().name())
                 .build();
     }

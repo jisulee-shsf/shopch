@@ -15,8 +15,8 @@ public class KakaoTokenRequest {
     private final String client_secret;
 
     @Builder
-    private KakaoTokenRequest(String clientId, String redirectUri, String code, String clientSecret) {
-        grant_type = GRANT_TYPE;
+    private KakaoTokenRequest(String grantType, String clientId, String redirectUri, String code, String clientSecret) {
+        grant_type = grantType;
         client_id = clientId;
         redirect_uri = redirectUri;
         this.code = code;
@@ -25,6 +25,7 @@ public class KakaoTokenRequest {
 
     public static KakaoTokenRequest of(String clientId, String redirectUri, String code, String clientSecret) {
         return KakaoTokenRequest.builder()
+                .grantType(GRANT_TYPE)
                 .clientId(clientId)
                 .redirectUri(redirectUri)
                 .code(code)
