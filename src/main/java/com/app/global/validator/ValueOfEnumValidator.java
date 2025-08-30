@@ -20,9 +20,9 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, St
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (!StringUtils.hasText(value)) {
-            return true;
+        if (StringUtils.hasText(value)) {
+            return enumValues.contains(value.toUpperCase());
         }
-        return enumValues.contains(value.toUpperCase());
+        return true;
     }
 }
