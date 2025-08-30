@@ -10,15 +10,16 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public enum ErrorCode {
 
-    UNSUPPORTED_OAUTH_PROVIDER(BAD_REQUEST, "AUTH-001", "지원하지 않는 OAuth 제공자입니다."),
-    MISSING_AUTHORIZATION_HEADER(BAD_REQUEST, "AUTH-002", "Authorization 헤더가 존재하지 않습니다."),
-    INVALID_AUTHORIZATION_HEADER(BAD_REQUEST, "AUTH-003", "유효하지 않은 Authorization 헤더입니다."),
-    EXPIRED_TOKEN(UNAUTHORIZED, "AUTH-004", "만료된 토큰입니다."),
-    INVALID_TOKEN(UNAUTHORIZED, "AUTH-005", "유효하지 않은 토큰입니다."),
-    INVALID_TOKEN_TYPE(UNAUTHORIZED, "AUTH-006", "유효하지 않은 토큰 타입입니다."),
-    INVALID_ROLE(UNAUTHORIZED, "AUTH-007", "유효하지 않은 회원 역할입니다."),
-    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "AUTH-008", "만료된 리프레시 토큰입니다."),
-    ORDER_CANCELLATION_DENIED(FORBIDDEN, "AUTH-009", "주문을 취소할 수 없습니다."),
+    INVALID_CODE(UNAUTHORIZED, "AUTH-001", "유효하지 않은 인가 코드입니다."),
+    UNSUPPORTED_OAUTH_PROVIDER(BAD_REQUEST, "AUTH-002", "지원하지 않는 OAuth 제공자입니다."),
+    MISSING_AUTHORIZATION_HEADER(BAD_REQUEST, "AUTH-003", "Authorization 헤더가 존재하지 않습니다."),
+    INVALID_AUTHORIZATION_HEADER(BAD_REQUEST, "AUTH-004", "유효하지 않은 Authorization 헤더입니다."),
+    EXPIRED_TOKEN(UNAUTHORIZED, "AUTH-005", "만료된 토큰입니다."),
+    INVALID_TOKEN(UNAUTHORIZED, "AUTH-006", "유효하지 않은 토큰입니다."),
+    INVALID_TOKEN_TYPE(UNAUTHORIZED, "AUTH-007", "유효하지 않은 토큰 타입입니다."),
+    INVALID_ROLE(UNAUTHORIZED, "AUTH-008", "유효하지 않은 회원 역할입니다."),
+    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "AUTH-009", "만료된 리프레시 토큰입니다."),
+    ORDER_CANCELLATION_DENIED(FORBIDDEN, "AUTH-010", "주문을 취소할 수 없습니다."),
 
     REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "TOKEN-001", "리프레시 토큰을 찾을 수 없습니다."),
 
@@ -34,4 +35,4 @@ public enum ErrorCode {
     private final HttpStatus status;
     private final String code;
     private final String message;
-    }
+}

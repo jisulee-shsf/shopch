@@ -5,12 +5,16 @@ import com.app.external.oauth.dto.response.UserInfo;
 import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
 import com.app.external.oauth.kakao.dto.response.KakaoUserInfoResponse;
 import com.app.external.oauth.service.SocialLoginService;
+import com.app.global.error.ErrorCode;
+import com.app.global.error.exception.AuthenticationException;
 import com.app.global.jwt.constant.AuthenticationScheme;
 import com.app.web.client.KakaoTokenClient;
 import com.app.web.dto.request.KakaoTokenRequest;
 import com.app.web.dto.response.KakaoTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class KakaoLoginService implements SocialLoginService {
@@ -49,6 +53,9 @@ public class KakaoLoginService implements SocialLoginService {
     private String requestAccessToken(String code) {
         KakaoTokenRequest tokenRequest = KakaoTokenRequest.of(clientId, redirectUri, code, clientSecret);
         KakaoTokenResponse tokenResponse = kakaoTokenClient.requestKakaoToken(tokenRequest);
-        return tokenResponse.getAccessToken();
+
+        return Optional.ofNullable(tokenResponse)
+                .orElseThrow(() -> new AuthenticationException(ErrorCode.INVALID_CODE))
+                .getAccessToken();
     }
 }
