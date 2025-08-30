@@ -2,9 +2,9 @@
   "id": 1,
   "kakao_account": {
     "profile": {
-      "nickname": "member",
+      "nickname": "user",
       "thumbnail_image_url": "http://yyy.kakao.com/.../img_110x110.jpg"
     },
-    "email": "member@email.com"
+    "email": "user@email.com"
   }
 }

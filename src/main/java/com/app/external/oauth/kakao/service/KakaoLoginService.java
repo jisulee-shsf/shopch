@@ -46,7 +46,7 @@ public class KakaoLoginService implements SocialLoginService {
         return UserInfo.of(userInfoResponse, oauthProvider());
     }
 
-    public String requestAccessToken(String code) {
+    private String requestAccessToken(String code) {
         KakaoTokenRequest tokenRequest = KakaoTokenRequest.of(clientId, redirectUri, code, clientSecret);
         KakaoTokenResponse tokenResponse = kakaoTokenClient.requestKakaoToken(tokenRequest);
         return tokenResponse.getAccessToken();

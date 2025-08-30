@@ -9,42 +9,42 @@ import java.util.stream.Collectors;
 @Getter
 public class ErrorResponse {
 
-    private static final String ERROR_MESSAGE_FORMAT = "[%s] %s";
-    private static final String ERROR_MESSAGE_DELIMITER = ", ";
+    private static final String MESSAGE_FORMAT = "[%s] %s";
+    private static final String MESSAGE_DELIMITER = ", ";
 
-    private final String errorCode;
-    private final String errorMessage;
+    private final String code;
+    private final String message;
 
     @Builder
-    private ErrorResponse(String errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+    private ErrorResponse(String code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
-    public static ErrorResponse of(String errorCode, String errorMessage) {
+    public static ErrorResponse of(String code, String message) {
         return ErrorResponse.builder()
-                .errorCode(errorCode)
-                .errorMessage(errorMessage)
+                .code(code)
+                .message(message)
                 .build();
     }
 
-    public static ErrorResponse of(int errorCode, String errorMessage) {
+    public static ErrorResponse of(int code, String message) {
         return ErrorResponse.builder()
-                .errorCode(String.valueOf(errorCode))
-                .errorMessage(errorMessage)
+                .code(String.valueOf(code))
+                .message(message)
                 .build();
     }
 
-    public static ErrorResponse of(int errorCode, BindingResult bindingResult) {
+    public static ErrorResponse of(int code, BindingResult bindingResult) {
         return ErrorResponse.builder()
-                .errorCode(String.valueOf(errorCode))
-                .errorMessage(createErrorMessage(bindingResult))
+                .code(String.valueOf(code))
+                .message(createMessage(bindingResult))
                 .build();
     }
 
-    private static String createErrorMessage(BindingResult bindingResult) {
+    private static String createMessage(BindingResult bindingResult) {
         return bindingResult.getFieldErrors().stream()
-                .map(fieldError -> String.format(ERROR_MESSAGE_FORMAT, fieldError.getField(), fieldError.getDefaultMessage()))
-                .collect(Collectors.joining(ERROR_MESSAGE_DELIMITER));
+                .map(fieldError -> String.format(MESSAGE_FORMAT, fieldError.getField(), fieldError.getDefaultMessage()))
+                .collect(Collectors.joining(MESSAGE_DELIMITER));
     }
 }

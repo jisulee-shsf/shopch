@@ -3,14 +3,14 @@ package com.app.external.oauth.service;
 import com.app.domain.member.constant.OAuthProvider;
 import com.app.global.error.ErrorCode;
 import com.app.global.error.exception.AuthenticationException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class SocialLoginServiceFactory {
 
     private final Map<OAuthProvider, SocialLoginService> socialLoginServiceMap;
