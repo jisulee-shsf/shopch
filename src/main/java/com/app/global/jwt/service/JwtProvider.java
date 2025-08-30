@@ -101,7 +101,7 @@ public class JwtProvider {
                 .claim(CLAIM_KEY_MEMBER_ID, member.getId())
                 .signWith(secretKey);
 
-        if (tokenType == TokenType.ACCESS) {
+        if (tokenType.isAccess()) {
             jwtBuilder.claim(CLAIM_KEY_ROLE, member.getRole());
         }
         return jwtBuilder.compact();

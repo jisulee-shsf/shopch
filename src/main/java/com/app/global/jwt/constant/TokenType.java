@@ -24,4 +24,8 @@ public enum TokenType {
     public boolean isDifferent(TokenType tokenType) {
         return !isSame(tokenType);
     }
+
+    public boolean isAccess() {
+        return this == ACCESS;
+    }
 }
