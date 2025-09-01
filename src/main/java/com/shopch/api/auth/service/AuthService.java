@@ -1,9 +1,9 @@
 package com.shopch.api.auth.service;
 
-import com.shopch.api.auth.service.dto.request.LoginServiceRequest;
+import com.shopch.api.auth.service.dto.request.OAuthLoginServiceRequest;
 import com.shopch.api.auth.service.dto.request.RefreshAccessTokenServiceRequest;
 import com.shopch.api.auth.service.dto.response.AccessTokenResponse;
-import com.shopch.api.auth.service.dto.response.LoginResponse;
+import com.shopch.api.auth.service.dto.response.OAuthLoginResponse;
 import com.shopch.domain.member.constant.Role;
 import com.shopch.domain.member.entity.Member;
 import com.shopch.domain.member.service.MemberService;
@@ -19,8 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -33,17 +33,17 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public LoginResponse login(LoginServiceRequest request, Date issuedAt) {
+    public OAuthLoginResponse oauthLogin(OAuthLoginServiceRequest request, Instant issuedAt) {
         UserInfo userInfo = getUserInfoFromSocialLoginService(request.getOauthProvider(), request.getCode());
         Member member = getOrRegisterMember(userInfo);
 
         TokenPair tokenPair = jwtTokenProvider.createTokenPair(member, issuedAt);
         updateOrRegisterRefreshToken(member, tokenPair);
 
-        return LoginResponse.of(tokenPair);
+        return OAuthLoginResponse.of(tokenPair);
     }
 
-    public AccessTokenResponse refreshAccessToken(RefreshAccessTokenServiceRequest request, Date issuedAt) {
+    public AccessTokenResponse refreshAccessToken(RefreshAccessTokenServiceRequest request, Instant issuedAt) {
         String refreshToken = request.getRefreshToken();
         jwtTokenProvider.validateRefreshToken(refreshToken);
 

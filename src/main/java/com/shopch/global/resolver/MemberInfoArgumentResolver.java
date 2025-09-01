@@ -17,7 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final BearerTokenExtractor bearerTokenExtractor;
-    private final JwtTokenProvider jwtProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -28,6 +28,6 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String accessToken = bearerTokenExtractor.extractToken((HttpServletRequest) webRequest.getNativeRequest());
-        return jwtProvider.getMemberInfo(accessToken);
+        return jwtTokenProvider.getMemberInfoFrom(accessToken);
     }
 }

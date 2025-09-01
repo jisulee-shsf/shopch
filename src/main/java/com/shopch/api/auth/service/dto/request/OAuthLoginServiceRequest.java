@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class LoginServiceRequest {
+public class OAuthLoginServiceRequest {
 
     private final OAuthProvider oauthProvider;
     private final String code;
 
     @Builder
-    private LoginServiceRequest(OAuthProvider oauthProvider, String code) {
+    private OAuthLoginServiceRequest(OAuthProvider oauthProvider, String code) {
         this.oauthProvider = oauthProvider;
         this.code = code;
     }

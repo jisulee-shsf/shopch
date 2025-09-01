@@ -13,12 +13,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final BearerTokenExtractor bearerTokenExtractor;
-    private final JwtTokenProvider jwtProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = bearerTokenExtractor.extractToken(request);
-        jwtProvider.validateAccessToken(accessToken);
+        jwtTokenProvider.validateAccessToken(accessToken);
         return true;
     }
 }

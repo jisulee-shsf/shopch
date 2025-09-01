@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -28,8 +29,8 @@ public class JwtTokenProvider {
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public JwtTokenProvider(@Value("${jwt.access-token.validity}") long accessTokenValidityMillis,
-                            @Value("${jwt.refresh-token.validity}") long refreshTokenValidityMillis,
+    public JwtTokenProvider(@Value("${jwt.access-token.validity-millis}") long accessTokenValidityMillis,
+                            @Value("${jwt.refresh-token.validity-millis}") long refreshTokenValidityMillis,
                             @Value("${jwt.token-secret}") String tokenSecret,
                             Clock jwtClock
     ) {
@@ -39,12 +40,12 @@ public class JwtTokenProvider {
         this.jwtClock = jwtClock;
     }
 
-    public TokenPair createTokenPair(Member member, Date issuedAt) {
+    public TokenPair createTokenPair(Member member, Instant issuedAt) {
         String accessToken = createAccessToken(member, issuedAt);
-        LocalDateTime accessTokenExpiresAt = getExpiresAt(accessToken);
+        LocalDateTime accessTokenExpiresAt = getExpirationFrom(accessToken);
 
         String refreshToken = createRefreshToken(member, issuedAt);
-        LocalDateTime refreshTokenExpiresAt = getExpiresAt(refreshToken);
+        LocalDateTime refreshTokenExpiresAt = getExpirationFrom(refreshToken);
 
         return TokenPair.builder()
                 .accessToken(accessToken)
@@ -54,11 +55,11 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    public String createAccessToken(Member member, Date issuedAt) {
+    public String createAccessToken(Member member, Instant issuedAt) {
         return createToken(member, issuedAt, TokenType.ACCESS, accessTokenValidityMillis);
     }
 
-    public String createRefreshToken(Member member, Date issuedAt) {
+    public String createRefreshToken(Member member, Instant issuedAt) {
         return createToken(member, issuedAt, TokenType.REFRESH, refreshTokenValidityMillis);
     }
 
@@ -70,7 +71,7 @@ public class JwtTokenProvider {
         validateToken(refreshToken, TokenType.REFRESH);
     }
 
-    public LocalDateTime getExpiresAt(String token) {
+    public LocalDateTime getExpirationFrom(String token) {
         Claims claims = getClaims(token);
         return claims.getExpiration()
                 .toInstant()
@@ -78,7 +79,7 @@ public class JwtTokenProvider {
                 .toLocalDateTime();
     }
 
-    public MemberInfoDto getMemberInfo(String accessToken) {
+    public MemberInfoDto getMemberInfoFrom(String accessToken) {
         Claims claims = getClaims(accessToken);
         TokenType tokenType = TokenType.from(claims.getSubject());
         validateTokenType(tokenType, TokenType.ACCESS);
@@ -92,12 +93,11 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    private String createToken(Member member, Date issuedAt, TokenType tokenType, long validityMillis) {
-        Date expiration = new Date(issuedAt.getTime() + validityMillis);
+    private String createToken(Member member, Instant issuedAt, TokenType tokenType, long validityMillis) {
         JwtBuilder jwtBuilder = Jwts.builder()
                 .subject(tokenType.name())
-                .issuedAt(issuedAt)
-                .expiration(expiration)
+                .issuedAt(Date.from(issuedAt))
+                .expiration(Date.from(issuedAt.plusMillis(validityMillis)))
                 .claim(CLAIM_KEY_MEMBER_ID, member.getId())
                 .signWith(secretKey);
 

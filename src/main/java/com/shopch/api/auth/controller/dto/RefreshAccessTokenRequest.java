@@ -12,6 +12,10 @@ public class RefreshAccessTokenRequest {
     @NotBlank(message = "리프레시 토큰은 필수입니다.")
     private String refreshToken;
 
+    public RefreshAccessTokenRequest(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public RefreshAccessTokenServiceRequest toServiceRequest() {
         return new RefreshAccessTokenServiceRequest(refreshToken);
     }
