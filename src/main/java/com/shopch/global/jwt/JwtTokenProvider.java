@@ -24,18 +24,18 @@ public class JwtTokenProvider {
 
     private static final String CLAIM_KEY_MEMBER_ID = "memberId";
     private static final String CLAIM_KEY_ROLE = "role";
-    private final int accessTokenValiditySeconds;
-    private final int refreshTokenValiditySeconds;
+    private final long accessTokenValidityMillis;
+    private final long refreshTokenValidityMillis;
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public JwtTokenProvider(@Value("${jwt.access-token.validity-seconds}") int accessTokenValiditySeconds,
-                            @Value("${jwt.refresh-token.validity-seconds}") int refreshTokenValiditySeconds,
+    public JwtTokenProvider(@Value("${jwt.access-token.validity-millis}") long accessTokenValidityMillis,
+                            @Value("${jwt.refresh-token.validity-millis}") long refreshTokenValidityMillis,
                             @Value("${jwt.token-secret}") String tokenSecret,
                             Clock jwtClock
     ) {
-        this.accessTokenValiditySeconds = accessTokenValiditySeconds;
-        this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
+        this.accessTokenValidityMillis = accessTokenValidityMillis;
+        this.refreshTokenValidityMillis = refreshTokenValidityMillis;
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(tokenSecret));
         this.jwtClock = jwtClock;
     }
@@ -56,11 +56,11 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(Member member, Instant issuedAt) {
-        return createToken(member, issuedAt, TokenType.ACCESS, accessTokenValiditySeconds);
+        return createToken(member, issuedAt, TokenType.ACCESS, accessTokenValidityMillis);
     }
 
     public String createRefreshToken(Member member, Instant issuedAt) {
-        return createToken(member, issuedAt, TokenType.REFRESH, refreshTokenValiditySeconds);
+        return createToken(member, issuedAt, TokenType.REFRESH, refreshTokenValidityMillis);
     }
 
     public void validateAccessToken(String accessToken) {
@@ -93,11 +93,11 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    private String createToken(Member member, Instant issuedAt, TokenType tokenType, int validitySeconds) {
+    private String createToken(Member member, Instant issuedAt, TokenType tokenType, long validityMillis) {
         JwtBuilder jwtBuilder = Jwts.builder()
                 .subject(tokenType.name())
                 .issuedAt(Date.from(issuedAt))
-                .expiration(Date.from(issuedAt.plusSeconds(validitySeconds)))
+                .expiration(Date.from(issuedAt.plusMillis(validityMillis)))
                 .claim(CLAIM_KEY_MEMBER_ID, member.getId())
                 .signWith(secretKey);
 
