@@ -11,17 +11,11 @@ import org.springframework.util.StringUtils;
 @Component
 public class BearerTokenExtractor {
 
-    private final AuthenticationScheme authenticationScheme;
-
-    public BearerTokenExtractor() {
-        this.authenticationScheme = AuthenticationScheme.BEARER;
-    }
-
     public String extractToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         validateAuthorizationHeader(authorizationHeader);
 
-        return authorizationHeader.substring(authenticationScheme.getPrefix().length()).trim();
+        return authorizationHeader.substring(AuthenticationScheme.BEARER.getPrefix().length()).trim();
     }
 
     private void validateAuthorizationHeader(String authorizationHeader) {
@@ -39,6 +33,6 @@ public class BearerTokenExtractor {
     }
 
     private boolean hasInvalidAuthenticationScheme(String authorizationHeader) {
-        return !StringUtils.startsWithIgnoreCase(authorizationHeader, authenticationScheme.getPrefix());
+        return !StringUtils.startsWithIgnoreCase(authorizationHeader, AuthenticationScheme.BEARER.getPrefix());
     }
 }
