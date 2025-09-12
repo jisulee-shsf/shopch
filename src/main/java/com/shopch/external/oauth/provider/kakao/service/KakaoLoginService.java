@@ -55,7 +55,7 @@ public class KakaoLoginService implements SocialLoginService {
         KakaoTokenResponse tokenResponse = kakaoTokenClient.requestKakaoToken(tokenRequest);
 
         return Optional.ofNullable(tokenResponse)
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.INVALID_CODE))
+                .orElseThrow(() -> new AuthenticationException(ErrorCode.INVALID_AUTHORIZATION_CODE))
                 .getAccessToken();
     }
 }

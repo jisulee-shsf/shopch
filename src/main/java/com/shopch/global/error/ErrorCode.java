@@ -10,7 +10,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public enum ErrorCode {
 
-    INVALID_CODE(UNAUTHORIZED, "AUTH-001", "유효하지 않은 인가 코드입니다."),
+    INVALID_AUTHORIZATION_CODE(UNAUTHORIZED, "AUTH-001", "유효하지 않은 인가 코드입니다."),
     UNSUPPORTED_OAUTH_PROVIDER(BAD_REQUEST, "AUTH-002", "지원하지 않는 OAuth 제공자입니다."),
     MISSING_AUTHORIZATION_HEADER(BAD_REQUEST, "AUTH-003", "Authorization 헤더가 존재하지 않습니다."),
     INVALID_AUTHORIZATION_HEADER(BAD_REQUEST, "AUTH-004", "유효하지 않은 Authorization 헤더입니다."),
