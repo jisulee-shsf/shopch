@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken extends BaseEntity {
 
     @Id
@@ -45,12 +45,12 @@ public class RefreshToken extends BaseEntity {
                 .build();
     }
 
-    public void updateToken(String token, LocalDateTime expiresAt) {
+    public void updateTokenInfo(String token, LocalDateTime expiresAt) {
         this.token = token;
         this.expiresAt = expiresAt;
     }
 
     public boolean isExpired(LocalDateTime now) {
-        return now.isAfter(expiresAt);
+        return expiresAt.isBefore(now);
     }
 }

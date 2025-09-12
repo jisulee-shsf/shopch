@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderProduct extends BaseEntity {
 
     @Id
@@ -45,15 +45,15 @@ public class OrderProduct extends BaseEntity {
                 .build();
     }
 
-    public void changeOrder(Order order) {
+    public void assignOrder(Order order) {
         this.order = order;
     }
 
-    public int calculateTotalPrice() {
-        return orderPrice * orderQuantity;
+    public void restoreStockQuantity() {
+        product.addStockQuantity(orderQuantity);
     }
 
-    public void cancel() {
-        product.addStockQuantity(orderQuantity);
+    public int calculateSubTotalPrice() {
+        return orderPrice * orderQuantity;
     }
 }

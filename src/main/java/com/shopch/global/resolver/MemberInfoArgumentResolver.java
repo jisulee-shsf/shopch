@@ -1,7 +1,7 @@
 package com.shopch.global.resolver;
 
-import com.shopch.global.jwt.BearerTokenExtractor;
-import com.shopch.global.jwt.JwtTokenProvider;
+import com.shopch.global.auth.BearerTokenExtractor;
+import com.shopch.global.auth.JwtProvider;
 import com.shopch.global.resolver.dto.MemberInfoDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final BearerTokenExtractor bearerTokenExtractor;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -28,6 +28,6 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String accessToken = bearerTokenExtractor.extractToken((HttpServletRequest) webRequest.getNativeRequest());
-        return jwtTokenProvider.getMemberInfoFrom(accessToken);
+        return jwtProvider.getMemberInfoFrom(accessToken);
     }
 }

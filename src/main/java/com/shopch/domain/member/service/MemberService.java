@@ -1,8 +1,8 @@
 package com.shopch.domain.member.service;
 
-import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.domain.member.entity.Member;
 import com.shopch.domain.member.repository.MemberRepository;
+import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Optional<Member> findActiveMember(String oauthId, OAuthProvider oAuthProvider) {
-        return memberRepository.findByOauthIdAndOauthProvider(oauthId, oAuthProvider);
+    public Optional<Member> findActiveMember(String oauthId, OAuthProvider oauthProvider) {
+        return memberRepository.findByOauthIdAndOauthProvider(oauthId, oauthProvider);
     }
 
     public Member getMember(Long memberId) {

@@ -1,4 +1,4 @@
-package com.shopch.global.jwt.dto;
+package com.shopch.global.auth.dto;
 
 import com.shopch.domain.member.entity.Member;
 import com.shopch.domain.token.entity.RefreshToken;

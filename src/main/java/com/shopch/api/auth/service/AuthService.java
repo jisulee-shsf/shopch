@@ -13,8 +13,8 @@ import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.external.oauth.dto.UserInfo;
 import com.shopch.external.oauth.service.SocialLoginService;
 import com.shopch.external.oauth.service.SocialLoginServiceFactory;
-import com.shopch.global.jwt.JwtTokenProvider;
-import com.shopch.global.jwt.dto.TokenPair;
+import com.shopch.global.auth.JwtProvider;
+import com.shopch.global.auth.dto.TokenPair;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +30,14 @@ public class AuthService {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
     private final SocialLoginServiceFactory socialLoginServiceFactory;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public OAuthLoginResponse oauthLogin(OAuthLoginServiceRequest request, Instant issuedAt) {
         UserInfo userInfo = getUserInfoFromSocialLoginService(request.getOauthProvider(), request.getCode());
         Member member = getOrRegisterMember(userInfo);
 
-        TokenPair tokenPair = jwtTokenProvider.createTokenPair(member, issuedAt);
+        TokenPair tokenPair = jwtProvider.createTokenPair(member, issuedAt);
         updateOrRegisterRefreshToken(member, tokenPair);
 
         return OAuthLoginResponse.of(tokenPair);
@@ -45,13 +45,13 @@ public class AuthService {
 
     public AccessTokenResponse refreshAccessToken(RefreshAccessTokenServiceRequest request, Instant issuedAt) {
         String refreshToken = request.getRefreshToken();
-        jwtTokenProvider.validateRefreshToken(refreshToken);
+        jwtProvider.validateRefreshToken(refreshToken);
 
         RefreshToken refreshTokenEntity = refreshTokenService.getRefreshToken(refreshToken);
         Member member = refreshTokenEntity.getMember();
 
-        String accessToken = jwtTokenProvider.createAccessToken(member, issuedAt);
-        LocalDateTime accessTokenExpiresAt = jwtTokenProvider.getExpirationFrom(accessToken);
+        String accessToken = jwtProvider.createAccessToken(member, issuedAt);
+        LocalDateTime accessTokenExpiresAt = jwtProvider.getExpirationFrom(accessToken);
 
         return AccessTokenResponse.of(accessToken, accessTokenExpiresAt);
     }
@@ -74,7 +74,7 @@ public class AuthService {
     private void updateOrRegisterRefreshToken(Member member, TokenPair tokenPair) {
         refreshTokenService.findRefreshToken(member.getId())
                 .ifPresentOrElse(
-                        refreshToken -> refreshToken.updateToken(tokenPair.getRefreshToken(), tokenPair.getRefreshTokenExpiresAt()),
+                        refreshToken -> refreshToken.updateTokenInfo(tokenPair.getRefreshToken(), tokenPair.getRefreshTokenExpiresAt()),
                         () -> refreshTokenService.registerRefreshToken(tokenPair.toRefreshToken(member)));
     }
 }

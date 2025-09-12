@@ -26,7 +26,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> createOrder(@MemberInfo MemberInfoDto memberInfo,
                                                      @Valid @RequestBody OrderCreateRequest request) {
         LocalDateTime orderedAt = LocalDateTime.now();
-        return ResponseEntity.ok(orderService.createOrder(memberInfo.getId(), orderedAt, request.toServiceRequest()));
+        return ResponseEntity.ok(orderService.createOrder(memberInfo.getId(), request.toServiceRequest(), orderedAt));
     }
 
     @PostMapping("/{orderId}/cancel")
@@ -37,8 +37,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<OrderResponse>> findOrders(@Valid OrderSearchCondition searchCondition,
-                                                                  Pageable pageable) {
-        return ResponseEntity.ok(orderService.findOrders(searchCondition.toServiceSearchCondition(), pageable));
+    public ResponseEntity<PageResponse<OrderResponse>> searchOrders(@Valid OrderSearchCondition searchCondition,
+                                                                    Pageable pageable) {
+        return ResponseEntity.ok(orderService.searchOrders(searchCondition.toServiceSearchCondition(), pageable));
     }
 }

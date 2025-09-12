@@ -34,8 +34,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public OrderResponse createOrder(Long memberId, LocalDateTime orderedAt, OrderCreateServiceRequest request) {
-        Product product = productService.getProductById(request.getProductId());
+    public OrderResponse createOrder(Long memberId, OrderCreateServiceRequest request, LocalDateTime orderedAt) {
+        Product product = productService.getProduct(request.getProductId());
         OrderProduct orderProduct = OrderProduct.create(product, request.getOrderQuantity());
 
         List<OrderProduct> orderProducts = new ArrayList<>();
@@ -49,25 +49,25 @@ public class OrderService {
 
     @Transactional
     public void cancelOrder(Long memberId, Long orderId) {
-        Order order = getOrderById(orderId);
+        Order order = getOrder(orderId);
         validateOwner(order, memberId);
 
         order.cancel();
     }
 
-    public PageResponse<OrderResponse> findOrders(OrderServiceSearchCondition searchCondition, Pageable pageable) {
+    public PageResponse<OrderResponse> searchOrders(OrderServiceSearchCondition searchCondition, Pageable pageable) {
         Page<Order> orders = orderRepository.findAllBySearchCondition(searchCondition, pageable);
         return PageResponse.of(orders.map(OrderResponse::of));
     }
 
-    private Order getOrderById(Long orderId) {
+    private Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND));
     }
 
     private void validateOwner(Order order, Long memberId) {
         if (order.isNotOwner(memberId)) {
-            throw new ForbiddenException(ErrorCode.ORDER_CANCELLATION_DENIED);
+            throw new ForbiddenException(ErrorCode.ORDER_ACCESS_DENIED);
         }
     }
 }

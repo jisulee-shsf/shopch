@@ -8,11 +8,11 @@ import java.time.ZoneId;
 @Configuration
 public class ClockConfig {
 
-    public final static ZoneId TIME_ZONE = ZoneId.systemDefault();
+    public final static ZoneId DEFAULT_TIME_ZONE = ZoneId.systemDefault();
 
     @Bean
     public java.time.Clock clock() {
-        return java.time.Clock.system(TIME_ZONE);
+        return java.time.Clock.system(DEFAULT_TIME_ZONE);
     }
 
     @Bean

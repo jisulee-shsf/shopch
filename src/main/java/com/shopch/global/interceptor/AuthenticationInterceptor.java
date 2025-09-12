@@ -1,7 +1,7 @@
 package com.shopch.global.interceptor;
 
-import com.shopch.global.jwt.BearerTokenExtractor;
-import com.shopch.global.jwt.JwtTokenProvider;
+import com.shopch.global.auth.BearerTokenExtractor;
+import com.shopch.global.auth.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +13,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final BearerTokenExtractor bearerTokenExtractor;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = bearerTokenExtractor.extractToken(request);
-        jwtTokenProvider.validateAccessToken(accessToken);
+        jwtProvider.validateAccessToken(accessToken);
         return true;
     }
 }

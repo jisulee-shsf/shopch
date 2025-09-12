@@ -1,8 +1,8 @@
 package com.shopch.domain.member.entity;
 
 import com.shopch.domain.common.BaseEntity;
-import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.domain.member.constant.Role;
+import com.shopch.external.oauth.constant.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,10 +11,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {
         @UniqueConstraint(
                 name = "oauth_member_unique",
@@ -22,6 +21,8 @@ import java.time.LocalDateTime;
         )}
 )
 @SQLRestriction(value = "deleted_at IS NULL")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     @Id
@@ -73,5 +74,9 @@ public class Member extends BaseEntity {
 
     public void updateDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public boolean hasSameId(Long id) {
+        return Objects.equals(this.id, id);
     }
 }

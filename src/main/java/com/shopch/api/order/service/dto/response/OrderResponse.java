@@ -1,7 +1,7 @@
 package com.shopch.api.order.service.dto.response;
 
-import com.shopch.domain.order.entity.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.shopch.domain.order.entity.Order;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,17 +19,17 @@ public class OrderResponse {
     private final LocalDateTime orderedAt;
 
     private final String orderStatus;
-    private final int totalOrderPrice;
+    private final int totalPrice;
     private final List<OrderProductResponse> orderProducts;
 
     @Builder
-    private OrderResponse(Long orderId, String memberName, LocalDateTime orderedAt, String orderStatus, int totalOrderPrice,
+    private OrderResponse(Long orderId, String memberName, LocalDateTime orderedAt, String orderStatus, int totalPrice,
                           List<OrderProductResponse> orderProducts) {
         this.orderId = orderId;
         this.memberName = memberName;
         this.orderedAt = orderedAt;
         this.orderStatus = orderStatus;
-        this.totalOrderPrice = totalOrderPrice;
+        this.totalPrice = totalPrice;
         this.orderProducts = orderProducts;
     }
 
@@ -39,7 +39,7 @@ public class OrderResponse {
                 .memberName(order.getMember().getName())
                 .orderedAt(order.getOrderedAt())
                 .orderStatus(order.getOrderStatus().name())
-                .totalOrderPrice(order.getTotalOrderPrice())
+                .totalPrice(order.getTotalPrice())
                 .orderProducts(order.getOrderProducts().stream()
                         .map(OrderProductResponse::of)
                         .collect(Collectors.toList()))

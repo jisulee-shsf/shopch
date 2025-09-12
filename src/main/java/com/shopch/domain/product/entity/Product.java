@@ -5,7 +5,7 @@ import com.shopch.domain.common.BaseEntity;
 import com.shopch.domain.product.constant.ProductSellingStatus;
 import com.shopch.domain.product.constant.ProductType;
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.OutOfStockException;
+import com.shopch.global.error.exception.InsufficientStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @BatchSize(size = 100)
 public class Product extends BaseEntity {
 
@@ -62,27 +62,28 @@ public class Product extends BaseEntity {
         productType = request.getProductType();
         price = request.getPrice();
         stockQuantity = request.getStockQuantity();
-        changeProductSellingStatus();
+        updateProductSellingStatus();
     }
 
     public void deductStockQuantity(int orderQuantity) {
-        if (isStockQuantityLessThanOrderQuantity(orderQuantity)) {
-            throw new OutOfStockException(ErrorCode.OUT_OF_STOCK);
+        if (isStockQuantityLessThan(orderQuantity)) {
+            throw new InsufficientStockException(ErrorCode.INSUFFICIENT_STOCK);
         }
+
         stockQuantity -= orderQuantity;
-        changeProductSellingStatus();
+        updateProductSellingStatus();
     }
 
     public void addStockQuantity(int orderQuantity) {
         stockQuantity += orderQuantity;
-        changeProductSellingStatus();
+        updateProductSellingStatus();
     }
 
-    private void changeProductSellingStatus() {
-        productSellingStatus = (stockQuantity == 0) ? ProductSellingStatus.COMPLETED : ProductSellingStatus.SELLING;
+    private void updateProductSellingStatus() {
+        productSellingStatus = (stockQuantity > 0) ? ProductSellingStatus.SELLING : ProductSellingStatus.COMPLETED;
     }
 
-    private boolean isStockQuantityLessThanOrderQuantity(int orderQuantity) {
+    private boolean isStockQuantityLessThan(int orderQuantity) {
         return stockQuantity < orderQuantity;
     }
 }

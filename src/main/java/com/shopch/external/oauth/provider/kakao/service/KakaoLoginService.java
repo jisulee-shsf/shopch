@@ -2,15 +2,15 @@ package com.shopch.external.oauth.provider.kakao.service;
 
 import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.external.oauth.dto.UserInfo;
-import com.shopch.external.oauth.provider.kakao.client.KakaoUserInfoClient;
-import com.shopch.external.oauth.provider.kakao.dto.response.KakaoUserInfoResponse;
 import com.shopch.external.oauth.provider.kakao.client.KakaoTokenClient;
+import com.shopch.external.oauth.provider.kakao.client.KakaoUserInfoClient;
 import com.shopch.external.oauth.provider.kakao.dto.request.KakaoTokenRequest;
 import com.shopch.external.oauth.provider.kakao.dto.response.KakaoTokenResponse;
+import com.shopch.external.oauth.provider.kakao.dto.response.KakaoUserInfoResponse;
 import com.shopch.external.oauth.service.SocialLoginService;
+import com.shopch.global.auth.constant.AuthenticationScheme;
 import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.AuthenticationException;
-import com.shopch.global.jwt.constant.AuthenticationScheme;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

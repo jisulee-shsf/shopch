@@ -1,12 +1,12 @@
-package com.shopch.global.jwt;
+package com.shopch.global.auth;
 
 import com.shopch.domain.member.constant.Role;
 import com.shopch.domain.member.entity.Member;
+import com.shopch.global.auth.constant.TokenType;
+import com.shopch.global.auth.dto.TokenPair;
 import com.shopch.global.config.clock.ClockConfig;
 import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.AuthenticationException;
-import com.shopch.global.jwt.constant.TokenType;
-import com.shopch.global.jwt.dto.TokenPair;
 import com.shopch.global.resolver.dto.MemberInfoDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -20,19 +20,19 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
-public class JwtTokenProvider {
+public class JwtProvider {
 
-    private static final String CLAIM_KEY_MEMBER_ID = "memberId";
-    private static final String CLAIM_KEY_ROLE = "role";
+    private static final String MEMBER_ID_NAME = "memberId";
+    private static final String ROLE_NAME = "role";
     private final long accessTokenValidityMillis;
     private final long refreshTokenValidityMillis;
     private final SecretKey secretKey;
     private final Clock jwtClock;
 
-    public JwtTokenProvider(@Value("${jwt.access-token.validity-millis}") long accessTokenValidityMillis,
-                            @Value("${jwt.refresh-token.validity-millis}") long refreshTokenValidityMillis,
-                            @Value("${jwt.token-secret}") String tokenSecret,
-                            Clock jwtClock
+    public JwtProvider(@Value("${jwt.access-token.validity-millis}") long accessTokenValidityMillis,
+                       @Value("${jwt.refresh-token.validity-millis}") long refreshTokenValidityMillis,
+                       @Value("${jwt.token-secret}") String tokenSecret,
+                       Clock jwtClock
     ) {
         this.accessTokenValidityMillis = accessTokenValidityMillis;
         this.refreshTokenValidityMillis = refreshTokenValidityMillis;
@@ -75,7 +75,7 @@ public class JwtTokenProvider {
         Claims claims = getClaims(token);
         return claims.getExpiration()
                 .toInstant()
-                .atZone(ClockConfig.TIME_ZONE)
+                .atZone(ClockConfig.DEFAULT_TIME_ZONE)
                 .toLocalDateTime();
     }
 
@@ -84,8 +84,8 @@ public class JwtTokenProvider {
         TokenType tokenType = TokenType.from(claims.getSubject());
         validateTokenType(tokenType, TokenType.ACCESS);
 
-        Long memberId = claims.get(CLAIM_KEY_MEMBER_ID, Long.class);
-        String role = claims.get(CLAIM_KEY_ROLE, String.class);
+        Long memberId = claims.get(MEMBER_ID_NAME, Long.class);
+        String role = claims.get(ROLE_NAME, String.class);
 
         return MemberInfoDto.builder()
                 .id(memberId)
@@ -98,11 +98,11 @@ public class JwtTokenProvider {
                 .subject(tokenType.name())
                 .issuedAt(Date.from(issuedAt))
                 .expiration(Date.from(issuedAt.plusMillis(validityMillis)))
-                .claim(CLAIM_KEY_MEMBER_ID, member.getId())
+                .claim(MEMBER_ID_NAME, member.getId())
                 .signWith(secretKey);
 
         if (tokenType.isAccess()) {
-            jwtBuilder.claim(CLAIM_KEY_ROLE, member.getRole());
+            jwtBuilder.claim(ROLE_NAME, member.getRole());
         }
         return jwtBuilder.compact();
     }

@@ -1,6 +1,6 @@
 package com.shopch.api.member.controller;
 
-import com.shopch.api.member.service.MemberApiService;
+import com.shopch.api.member.service.MemberAccountService;
 import com.shopch.api.member.service.dto.MemberInfoResponse;
 import com.shopch.global.resolver.MemberInfo;
 import com.shopch.global.resolver.dto.MemberInfoDto;
@@ -18,17 +18,17 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/members")
 public class MemberController {
 
-    private final MemberApiService memberApiService;
+    private final MemberAccountService memberAccountService;
 
     @GetMapping("/me")
     public ResponseEntity<MemberInfoResponse> getMemberInfo(@MemberInfo MemberInfoDto memberInfo) {
-        return ResponseEntity.ok(memberApiService.getMemberInfo(memberInfo.getId()));
+        return ResponseEntity.ok(memberAccountService.getMemberInfo(memberInfo.getId()));
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMember(@MemberInfo MemberInfoDto memberInfo) {
         LocalDateTime deletedAt = LocalDateTime.now();
-        memberApiService.deleteMember(memberInfo.getId(), deletedAt);
+        memberAccountService.deleteMember(memberInfo.getId(), deletedAt);
         return ResponseEntity.noContent().build();
     }
 }

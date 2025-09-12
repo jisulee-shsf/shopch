@@ -1,7 +1,7 @@
 package com.shopch.api.auth.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.shopch.global.jwt.dto.TokenPair;
+import com.shopch.global.auth.dto.TokenPair;
 import lombok.Builder;
 import lombok.Getter;
 

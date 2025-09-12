@@ -1,4 +1,4 @@
-package com.shopch.global.jwt.constant;
+package com.shopch.global.auth.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

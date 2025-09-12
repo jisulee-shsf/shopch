@@ -31,12 +31,12 @@ public class ProductService {
 
     @Transactional
     public ProductResponse updateProduct(Long productId, ProductUpdateServiceRequest request) {
-        Product product = getProductById(productId);
+        Product product = getProduct(productId);
         product.update(request);
         return ProductResponse.of(product);
     }
 
-    public Product getProductById(Long productId) {
+    public Product getProduct(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
     }

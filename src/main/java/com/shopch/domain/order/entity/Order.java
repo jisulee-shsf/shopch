@@ -20,8 +20,8 @@ import static com.shopch.global.error.ErrorCode.ALREADY_CANCELED_ORDER;
 
 @Entity
 @Table(name = "orders")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
 
     @Id
@@ -33,33 +33,33 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(nullable = false)
-    private LocalDateTime orderedAt;
-
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
+
+    @Column(nullable = false)
+    private LocalDateTime orderedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @BatchSize(size = 100)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
-    private int totalOrderPrice;
+    private int totalPrice;
 
     @Builder
-    private Order(Member member, LocalDateTime orderedAt, OrderStatus orderStatus, List<OrderProduct> orderProducts) {
+    private Order(Member member, OrderStatus orderStatus, LocalDateTime orderedAt, List<OrderProduct> orderProducts) {
         this.member = member;
-        this.orderedAt = orderedAt;
         this.orderStatus = orderStatus;
-        this.totalOrderPrice = getTotalOrderPrice(orderProducts);
-        orderProducts.forEach(this::changeOrderProduct);
+        this.orderedAt = orderedAt;
+        totalPrice = sumTotalPrice(orderProducts);
+        orderProducts.forEach(this::addOrderProduct);
     }
 
     public static Order create(Member member, LocalDateTime orderedAt, List<OrderProduct> orderProducts) {
         return Order.builder()
                 .member(member)
-                .orderedAt(orderedAt)
                 .orderStatus(OrderStatus.INIT)
+                .orderedAt(orderedAt)
                 .orderProducts(orderProducts)
                 .build();
     }
@@ -69,21 +69,25 @@ public class Order extends BaseEntity {
             throw new BusinessException(ALREADY_CANCELED_ORDER);
         }
         orderStatus = OrderStatus.CANCELED;
-        orderProducts.forEach(OrderProduct::cancel);
+        orderProducts.forEach(OrderProduct::restoreStockQuantity);
+    }
+
+    public boolean isOwner(Long memberId) {
+        return member.hasSameId(memberId);
     }
 
     public boolean isNotOwner(Long memberId) {
-        return !member.getId().equals(memberId);
+        return !isOwner(memberId);
     }
 
-    private int getTotalOrderPrice(List<OrderProduct> orderProducts) {
-        return orderProducts.stream()
-                .mapToInt(OrderProduct::calculateTotalPrice)
-                .sum();
-    }
-
-    private void changeOrderProduct(OrderProduct orderProduct) {
+    private void addOrderProduct(OrderProduct orderProduct) {
         orderProducts.add(orderProduct);
-        orderProduct.changeOrder(this);
+        orderProduct.assignOrder(this);
+    }
+
+    private int sumTotalPrice(List<OrderProduct> orderProducts) {
+        return orderProducts.stream()
+                .mapToInt(OrderProduct::calculateSubTotalPrice)
+                .sum();
     }
 }

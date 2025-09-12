@@ -1,7 +1,7 @@
 package com.shopch.external.oauth.provider.kakao.dto.response;
 
-import com.shopch.external.oauth.dto.OAuthUserInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.shopch.external.oauth.dto.OAuthUserInfo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

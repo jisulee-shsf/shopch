@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberApiService {
+public class MemberAccountService {
 
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;

@@ -1,4 +1,4 @@
-package com.shopch.global.jwt.constant;
+package com.shopch.global.auth.constant;
 
 import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.AuthenticationException;

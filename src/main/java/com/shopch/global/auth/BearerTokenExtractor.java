@@ -1,8 +1,8 @@
-package com.shopch.global.jwt;
+package com.shopch.global.auth;
 
+import com.shopch.global.auth.constant.AuthenticationScheme;
 import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.AuthenticationException;
-import com.shopch.global.jwt.constant.AuthenticationScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
