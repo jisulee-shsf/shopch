@@ -1,6 +1,7 @@
 package com.shopch.domain.product.repository;
 
 import com.shopch.domain.product.constant.ProductSellingStatus;
+import com.shopch.domain.product.constant.ProductType;
 import com.shopch.domain.product.entity.Product;
 import com.shopch.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
@@ -14,11 +15,20 @@ import java.util.List;
 
 import static com.shopch.domain.product.constant.ProductSellingStatus.COMPLETED;
 import static com.shopch.domain.product.constant.ProductSellingStatus.SELLING;
-import static com.shopch.domain.product.constant.ProductType.PRODUCT_A;
+import static com.shopch.domain.product.constant.ProductType.PRODUCT_1;
+import static com.shopch.domain.product.constant.ProductType.PRODUCT_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 class ProductRepositoryTest extends IntegrationTestSupport {
+
+    private static final String PRODUCT_1_NAME = "product1";
+    private static final Integer PRODUCT_1_PRICE = 10000;
+    private static final Integer PRODUCT_1_STOCK_QUANTITY = 10;
+    private static final String PRODUCT_2_NAME = "product2";
+    private static final Integer PRODUCT_2_PRICE = 20000;
+    private static final int ZERO_STOCK_QUANTITY = 0;
+    private static final int EXPECTED_SIZE = 1;
 
     @Autowired
     private ProductRepository productRepository;
@@ -28,42 +38,48 @@ class ProductRepositoryTest extends IntegrationTestSupport {
         productRepository.deleteAllInBatch();
     }
 
-    @DisplayName("판매 상태가 SELLING인 상품과 페이징 결과를 조회한다.")
+    @DisplayName("판매 상품과 페이징 정보를 조회한다.")
     @Test
-    void findAllSellingStatusIn() {
+    void findAllByProductSellingStatusIn() {
         // given
-        Product product1 = createTestProduct("productA", SELLING, 1);
-        Product product2 = createTestProduct("productB", SELLING, 2);
-        Product product3 = createTestProduct("productC", COMPLETED, 0);
-        productRepository.saveAll(List.of(product1, product2, product3));
-
-        PageRequest pageRequest = PageRequest.of(0, 2);
+        Product product1 = createProduct(PRODUCT_1_NAME, PRODUCT_1, SELLING, PRODUCT_1_PRICE, PRODUCT_1_STOCK_QUANTITY);
+        Product product2 = createProduct(PRODUCT_2_NAME, PRODUCT_2, COMPLETED, PRODUCT_2_PRICE, ZERO_STOCK_QUANTITY);
+        productRepository.saveAll(List.of(product1, product2));
 
         // when
-        Page<Product> pageProducts = productRepository.findAllByProductSellingStatusIn(List.of(SELLING), pageRequest);
+        Page<Product> products = productRepository.findAllByProductSellingStatusIn(List.of(SELLING), PageRequest.of(0, 2));
 
         // then
-        List<Product> content = pageProducts.getContent();
-        assertThat(content).hasSize(2);
-        assertThat(content)
-                .extracting("name", "productSellingStatus", "stockQuantity")
+        assertThat(products.getContent()).hasSize(EXPECTED_SIZE)
+                .extracting(
+                        Product::getName,
+                        Product::getProductType,
+                        Product::getProductSellingStatus,
+                        Product::getPrice,
+                        Product::getStockQuantity
+                )
                 .containsExactly(
-                        tuple("productA", SELLING, 1),
-                        tuple("productB", SELLING, 2)
+                        tuple(
+                                PRODUCT_1_NAME,
+                                PRODUCT_1,
+                                SELLING,
+                                PRODUCT_1_PRICE,
+                                PRODUCT_1_STOCK_QUANTITY
+                        )
                 );
 
-        assertThat(pageProducts.getSize()).isEqualTo(2);
-        assertThat(pageProducts.getNumber()).isEqualTo(0);
-        assertThat(pageProducts.getTotalElements()).isEqualTo(2);
-        assertThat(pageProducts.getTotalPages()).isEqualTo(1);
+        assertThat(products.getSize()).isEqualTo(2);
+        assertThat(products.getNumber()).isEqualTo(0);
+        assertThat(products.getTotalElements()).isEqualTo(1);
+        assertThat(products.getTotalPages()).isEqualTo(1);
     }
 
-    private Product createTestProduct(String name, ProductSellingStatus productSellingStatus, int stockQuantity) {
+    private Product createProduct(String name, ProductType type, ProductSellingStatus sellingStatus, int price, int stockQuantity) {
         return Product.builder()
                 .name(name)
-                .productType(PRODUCT_A)
-                .productSellingStatus(productSellingStatus)
-                .price(10000)
+                .productType(type)
+                .productSellingStatus(sellingStatus)
+                .price(price)
                 .stockQuantity(stockQuantity)
                 .build();
     }
