@@ -1,21 +1,15 @@
-package com.app.support;
+package com.shopch.support;
 
-import com.app.api.health.controller.HealthCheckController;
-import com.app.api.login.controller.OAuthLoginController;
-import com.app.api.login.service.OAuthLoginService;
-import com.app.api.logout.controller.LogoutController;
-import com.app.api.logout.service.LogoutService;
-import com.app.api.member.controller.MemberInfoController;
-import com.app.api.member.service.MemberInfoService;
-import com.app.api.order.controller.OrderController;
-import com.app.api.order.service.OrderService;
-import com.app.api.product.controller.ProductController;
-import com.app.api.product.service.ProductService;
-import com.app.api.token.controller.TokenController;
-import com.app.api.token.service.TokenService;
-import com.app.web.client.KakaoTokenClient;
-import com.app.web.controller.KakaoTokenController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shopch.api.auth.controller.AuthController;
+import com.shopch.api.auth.service.AuthService;
+import com.shopch.api.health.controller.HealthCheckController;
+import com.shopch.api.member.controller.MemberController;
+import com.shopch.api.member.service.MemberAccountService;
+import com.shopch.api.order.controller.OrderController;
+import com.shopch.api.order.service.OrderService;
+import com.shopch.api.product.controller.ProductController;
+import com.shopch.api.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,11 +24,8 @@ import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 @WebMvcTest(
         controllers = {
                 HealthCheckController.class,
-                KakaoTokenController.class,
-                OAuthLoginController.class,
-                MemberInfoController.class,
-                TokenController.class,
-                LogoutController.class,
+                AuthController.class,
+                MemberController.class,
                 ProductController.class,
                 OrderController.class
 
@@ -57,19 +48,10 @@ public abstract class ControllerTestSupport {
     protected ObjectMapper objectMapper;
 
     @MockitoBean
-    protected KakaoTokenClient kakaoTokenClient;
+    protected AuthService authService;
 
     @MockitoBean
-    protected OAuthLoginService oauthLoginService;
-
-    @MockitoBean
-    protected MemberInfoService memberInfoService;
-
-    @MockitoBean
-    protected TokenService tokenService;
-
-    @MockitoBean
-    protected LogoutService logoutService;
+    protected MemberAccountService memberAccountService;
 
     @MockitoBean
     protected ProductService productService;
