@@ -30,7 +30,7 @@ class MemberServiceTest extends IntegrationTestSupport {
     private static final String MEMBER_EMAIL = "member@email.com";
     private static final String DELETED_AT_NAME = "deletedAt";
     public static final int EXPECTED_SIZE = 1;
-    private static final Long MEMBER_ID = 1L;
+    private static final Long NON_EXISTENT_MEMBER_ID = 1L;
 
     @Autowired
     private MemberService memberService;
@@ -139,7 +139,7 @@ class MemberServiceTest extends IntegrationTestSupport {
     @Test
     void getMember_MemberNotFound() {
         // when & then
-        assertThatThrownBy(() -> memberService.getMember(MEMBER_ID))
+        assertThatThrownBy(() -> memberService.getMember(NON_EXISTENT_MEMBER_ID))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(MEMBER_NOT_FOUND.getMessage());
     }

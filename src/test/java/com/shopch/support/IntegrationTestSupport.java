@@ -1,6 +1,7 @@
-package com.app.support;
+package com.shopch.support;
 
-import com.app.external.oauth.kakao.client.KakaoUserInfoClient;
+import com.shopch.external.oauth.provider.kakao.client.KakaoTokenClient;
+import com.shopch.external.oauth.provider.kakao.client.KakaoUserInfoClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -9,10 +10,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 public abstract class IntegrationTestSupport {
 
     @MockitoBean
-    protected KakaoUserInfoClient kakaoUserInfoClient;
+    protected KakaoTokenClient kakaoTokenClient;
 
-    @MockitoSpyBean
-    protected io.jsonwebtoken.Clock jwtClock;
+    @MockitoBean
+    protected KakaoUserInfoClient kakaoUserInfoClient;
 
     @MockitoSpyBean
     protected java.time.Clock clock;

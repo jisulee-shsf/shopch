@@ -5,6 +5,7 @@ import com.shopch.api.product.service.dto.request.ProductCreateServiceRequest;
 import com.shopch.api.product.service.dto.request.ProductUpdateServiceRequest;
 import com.shopch.api.product.service.dto.response.ProductResponse;
 import com.shopch.domain.product.constant.ProductSellingStatus;
+import com.shopch.domain.product.constant.ProductType;
 import com.shopch.domain.product.entity.Product;
 import com.shopch.domain.product.repository.ProductRepository;
 import com.shopch.global.error.exception.EntityNotFoundException;
@@ -14,20 +15,32 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.shopch.domain.product.constant.ProductSellingStatus.COMPLETED;
 import static com.shopch.domain.product.constant.ProductSellingStatus.SELLING;
-import static com.shopch.domain.product.constant.ProductType.PRODUCT_A;
-import static com.shopch.domain.product.constant.ProductType.PRODUCT_B;
+import static com.shopch.domain.product.constant.ProductType.PRODUCT_1;
+import static com.shopch.domain.product.constant.ProductType.PRODUCT_2;
 import static com.shopch.global.error.ErrorCode.PRODUCT_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class ProductServiceTest extends IntegrationTestSupport {
+
+    private static final String PRODUCT_1_NAME = "product1";
+    private static final Integer PRODUCT_1_PRICE = 10000;
+    private static final Integer PRODUCT_1_STOCK_QUANTITY = 10;
+    private static final int EXPECTED_SIZE_1 = 1;
+    private static final String PRODUCT_2_NAME = "product2";
+    private static final Integer PRODUCT_2_PRICE = 20000;
+    private static final Integer PRODUCT_2_STOCK_QUANTITY = 20;
+    private static final Long NON_EXISTENT_PRODUCT_ID = 1L;
+    private static final int ZERO_STOCK_QUANTITY = 0;
+    private static final Pageable DEFAULT_PAGE_REQUEST = PageRequest.of(0, 2);
+    private static final int EXPECTED_SIZE_2 = 2;
 
     @Autowired
     private ProductService productService;
@@ -40,15 +53,15 @@ class ProductServiceTest extends IntegrationTestSupport {
         productRepository.deleteAllInBatch();
     }
 
-    @DisplayName("상품을 등록한다")
+    @DisplayName("상품을 생성한다.")
     @Test
     void createProduct() {
         // given
         ProductCreateServiceRequest request = ProductCreateServiceRequest.builder()
-                .name("product")
-                .productType(PRODUCT_A)
-                .price(10000)
-                .stockQuantity(1)
+                .name(PRODUCT_1_NAME)
+                .productType(PRODUCT_1)
+                .price(PRODUCT_1_PRICE)
+                .stockQuantity(PRODUCT_1_STOCK_QUANTITY)
                 .build();
 
         // when
@@ -57,35 +70,52 @@ class ProductServiceTest extends IntegrationTestSupport {
         // then
         assertThat(response.getId()).isNotNull();
         assertThat(response)
-                .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("product", PRODUCT_A.name(), SELLING.name(), 10000, 1);
+                .extracting(
+                        ProductResponse::getName,
+                        ProductResponse::getProductType,
+                        ProductResponse::getProductSellingStatus,
+                        ProductResponse::getPrice,
+                        ProductResponse::getStockQuantity
+                )
+                .containsExactly(
+                        PRODUCT_1_NAME,
+                        PRODUCT_1.name(),
+                        SELLING.name(),
+                        PRODUCT_1_PRICE,
+                        PRODUCT_1_STOCK_QUANTITY
+                );
 
-        Optional<Product> optionalProduct = productRepository.findById(response.getId());
-        assertThat(optionalProduct)
-                .isPresent()
-                .get()
-                .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("product", PRODUCT_A, SELLING, 10000, 1);
+        assertThat(productRepository.findAll()).hasSize(EXPECTED_SIZE_1)
+                .extracting(
+                        Product::getName,
+                        Product::getProductType,
+                        Product::getProductSellingStatus,
+                        Product::getPrice,
+                        Product::getStockQuantity
+                )
+                .containsExactly(
+                        tuple(
+                                PRODUCT_1_NAME,
+                                PRODUCT_1,
+                                SELLING,
+                                PRODUCT_1_PRICE,
+                                PRODUCT_1_STOCK_QUANTITY
+                        )
+                );
     }
 
     @DisplayName("등록된 상품 정보를 주어진 상품 정보로 변경한다.")
     @Test
     void updateProduct() {
         // given
-        Product product = Product.builder()
-                .name("product")
-                .productType(PRODUCT_A)
-                .productSellingStatus(SELLING)
-                .price(10000)
-                .stockQuantity(1)
-                .build();
+        Product product = createProduct(PRODUCT_1_NAME, PRODUCT_1, PRODUCT_1_PRICE, PRODUCT_1_STOCK_QUANTITY);
         productRepository.save(product);
 
         ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
-                .name("updatedProduct")
-                .productType(PRODUCT_B)
-                .price(20000)
-                .stockQuantity(2)
+                .name(PRODUCT_2_NAME)
+                .productType(PRODUCT_2)
+                .price(PRODUCT_2_PRICE)
+                .stockQuantity(PRODUCT_2_STOCK_QUANTITY)
                 .build();
 
         Long productId = product.getId();
@@ -94,94 +124,148 @@ class ProductServiceTest extends IntegrationTestSupport {
         ProductResponse response = productService.updateProduct(productId, request);
 
         // then
-        assertThat(response.getId()).isEqualTo(productId);
         assertThat(response)
-                .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("updatedProduct", PRODUCT_B.name(), SELLING.name(), 20000, 2);
+                .extracting(
+                        ProductResponse::getId,
+                        ProductResponse::getName,
+                        ProductResponse::getProductType,
+                        ProductResponse::getProductSellingStatus,
+                        ProductResponse::getPrice,
+                        ProductResponse::getStockQuantity
+                )
+                .containsExactly(
+                        productId,
+                        PRODUCT_2_NAME,
+                        PRODUCT_2.name(),
+                        SELLING.name(),
+                        PRODUCT_2_PRICE,
+                        PRODUCT_2_STOCK_QUANTITY
+                );
 
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        assertThat(optionalProduct)
-                .isPresent()
-                .get()
-                .extracting("name", "productType", "productSellingStatus", "price", "stockQuantity")
-                .containsExactly("updatedProduct", PRODUCT_B, SELLING, 20000, 2);
+        assertThat(productRepository.findAll()).hasSize(EXPECTED_SIZE_1)
+                .extracting(
+                        Product::getName,
+                        Product::getProductType,
+                        Product::getProductSellingStatus,
+                        Product::getPrice,
+                        Product::getStockQuantity
+                )
+                .containsExactly(
+                        tuple(
+                                PRODUCT_2_NAME,
+                                PRODUCT_2,
+                                SELLING,
+                                PRODUCT_2_PRICE,
+                                PRODUCT_2_STOCK_QUANTITY
+                        )
+                );
     }
 
-    @DisplayName("변경할 상품이 없을 때 변경을 시도할 경우, 예외가 발생한다.")
+    @DisplayName("등록된 상품이 없을 때 정보 변경을 시도할 경우, 예외가 발생한다.")
     @Test
     void updateProduct_ProductNotFound() {
         // given
         ProductUpdateServiceRequest request = ProductUpdateServiceRequest.builder()
-                .name("updatedProduct")
-                .productType(PRODUCT_B)
-                .price(20000)
-                .stockQuantity(2)
+                .name(PRODUCT_2_NAME)
+                .productType(PRODUCT_2)
+                .price(PRODUCT_2_PRICE)
+                .stockQuantity(PRODUCT_2_STOCK_QUANTITY)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> productService.updateProduct(1L, request))
+        assertThatThrownBy(() -> productService.updateProduct(NON_EXISTENT_PRODUCT_ID, request))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(PRODUCT_NOT_FOUND.getMessage());
     }
 
-    @DisplayName("판매 상태인 상품을 조회한다.")
+    @DisplayName("등록된 판매 상품과 페이징 정보를 조회한다.")
     @Test
     void findSellingProducts() {
         // given
-        Product product1 = createTestProduct("productA", SELLING, 1);
-        Product product2 = createTestProduct("productB", SELLING, 2);
-        Product product3 = createTestProduct("productC", COMPLETED, 0);
+        Product product1 = createProduct(PRODUCT_1_NAME, PRODUCT_1, SELLING, PRODUCT_1_PRICE, PRODUCT_1_STOCK_QUANTITY);
+        Product product2 = createProduct(PRODUCT_2_NAME, PRODUCT_2, SELLING, PRODUCT_2_PRICE, PRODUCT_2_STOCK_QUANTITY);
+        Product product3 = createProduct(PRODUCT_1_NAME, PRODUCT_1, COMPLETED, PRODUCT_1_PRICE, ZERO_STOCK_QUANTITY);
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        PageRequest pageRequest = PageRequest.of(0, 2);
-
         // when
-        PageResponse<ProductResponse> pageResponse = productService.findSellingProducts(pageRequest);
+        PageResponse<ProductResponse> response = productService.findSellingProducts(DEFAULT_PAGE_REQUEST);
 
         // then
-        List<ProductResponse> content = pageResponse.getContent();
-        assertThat(content).hasSize(2);
-        assertThat(content)
-                .extracting("name", "productSellingStatus", "stockQuantity")
+        assertThat(response.getContent()).hasSize(EXPECTED_SIZE_2)
+                .extracting(
+                        ProductResponse::getId,
+                        ProductResponse::getName,
+                        ProductResponse::getProductType,
+                        ProductResponse::getProductSellingStatus,
+                        ProductResponse::getPrice,
+                        ProductResponse::getStockQuantity
+                )
                 .containsExactly(
-                        tuple("productA", SELLING.name(), 1),
-                        tuple("productB", SELLING.name(), 2)
+                        tuple(
+                                product1.getId(),
+                                PRODUCT_1_NAME,
+                                PRODUCT_1.name(),
+                                SELLING.name(),
+                                PRODUCT_1_PRICE,
+                                PRODUCT_1_STOCK_QUANTITY
+                        ),
+                        tuple(
+                                product2.getId(),
+                                PRODUCT_2_NAME,
+                                PRODUCT_2.name(),
+                                SELLING.name(),
+                                PRODUCT_2_PRICE,
+                                PRODUCT_2_STOCK_QUANTITY
+                        )
                 );
 
-        assertThat(pageResponse.getSize()).isEqualTo(2);
-        assertThat(pageResponse.getNumber()).isEqualTo(0);
-        assertThat(pageResponse.getTotalElements()).isEqualTo(2);
-        assertThat(pageResponse.getTotalPages()).isEqualTo(1);
+        assertThat(response)
+                .extracting(
+                        PageResponse::getSize,
+                        PageResponse::getNumber,
+                        PageResponse::getTotalElements,
+                        PageResponse::getTotalPages
+                )
+                .containsExactly(
+                        2, 0, 2L, 1
+                );
+
+        assertThat(response.getSize()).isEqualTo(2);
+        assertThat(response.getNumber()).isEqualTo(0);
+        assertThat(response.getTotalElements()).isEqualTo(2L);
+        assertThat(response.getTotalPages()).isEqualTo(1);
     }
 
-    @DisplayName("조회한 페이지에 컨텐츠가 없을 경우, 빈 페이지를 반환한다.")
+    @DisplayName("등록된 판매 상품이 없을 경우, 빈 페이지를 반환한다.")
     @Test
     void findSellingProducts_NoContent() {
-        // given
-        Product product1 = createTestProduct("productA", SELLING, 1);
-        Product product2 = createTestProduct("productB", SELLING, 2);
-        Product product3 = createTestProduct("productC", COMPLETED, 0);
-        productRepository.saveAll(List.of(product1, product2, product3));
-
-        PageRequest pageRequest = PageRequest.of(1, 2);
-
         // when
-        PageResponse<ProductResponse> pageResponse = productService.findSellingProducts(pageRequest);
+        PageResponse<ProductResponse> response = productService.findSellingProducts(DEFAULT_PAGE_REQUEST);
 
         // then
-        assertThat(pageResponse.getContent()).isEmpty();
-        assertThat(pageResponse.getSize()).isEqualTo(2);
-        assertThat(pageResponse.getNumber()).isEqualTo(1);
-        assertThat(pageResponse.getTotalElements()).isEqualTo(2);
-        assertThat(pageResponse.getTotalPages()).isEqualTo(1);
+        assertThat(response.getContent()).isEmpty();
+        assertThat(response)
+                .extracting(
+                        PageResponse::getSize,
+                        PageResponse::getNumber,
+                        PageResponse::getTotalElements,
+                        PageResponse::getTotalPages
+                )
+                .containsExactly(
+                        2, 0, 0L, 0
+                );
     }
 
-    private Product createTestProduct(String name, ProductSellingStatus productSellingStatus, int stockQuantity) {
+    private Product createProduct(String name, ProductType type, int price, int stockQuantity) {
+        return createProduct(name, type, SELLING, price, stockQuantity);
+    }
+
+    private Product createProduct(String name, ProductType type, ProductSellingStatus sellingStatus, int price, int stockQuantity) {
         return Product.builder()
                 .name(name)
-                .productType(PRODUCT_A)
-                .productSellingStatus(productSellingStatus)
-                .price(10000)
+                .productType(type)
+                .productSellingStatus(sellingStatus)
+                .price(price)
                 .stockQuantity(stockQuantity)
                 .build();
     }

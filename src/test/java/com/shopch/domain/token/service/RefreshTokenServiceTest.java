@@ -44,7 +44,7 @@ class RefreshTokenServiceTest extends IntegrationTestSupport {
     private static final String MEMBER_EMAIL = "member@email.com";
     private static final String MEMBER_ID_NAME = "memberId";
     private static final int EXPECTED_SIZE = 1;
-    private static final String TOKEN = "token";
+    private static final String NON_EXISTENT_TOKEN = "token";
 
     @Autowired
     private RefreshTokenService refreshTokenService;
@@ -192,14 +192,14 @@ class RefreshTokenServiceTest extends IntegrationTestSupport {
     @Test
     void getRefreshToken_RefreshTokenNotFound() {
         // when & then
-        assertThatThrownBy(() -> refreshTokenService.getRefreshToken(TOKEN))
+        assertThatThrownBy(() -> refreshTokenService.getRefreshToken(NON_EXISTENT_TOKEN))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(REFRESH_TOKEN_NOT_FOUND.getMessage());
     }
 
     @DisplayName("주어진 토큰은 유효하나 등록된 토큰이 만료됐을 때 조회를 시도할 경우, 예외가 발생한다.")
     @Test
-    void getRefreshToken_ExpiredRefreshToken() {
+    void getRefreshToken_ExpiredStoredToken() {
         // given
         Member member = createMember();
         memberRepository.save(member);
