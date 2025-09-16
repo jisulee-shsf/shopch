@@ -1,8 +1,0 @@
-{
-  "token_type":"bearer",
-  "access_token":"access-token",
-  "expires_in":43199,
-  "refresh_token":"refresh-token",
-  "refresh_token_expires_in":5184000,
-  "scope":"account-email profile-image profile-nickname"
-}

@@ -9,21 +9,18 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
-[[Health-API]]
-== 1. 헬스 체크 API
-include::api/health/health-check.adoc[]
+[[Auth-API]]
+== 1. Auth API
+include::api/auth/auth.adoc[]
 
 [[Member-API]]
-== 2. 회원 API
-include::api/login/login.adoc[]
-include::api/member/member-info.adoc[]
-include::api/token/token-issue.adoc[]
-include::api/logout/logout.adoc[]
+== 2. Member API
+include::api/member/member.adoc[]
 
 [[Product-API]]
-== 3. 상품 API
+== 3. Product API
 include::api/product/product.adoc[]
 
 [[Order-API]]
-== 4. 주문 API
+== 4. Order API
 include::api/order/order.adoc[]
