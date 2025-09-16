@@ -28,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,8 +63,8 @@ class AuthControllerTest extends ControllerTestSupport {
 
         // when & then
         mockMvc.perform(post("/api/auth/oauth/login")
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk());
     }
@@ -81,8 +82,8 @@ class AuthControllerTest extends ControllerTestSupport {
 
         // when & then
         mockMvc.perform(post("/api/auth/oauth/login")
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -100,8 +101,8 @@ class AuthControllerTest extends ControllerTestSupport {
 
         // when & then
         mockMvc.perform(post("/api/auth/oauth/login")
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -121,8 +122,8 @@ class AuthControllerTest extends ControllerTestSupport {
 
         // when & then
         mockMvc.perform(post("/api/auth/oauth/login")
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -173,7 +174,7 @@ class AuthControllerTest extends ControllerTestSupport {
     @Test
     void logout() throws Exception {
         // when & then
-        mockMvc.perform(post("/api/auth/logout")
+        mockMvc.perform(delete("/api/auth/logout")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
                 )
                 .andExpect(status().isNoContent());

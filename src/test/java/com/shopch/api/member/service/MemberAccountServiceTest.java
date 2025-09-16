@@ -66,7 +66,7 @@ class MemberAccountServiceTest extends IntegrationTestSupport {
         memberRepository.deleteAllInBatch();
     }
 
-    @DisplayName("로그인한 회원의 정보를 조회한다.")
+    @DisplayName("회원 정보를 조회한다.")
     @Test
     void getMemberInfo() {
         // given
@@ -96,7 +96,7 @@ class MemberAccountServiceTest extends IntegrationTestSupport {
                 );
     }
 
-    @DisplayName("리프레시 토큰을 삭제하고 삭제 일시를 등록해 로그인한 회원을 논리적으로 삭제한다.")
+    @DisplayName("리프레시 토큰을 삭제하고 삭제 일시를 등록해 회원을 논리적으로 삭제한다.")
     @Test
     @Transactional
     void deleteMember() {

@@ -77,8 +77,8 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/products")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk());
     }
@@ -99,8 +99,8 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/products")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -123,8 +123,8 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/products")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -145,8 +145,8 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/products")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -176,8 +176,8 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/products")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -207,8 +207,8 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/products")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -241,8 +241,8 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(put("/api/products/{productId}", PRODUCT_1_ID)
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk());
     }
@@ -269,19 +269,18 @@ class ProductControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(put("/api/products/{productId}", PRODUCT_1_ID)
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
                 .andExpect(jsonPath("$.message").value(expectedMessage));
     }
 
-    @DisplayName("판매 상품과 페이징 정보를 조회해 반환한다.")
+    @DisplayName("등록된 판매 상품과 페이징 정보를 조회해 반환한다.")
     @Test
     void findSellingProducts() throws Exception {
         // given
-        Pageable pageable = PageRequest.of(0, 2);
 
         ProductResponse response1 = ProductResponse.builder()
                 .id(PRODUCT_1_ID)
@@ -300,6 +299,8 @@ class ProductControllerTest extends ControllerTestSupport {
                 .price(PRODUCT_2_PRICE)
                 .stockQuantity(PRODUCT_2_STOCK_QUANTITY)
                 .build();
+
+        Pageable pageable = PageRequest.of(0, 2);
 
         given(productService.findSellingProducts(any(Pageable.class)))
                 .willReturn(PageResponse.of(new PageImpl<>(List.of(response1, response2), pageable, 2)));

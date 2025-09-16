@@ -37,7 +37,8 @@ class RefreshTokenTest {
                 .extracting(
                         RefreshToken::getMember,
                         RefreshToken::getToken,
-                        RefreshToken::getExpiresAt)
+                        RefreshToken::getExpiresAt
+                )
                 .containsExactly(
                         member,
                         TOKEN_1,

@@ -61,7 +61,8 @@ class KakaoUserInfoClientTest extends WireMockSupport {
                         KakaoUserInfoResponse::getOauthId,
                         KakaoUserInfoResponse::getName,
                         KakaoUserInfoResponse::getEmail,
-                        KakaoUserInfoResponse::getImageUrl)
+                        KakaoUserInfoResponse::getImageUrl
+                )
                 .containsExactly(
                         OAUTH_ID,
                         USER_NAME,

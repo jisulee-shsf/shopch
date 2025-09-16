@@ -23,7 +23,6 @@ class BearerTokenExtractorTest {
 
     private static final String TOKEN = "token";
     private static final String INVALID_PREFIX = "Invalid ";
-
     private static Stream<String> blankStringProvider() {
         return Stream.of("", " ");
     }
@@ -45,7 +44,7 @@ class BearerTokenExtractorTest {
         assertThat(token).isEqualTo(TOKEN);
     }
 
-    @DisplayName("Authorization 헤더가 없을 때 추출을 시도할 경우, 예외가 발생한다.")
+    @DisplayName("Authorization 헤더가 없을 때 토큰 추출을 시도할 경우, 예외가 발생한다.")
     @ParameterizedTest
     @NullSource
     @MethodSource("blankStringProvider")

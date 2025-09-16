@@ -38,7 +38,7 @@ class ProductRepositoryTest extends IntegrationTestSupport {
         productRepository.deleteAllInBatch();
     }
 
-    @DisplayName("판매 상품과 페이징 정보를 조회한다.")
+    @DisplayName("등록된 판매 상품과 페이징 정보를 조회한다.")
     @Test
     void findAllByProductSellingStatusIn() {
         // given

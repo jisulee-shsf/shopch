@@ -23,7 +23,7 @@ class MemberControllerTest extends ControllerTestSupport {
     private static final String MEMBER_EMAIL = "member@email.com";
     private static final String MEMBER_IMAGE_URL = "http://.../img_110x110.jpg";
 
-    @DisplayName("로그인한 회원 정보를 조회해 반환한다.")
+    @DisplayName("회원 정보를 조회해 반환한다.")
     @Test
     void getMemberInfo() throws Exception {
         // given
@@ -50,7 +50,7 @@ class MemberControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("로그인한 회원을 탈퇴 처리한다.")
+    @DisplayName("회원을 탈퇴 처리한다.")
     @Test
     void deleteMember() throws Exception {
         // when & then

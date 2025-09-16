@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import static com.shopch.domain.member.constant.Role.USER;
 import static com.shopch.external.oauth.constant.OAuthProvider.KAKAO;
 import static com.shopch.fixture.TimeFixture.INSTANT_NOW;
-import static com.shopch.global.config.clock.ClockConfig.DEFAULT_TIME_ZONE;
+import static com.shopch.fixture.TimeFixture.TEST_TIME_ZONE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -56,7 +56,7 @@ class MemberTest {
     void updateDeletedAt() {
         // given
         Member member = createMember();
-        LocalDateTime deletedAt = LocalDateTime.ofInstant(INSTANT_NOW, DEFAULT_TIME_ZONE);
+        LocalDateTime deletedAt = LocalDateTime.ofInstant(INSTANT_NOW, TEST_TIME_ZONE);
 
         // when
         member.updateDeletedAt(deletedAt);

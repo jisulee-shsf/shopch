@@ -114,7 +114,7 @@ class ProductTest {
         assertThat(product.getStockQuantity()).isEqualTo(PRODUCT_1_STOCK_QUANTITY);
     }
 
-    @DisplayName("재고 수량이 주문 수량보다 적을 때 차감을 시도할 경우, 예외가 발생한다.")
+    @DisplayName("재고 수량이 주문 수량보다 적을 때 재고 수량 차감을 시도할 경우, 예외가 발생한다.")
     @Test
     void deductStockQuantity_InsufficientStock() {
         // given

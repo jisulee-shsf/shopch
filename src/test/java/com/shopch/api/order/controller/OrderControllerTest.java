@@ -26,7 +26,6 @@ import static com.shopch.domain.order.constant.OrderStatus.INIT;
 import static com.shopch.fixture.TimeFixture.*;
 import static com.shopch.fixture.TokenFixture.ACCESS_TOKEN;
 import static com.shopch.global.auth.constant.AuthenticationScheme.BEARER;
-import static com.shopch.global.config.clock.ClockConfig.DEFAULT_TIME_ZONE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
@@ -82,8 +81,8 @@ class OrderControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/orders")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk());
     }
@@ -109,8 +108,8 @@ class OrderControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/orders")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -138,8 +137,8 @@ class OrderControllerTest extends ControllerTestSupport {
         // when & then
         mockMvc.perform(post("/api/orders")
                         .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(BAD_REQUEST_CODE))
@@ -165,7 +164,6 @@ class OrderControllerTest extends ControllerTestSupport {
                 .orderStatus(INIT.name())
                 .build();
 
-        Pageable pageable = PageRequest.of(0, 2);
 
         OrderProductResponse orderProductResponse1 = OrderProductResponse.builder()
                 .productId(PRODUCT_1_ID)
@@ -181,7 +179,7 @@ class OrderControllerTest extends ControllerTestSupport {
                 .orderQuantity(MINIMUM_ORDER_QUANTITY)
                 .build();
 
-        LocalDateTime orderedAt = LocalDateTime.ofInstant(INSTANT_NOW, DEFAULT_TIME_ZONE);
+        LocalDateTime orderedAt = LocalDateTime.ofInstant(INSTANT_NOW, TEST_TIME_ZONE);
         OrderResponse orderResponse1 = OrderResponse.builder()
                 .orderId(ORDER_1_ID)
                 .memberName(MEMBER_NAME)
@@ -199,6 +197,8 @@ class OrderControllerTest extends ControllerTestSupport {
                 .totalPrice(orderProductResponse2.getOrderPrice() * orderProductResponse2.getOrderQuantity())
                 .orderProducts(List.of(orderProductResponse2))
                 .build();
+
+        Pageable pageable = PageRequest.of(0, 2);
 
         given(orderService.searchOrders(any(OrderServiceSearchCondition.class), any(Pageable.class)))
                 .willReturn(PageResponse.of(new PageImpl<>(List.of(orderResponse1, orderResponse2), pageable, 2)));

@@ -152,7 +152,7 @@ class JwtProviderTest {
                 .hasMessage(INVALID_TOKEN.getMessage());
     }
 
-    @DisplayName("토큰 타입과 다른 메서드로 검증을 시도할 경우, 예외가 발생한다.")
+    @DisplayName("토큰 타입과 다른 메서드로 토큰 검증을 시도할 경우, 예외가 발생한다.")
     @Test
     void validateAccessToken_InvalidTokenType() {
         // given

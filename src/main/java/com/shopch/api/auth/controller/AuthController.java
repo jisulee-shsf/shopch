@@ -10,10 +10,7 @@ import com.shopch.global.resolver.dto.MemberInfoDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 
@@ -36,7 +33,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.refreshAccessToken(request.toServiceRequest(), issuedAt));
     }
 
-    @PostMapping("/logout")
+    @DeleteMapping("/logout")
     public ResponseEntity<Void> logout(@MemberInfo MemberInfoDto memberInfo) {
         authService.logout(memberInfo.getId());
         return ResponseEntity.noContent().build();

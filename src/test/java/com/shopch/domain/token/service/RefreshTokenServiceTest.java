@@ -188,7 +188,7 @@ class RefreshTokenServiceTest extends IntegrationTestSupport {
                 );
     }
 
-    @DisplayName("등록된 토큰이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
+    @DisplayName("등록된 토큰이 없을 때 토큰 조회를 시도할 경우, 예외가 발생한다.")
     @Test
     void getRefreshToken_RefreshTokenNotFound() {
         // when & then
@@ -197,7 +197,7 @@ class RefreshTokenServiceTest extends IntegrationTestSupport {
                 .hasMessage(REFRESH_TOKEN_NOT_FOUND.getMessage());
     }
 
-    @DisplayName("주어진 토큰은 유효하나 등록된 토큰이 만료됐을 때 조회를 시도할 경우, 예외가 발생한다.")
+    @DisplayName("주어진 토큰은 유효하나 등록된 토큰이 만료됐을 때 토큰 조회를 시도할 경우, 예외가 발생한다.")
     @Test
     void getRefreshToken_ExpiredStoredToken() {
         // given

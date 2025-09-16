@@ -6,7 +6,6 @@ import com.shopch.external.oauth.provider.kakao.client.KakaoUserInfoClient;
 import com.shopch.external.oauth.provider.kakao.dto.request.KakaoTokenRequest;
 import com.shopch.external.oauth.provider.kakao.dto.response.KakaoTokenResponse;
 import com.shopch.external.oauth.provider.kakao.dto.response.KakaoUserInfoResponse;
-import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.AuthenticationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import static com.shopch.external.oauth.constant.OAuthProvider.KAKAO;
 import static com.shopch.fixture.TokenFixture.ACCESS_TOKEN;
 import static com.shopch.fixture.TokenFixture.REFRESH_TOKEN;
 import static com.shopch.global.auth.constant.AuthenticationScheme.BEARER;
+import static com.shopch.global.error.ErrorCode.INVALID_AUTHORIZATION_CODE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -94,7 +94,7 @@ class KakaoLoginServiceTest {
         // when & then
         assertThatThrownBy(() -> kakaoLoginService.getUserInfo(INVALID_CODE))
                 .isInstanceOf(AuthenticationException.class)
-                .hasMessage(ErrorCode.INVALID_AUTHORIZATION_CODE.getMessage());
+                .hasMessage(INVALID_AUTHORIZATION_CODE.getMessage());
     }
 
     private KakaoTokenResponse createKakaoTokenResponse() {

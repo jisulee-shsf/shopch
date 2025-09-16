@@ -135,7 +135,7 @@ class MemberServiceTest extends IntegrationTestSupport {
                 );
     }
 
-    @DisplayName("등록된 회원이 없을 때 조회를 시도할 경우, 예외가 발생한다.")
+    @DisplayName("등록된 회원이 없을 때 회원 조회를 시도할 경우, 예외가 발생한다.")
     @Test
     void getMember_MemberNotFound() {
         // when & then
