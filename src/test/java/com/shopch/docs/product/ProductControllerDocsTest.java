@@ -1,27 +1,27 @@
-package com.app.docs.product;
+package com.shopch.docs.product;
 
-import com.app.api.common.PageResponse;
-import com.app.api.product.controller.ProductController;
-import com.app.api.product.controller.dto.request.ProductCreateRequest;
-import com.app.api.product.controller.dto.request.ProductUpdateRequest;
-import com.app.api.product.service.ProductService;
-import com.app.api.product.service.dto.request.ProductCreateServiceRequest;
-import com.app.api.product.service.dto.request.ProductUpdateServiceRequest;
-import com.app.api.product.service.dto.response.ProductResponse;
-import com.app.support.RestDocsSupport;
+import com.shopch.api.common.dto.PageResponse;
+import com.shopch.api.product.controller.ProductController;
+import com.shopch.api.product.controller.dto.ProductCreateRequest;
+import com.shopch.api.product.controller.dto.ProductUpdateRequest;
+import com.shopch.api.product.service.ProductService;
+import com.shopch.api.product.service.dto.request.ProductCreateServiceRequest;
+import com.shopch.api.product.service.dto.request.ProductUpdateServiceRequest;
+import com.shopch.api.product.service.dto.response.ProductResponse;
+import com.shopch.support.RestDocsSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.app.domain.product.constant.ProductSellingStatus.SELLING;
-import static com.app.domain.product.constant.ProductType.PRODUCT_A;
-import static com.app.domain.product.constant.ProductType.PRODUCT_B;
-import static com.app.global.jwt.constant.GrantType.BEARER;
+import static com.shopch.domain.product.constant.ProductSellingStatus.SELLING;
+import static com.shopch.domain.product.constant.ProductType.PRODUCT_1;
+import static com.shopch.domain.product.constant.ProductType.PRODUCT_2;
+import static com.shopch.fixture.TokenFixture.ACCESS_TOKEN;
+import static com.shopch.global.auth.constant.AuthenticationScheme.BEARER;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -36,6 +36,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ProductControllerDocsTest extends RestDocsSupport {
 
+    private static final String PRODUCT_1_NAME = "product1";
+    private static final Integer PRODUCT_1_PRICE = 10000;
+    private static final Integer PRODUCT_1_STOCK_QUANTITY = 10;
+    private static final Long PRODUCT_1_ID = 1L;
+    private static final String PRODUCT_2_NAME = "product2";
+    private static final Integer PRODUCT_2_PRICE = 20000;
+    private static final Integer PRODUCT_2_STOCK_QUANTITY = 20;
+    private static final Long PRODUCT_2_ID = 2L;
+
     private final ProductService productService = mock(ProductService.class);
 
     @Override
@@ -46,16 +55,15 @@ public class ProductControllerDocsTest extends RestDocsSupport {
     @DisplayName("상품 등록")
     @Test
     void createProduct() throws Exception {
-        // given
         ProductCreateRequest request = ProductCreateRequest.builder()
-                .name("product")
-                .productType(PRODUCT_A.name())
-                .price(10000)
-                .stockQuantity(1)
+                .name(PRODUCT_1_NAME)
+                .productType(PRODUCT_1.name())
+                .price(PRODUCT_1_PRICE)
+                .stockQuantity(PRODUCT_1_STOCK_QUANTITY)
                 .build();
 
         ProductResponse response = ProductResponse.builder()
-                .id(1L)
+                .id(PRODUCT_1_ID)
                 .name(request.getName())
                 .productType(request.getProductType())
                 .productSellingStatus(SELLING.name())
@@ -66,11 +74,10 @@ public class ProductControllerDocsTest extends RestDocsSupport {
         given(productService.createProduct(any(ProductCreateServiceRequest.class)))
                 .willReturn(response);
 
-        // when & then
         mockMvc.perform(post("/api/products")
-                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
-                        .content(objectMapper.writeValueAsString(request))
+                        .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("product-create",
@@ -94,18 +101,15 @@ public class ProductControllerDocsTest extends RestDocsSupport {
     @DisplayName("상품 수정")
     @Test
     void updateProduct() throws Exception {
-        // given
-        Long productId = 1L;
-
         ProductUpdateRequest request = ProductUpdateRequest.builder()
-                .name("updatedProduct")
-                .productType(PRODUCT_B.name())
-                .price(10000)
-                .stockQuantity(1)
+                .name(PRODUCT_2_NAME)
+                .productType(PRODUCT_2.name())
+                .price(PRODUCT_2_PRICE)
+                .stockQuantity(PRODUCT_2_STOCK_QUANTITY)
                 .build();
 
         ProductResponse response = ProductResponse.builder()
-                .id(productId)
+                .id(PRODUCT_1_ID)
                 .name(request.getName())
                 .productType(request.getProductType())
                 .productSellingStatus(SELLING.name())
@@ -113,14 +117,13 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 .stockQuantity(request.getStockQuantity())
                 .build();
 
-        given(productService.updateProduct(eq(productId), any(ProductUpdateServiceRequest.class)))
+        given(productService.updateProduct(eq(PRODUCT_1_ID), any(ProductUpdateServiceRequest.class)))
                 .willReturn(response);
 
-        // when & then
-        mockMvc.perform(put("/api/products/{productId}", productId)
-                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
-                        .content(objectMapper.writeValueAsString(request))
+        mockMvc.perform(put("/api/products/{productId}", PRODUCT_1_ID)
+                        .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
                         .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("product-update",
@@ -141,39 +144,36 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                 ));
     }
 
-    @DisplayName("판매 상품 조회")
+    @DisplayName("판매 상품 및 페이징 정보 조회")
     @Test
     void findSellingProducts() throws Exception {
-        // given
-        PageRequest pageRequest = PageRequest.of(0, 2);
-
         ProductResponse response1 = ProductResponse.builder()
-                .id(1L)
-                .name("productA")
-                .productType(PRODUCT_A.name())
+                .id(PRODUCT_1_ID)
+                .name(PRODUCT_1_NAME)
+                .productType(PRODUCT_1.name())
                 .productSellingStatus(SELLING.name())
-                .price(10000)
-                .stockQuantity(1)
+                .price(PRODUCT_1_PRICE)
+                .stockQuantity(PRODUCT_1_STOCK_QUANTITY)
                 .build();
 
         ProductResponse response2 = ProductResponse.builder()
-                .id(2L)
-                .name("productB")
-                .productType(PRODUCT_B.name())
+                .id(PRODUCT_2_ID)
+                .name(PRODUCT_2_NAME)
+                .productType(PRODUCT_2.name())
                 .productSellingStatus(SELLING.name())
-                .price(20000)
-                .stockQuantity(2)
+                .price(PRODUCT_2_PRICE)
+                .stockQuantity(PRODUCT_2_STOCK_QUANTITY)
                 .build();
 
-        Page<ProductResponse> pageResponse = new PageImpl<>(List.of(response1, response2), pageRequest, 2);
-        given(productService.findSellingProducts(any(Pageable.class)))
-                .willReturn(PageResponse.of(pageResponse));
+        Pageable pageable = PageRequest.of(0, 2);
 
-        // when & then
-        mockMvc.perform(get("/api/products")
-                        .header(AUTHORIZATION, BEARER.getType() + " access-token")
-                        .param("page", String.valueOf(pageRequest.getPageNumber()))
-                        .param("size", String.valueOf(pageRequest.getPageSize()))
+        given(productService.findSellingProducts(any(Pageable.class)))
+                .willReturn(PageResponse.of(new PageImpl<>(List.of(response1, response2), pageable, 2)));
+
+        mockMvc.perform(get("/api/products/selling")
+                        .header(AUTHORIZATION, BEARER.getPrefix() + ACCESS_TOKEN)
+                        .param("page", String.valueOf(pageable.getPageNumber()))
+                        .param("size", String.valueOf(pageable.getPageSize()))
                 )
                 .andExpect(status().isOk())
                 .andDo(document("product-find",
@@ -185,8 +185,8 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                                 fieldWithPath("content.[].productSellingStatus").type(STRING).description("상품 판매 상태"),
                                 fieldWithPath("content.[].price").type(NUMBER).description("상품 금액"),
                                 fieldWithPath("content.[].stockQuantity").type(NUMBER).description("상품 재고 수량"),
-                                fieldWithPath("size").type(NUMBER).description("한 페이지에 포함된 상품 수"),
-                                fieldWithPath("number").type(NUMBER).description("현재 페이지 번호"),
+                                fieldWithPath("size").type(NUMBER).description("페이지 사이즈"),
+                                fieldWithPath("number").type(NUMBER).description("페이지 번호"),
                                 fieldWithPath("totalElements").type(NUMBER).description("전체 상품 수"),
                                 fieldWithPath("totalPages").type(NUMBER).description("전체 페이지 수")
                         )

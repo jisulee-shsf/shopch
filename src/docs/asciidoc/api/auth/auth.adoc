@@ -1,0 +1,29 @@
+[[oauth-login]]
+=== 1.1. 로그인
+
+==== HTTP Request
+include::{snippets}/auth-oauth-login/http-request.adoc[]
+include::{snippets}/auth-oauth-login/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/auth-oauth-login/http-response.adoc[]
+include::{snippets}/auth-oauth-login/response-fields.adoc[]
+
+[[token-refresh]]
+=== 1.2. 액세스 토큰 갱신
+
+==== HTTP Request
+include::{snippets}/auth-token-refresh/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/auth-token-refresh/http-response.adoc[]
+include::{snippets}/auth-token-refresh/response-fields.adoc[]
+
+[[logout]]
+=== 1.3. 로그아웃
+
+==== HTTP Request
+include::{snippets}/auth-logout/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/auth-logout/http-response.adoc[]

@@ -18,12 +18,12 @@ include::{snippets}/order-cancel/http-request.adoc[]
 ==== HTTP Response
 include::{snippets}/order-cancel/http-response.adoc[]
 
-[[order-find]]
+[[order-search]]
 === 4.3. 검색 주문 조회
 
 ==== HTTP Request
-include::{snippets}/order-find/http-request.adoc[]
+include::{snippets}/order-search/http-request.adoc[]
 
 ==== HTTP Response
-include::{snippets}/order-find/http-response.adoc[]
-include::{snippets}/order-find/response-fields.adoc[]
+include::{snippets}/order-search/http-response.adoc[]
+include::{snippets}/order-search/response-fields.adoc[]
