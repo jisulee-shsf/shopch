@@ -6,7 +6,7 @@ import com.shopch.global.auth.constant.TokenType;
 import com.shopch.global.auth.dto.TokenPair;
 import com.shopch.global.config.clock.ClockConfig;
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.global.resolver.dto.MemberInfoDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -115,7 +115,7 @@ public class JwtProvider {
 
     public void validateTokenType(TokenType actualTokenType, TokenType expectedTokenType) {
         if (expectedTokenType.isDifferent(actualTokenType)) {
-            throw new AuthenticationException(ErrorCode.INVALID_TOKEN_TYPE);
+            throw new AuthException(ErrorCode.INVALID_TOKEN_TYPE);
         }
     }
 
@@ -128,9 +128,9 @@ public class JwtProvider {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new AuthenticationException(ErrorCode.EXPIRED_TOKEN);
+            throw new AuthException(ErrorCode.EXPIRED_TOKEN);
         } catch (JwtException e) {
-            throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
+            throw new AuthException(ErrorCode.INVALID_TOKEN);
         }
     }
 }

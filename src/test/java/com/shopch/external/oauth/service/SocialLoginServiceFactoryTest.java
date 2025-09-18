@@ -1,7 +1,7 @@
 package com.shopch.external.oauth.service;
 
 import com.shopch.external.oauth.provider.kakao.service.KakaoLoginService;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class SocialLoginServiceFactoryTest extends IntegrationTestSupport {
 
         // when & then
         assertThatThrownBy(() -> socialLoginServiceFactory.getSocialLoginService(KAKAO))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(UNSUPPORTED_OAUTH_PROVIDER.getMessage());
     }
 }

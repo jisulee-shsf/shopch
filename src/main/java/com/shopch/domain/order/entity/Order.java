@@ -5,7 +5,7 @@ import com.shopch.domain.member.entity.Member;
 import com.shopch.domain.order.constant.OrderStatus;
 import com.shopch.domain.orderProduct.entity.OrderProduct;
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.BusinessException;
+import com.shopch.global.error.exception.AlreadyCanceledOrderException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -65,8 +65,9 @@ public class Order extends BaseEntity {
 
     public void cancel() {
         if (orderStatus.isCanceled()) {
-            throw new BusinessException(ErrorCode.ALREADY_CANCELED_ORDER);
+            throw new AlreadyCanceledOrderException(ErrorCode.ALREADY_CANCELED_ORDER);
         }
+
         orderStatus = OrderStatus.CANCELED;
         orderProducts.forEach(OrderProduct::restoreStockQuantity);
     }

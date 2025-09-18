@@ -12,8 +12,8 @@ import com.shopch.domain.order.repository.OrderRepository;
 import com.shopch.domain.orderProduct.entity.OrderProduct;
 import com.shopch.domain.product.entity.Product;
 import com.shopch.global.error.ErrorCode;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.global.error.exception.EntityNotFoundException;
-import com.shopch.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,7 +67,7 @@ public class OrderService {
 
     private void validateOwner(Order order, Long memberId) {
         if (order.isNotOwner(memberId)) {
-            throw new ForbiddenException(ErrorCode.ORDER_ACCESS_DENIED);
+            throw new AuthException(ErrorCode.ORDER_ACCESS_DENIED);
         }
     }
 }

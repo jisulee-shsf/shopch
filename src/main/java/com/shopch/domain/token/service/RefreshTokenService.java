@@ -3,7 +3,7 @@ package com.shopch.domain.token.service;
 import com.shopch.domain.token.entity.RefreshToken;
 import com.shopch.domain.token.repository.RefreshTokenRepository;
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class RefreshTokenService {
 
     private void validateRefreshTokenExpiration(RefreshToken refreshToken, LocalDateTime now) {
         if (refreshToken.isExpired(now)) {
-            throw new AuthenticationException(ErrorCode.EXPIRED_REFRESH_TOKEN);
+            throw new AuthException(ErrorCode.EXPIRED_REFRESH_TOKEN);
         }
     }
 }

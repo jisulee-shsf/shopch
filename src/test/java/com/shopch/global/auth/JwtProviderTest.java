@@ -5,7 +5,7 @@ import com.shopch.domain.member.entity.Member;
 import com.shopch.global.auth.constant.TokenType;
 import com.shopch.global.auth.dto.TokenPair;
 import com.shopch.global.config.clock.JwtClock;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.global.resolver.dto.MemberInfoDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -134,7 +134,7 @@ class JwtProviderTest {
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.validateAccessToken(expiredToken))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(EXPIRED_TOKEN.getMessage());
     }
 
@@ -148,7 +148,7 @@ class JwtProviderTest {
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.validateAccessToken(invalidToken))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(INVALID_TOKEN.getMessage());
     }
 
@@ -161,7 +161,7 @@ class JwtProviderTest {
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.validateAccessToken(refreshToken))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(INVALID_TOKEN_TYPE.getMessage());
     }
 
@@ -204,7 +204,7 @@ class JwtProviderTest {
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.getMemberInfoFrom(refreshToken))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(INVALID_TOKEN_TYPE.getMessage());
     }
 

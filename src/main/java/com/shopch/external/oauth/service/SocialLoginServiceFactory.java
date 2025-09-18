@@ -2,7 +2,7 @@ package com.shopch.external.oauth.service;
 
 import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class SocialLoginServiceFactory {
     public SocialLoginService getSocialLoginService(OAuthProvider oauthProvider) {
         SocialLoginService service = socialLoginServiceMap.get(oauthProvider);
         if (service == null) {
-            throw new AuthenticationException(ErrorCode.UNSUPPORTED_OAUTH_PROVIDER);
+            throw new AuthException(ErrorCode.UNSUPPORTED_OAUTH_PROVIDER);
         }
         return service;
     }

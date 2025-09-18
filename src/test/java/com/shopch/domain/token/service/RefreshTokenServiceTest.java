@@ -4,7 +4,7 @@ import com.shopch.domain.member.entity.Member;
 import com.shopch.domain.member.repository.MemberRepository;
 import com.shopch.domain.token.entity.RefreshToken;
 import com.shopch.domain.token.repository.RefreshTokenRepository;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.global.error.exception.EntityNotFoundException;
 import com.shopch.support.IntegrationTestSupport;
 import io.jsonwebtoken.Jwts;
@@ -213,7 +213,7 @@ class RefreshTokenServiceTest extends IntegrationTestSupport {
 
         // when & then
         assertThatThrownBy(() -> refreshTokenService.getRefreshToken(token))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(EXPIRED_REFRESH_TOKEN.getMessage());
     }
 

@@ -1,6 +1,6 @@
 package com.shopch.global.auth;
 
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,7 @@ class BearerTokenExtractorTest {
 
     private static final String TOKEN = "token";
     private static final String INVALID_PREFIX = "Invalid ";
+
     private static Stream<String> blankStringProvider() {
         return Stream.of("", " ");
     }
@@ -55,7 +56,7 @@ class BearerTokenExtractorTest {
 
         // when & then
         assertThatThrownBy(() -> bearerTokenExtractor.extractToken(request))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(MISSING_AUTHORIZATION_HEADER.getMessage());
     }
 
@@ -68,7 +69,7 @@ class BearerTokenExtractorTest {
 
         // when & then
         assertThatThrownBy(() -> bearerTokenExtractor.extractToken(request))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(INVALID_AUTHORIZATION_HEADER.getMessage());
     }
 }
