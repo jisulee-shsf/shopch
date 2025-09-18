@@ -12,7 +12,7 @@ import com.shopch.domain.token.service.RefreshTokenService;
 import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.external.oauth.dto.UserInfo;
 import com.shopch.external.oauth.service.SocialLoginService;
-import com.shopch.external.oauth.service.SocialLoginServiceFactory;
+import com.shopch.external.oauth.service.SocialLoginServiceRegistry;
 import com.shopch.global.auth.JwtProvider;
 import com.shopch.global.auth.dto.TokenPair;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthService {
 
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
-    private final SocialLoginServiceFactory socialLoginServiceFactory;
+    private final SocialLoginServiceRegistry socialLoginServiceRegistry;
     private final JwtProvider jwtProvider;
 
     @Transactional
@@ -62,7 +62,7 @@ public class AuthService {
     }
 
     private UserInfo getUserInfoFromSocialLoginService(OAuthProvider oauthProvider, String code) {
-        SocialLoginService service = socialLoginServiceFactory.getSocialLoginService(oauthProvider);
+        SocialLoginService service = socialLoginServiceRegistry.getSocialLoginService(oauthProvider);
         return service.getUserInfo(code);
     }
 

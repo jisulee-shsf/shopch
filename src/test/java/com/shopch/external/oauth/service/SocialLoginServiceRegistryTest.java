@@ -13,10 +13,10 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class SocialLoginServiceFactoryTest extends IntegrationTestSupport {
+class SocialLoginServiceRegistryTest extends IntegrationTestSupport {
 
     @Autowired
-    private SocialLoginServiceFactory socialLoginServiceFactory;
+    private SocialLoginServiceRegistry socialLoginServiceRegistry;
 
     @Autowired
     private KakaoLoginService kakaoLoginService;
@@ -25,7 +25,7 @@ class SocialLoginServiceFactoryTest extends IntegrationTestSupport {
     @Test
     void getSocialLoginService() {
         // when
-        SocialLoginService service = socialLoginServiceFactory.getSocialLoginService(KAKAO);
+        SocialLoginService service = socialLoginServiceRegistry.getSocialLoginService(KAKAO);
 
         // then
         assertThat(service).isSameAs(kakaoLoginService);
@@ -36,10 +36,10 @@ class SocialLoginServiceFactoryTest extends IntegrationTestSupport {
     @Test
     void getSocialLoginService_UnsupportedOauthProvider() {
         // given
-        SocialLoginServiceFactory socialLoginServiceFactory = new SocialLoginServiceFactory(emptyList());
+        SocialLoginServiceRegistry socialLoginServiceRegistry = new SocialLoginServiceRegistry(emptyList());
 
         // when & then
-        assertThatThrownBy(() -> socialLoginServiceFactory.getSocialLoginService(KAKAO))
+        assertThatThrownBy(() -> socialLoginServiceRegistry.getSocialLoginService(KAKAO))
                 .isInstanceOf(AuthException.class)
                 .hasMessage(UNSUPPORTED_OAUTH_PROVIDER.getMessage());
     }

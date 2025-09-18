@@ -12,11 +12,11 @@ import com.shopch.global.auth.constant.AuthenticationScheme;
 import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Service
+@Component
 public class KakaoLoginService implements SocialLoginService {
 
     private final String clientId;
