@@ -4,6 +4,7 @@ import com.shopch.domain.common.BaseEntity;
 import com.shopch.domain.member.entity.Member;
 import com.shopch.domain.order.constant.OrderStatus;
 import com.shopch.domain.orderProduct.entity.OrderProduct;
+import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -15,8 +16,6 @@ import org.hibernate.annotations.BatchSize;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.shopch.global.error.ErrorCode.ALREADY_CANCELED_ORDER;
 
 @Entity
 @Table(name = "orders")
@@ -66,7 +65,7 @@ public class Order extends BaseEntity {
 
     public void cancel() {
         if (orderStatus.isCanceled()) {
-            throw new BusinessException(ALREADY_CANCELED_ORDER);
+            throw new BusinessException(ErrorCode.ALREADY_CANCELED_ORDER);
         }
         orderStatus = OrderStatus.CANCELED;
         orderProducts.forEach(OrderProduct::restoreStockQuantity);

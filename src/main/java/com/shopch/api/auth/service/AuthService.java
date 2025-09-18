@@ -23,8 +23,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class AuthService {
 
     private final MemberService memberService;

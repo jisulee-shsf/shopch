@@ -21,6 +21,7 @@ public class FeignExceptionErrorDecoder implements ErrorDecoder {
         HttpStatus httpStatus = HttpStatus.valueOf(response.status());
         if (httpStatus.is5xxServerError()) {
             FeignException feignException = FeignException.errorStatus(methodKey, response);
+
             return new RetryableException(
                     response.status(),
                     feignException.getMessage(),

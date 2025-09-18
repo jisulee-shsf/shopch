@@ -10,8 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@EntityListeners(value = AuditingEntityListener.class)
 @MappedSuperclass
+@EntityListeners(value = AuditingEntityListener.class)
 @Getter
 public abstract class BaseTimeEntity {
 

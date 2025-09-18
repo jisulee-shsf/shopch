@@ -29,7 +29,7 @@ class MemberServiceTest extends IntegrationTestSupport {
     private static final String MEMBER_NAME = "member";
     private static final String MEMBER_EMAIL = "member@email.com";
     private static final String DELETED_AT_NAME = "deletedAt";
-    public static final int EXPECTED_SIZE = 1;
+    private static final int EXPECTED_SIZE = 1;
     private static final Long NON_EXISTENT_MEMBER_ID = 1L;
 
     @Autowired
