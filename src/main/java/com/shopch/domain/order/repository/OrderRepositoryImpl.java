@@ -1,11 +1,11 @@
 package com.shopch.domain.order.repository;
 
-import com.shopch.api.order.service.dto.request.OrderServiceSearchCondition;
-import com.shopch.domain.order.constant.OrderStatus;
-import com.shopch.domain.order.entity.Order;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.shopch.api.order.service.dto.request.OrderServiceSearchCondition;
+import com.shopch.domain.order.constant.OrderStatus;
+import com.shopch.domain.order.entity.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +13,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.shopch.domain.member.entity.QMember.member;
 import static com.shopch.domain.order.entity.QOrder.order;
@@ -51,6 +52,6 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     private BooleanExpression orderStatusEq(OrderStatus orderStatus) {
-        return orderStatus != null ? order.orderStatus.eq(orderStatus) : null;
+        return Objects.nonNull(orderStatus) ? order.orderStatus.eq(orderStatus) : null;
     }
 }

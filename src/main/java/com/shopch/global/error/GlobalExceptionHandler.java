@@ -12,8 +12,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static org.springframework.http.HttpStatus.*;
 
-@Slf4j
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler

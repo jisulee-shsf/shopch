@@ -23,14 +23,13 @@ public enum ErrorCode {
 
     REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "TOKEN-001", "리프레시 토큰을 찾을 수 없습니다."),
 
-    ALREADY_REGISTERED_MEMBER(BAD_REQUEST, "MEMBER-001", "이미 등록된 회원입니다."),
-    MEMBER_NOT_FOUND(NOT_FOUND, "MEMBER-002", "회원을 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(NOT_FOUND, "MEMBER-001", "회원을 찾을 수 없습니다."),
 
     PRODUCT_NOT_FOUND(NOT_FOUND, "PRODUCT-001", "상품을 찾을 수 없습니다."),
     INSUFFICIENT_STOCK(BAD_REQUEST, "PRODUCT-002", "상품 재고 수량이 부족합니다."),
 
-    ALREADY_CANCELED_ORDER(BAD_REQUEST, "ORDER-001", "이미 취소된 주문입니다."),
-    ORDER_NOT_FOUND(NOT_FOUND, "ORDER-002", "주문을 찾을 수 없습니다.");
+    ORDER_NOT_FOUND(NOT_FOUND, "ORDER-001", "주문을 찾을 수 없습니다."),
+    ALREADY_CANCELED_ORDER(BAD_REQUEST, "ORDER-002", "이미 취소된 주문입니다.");
 
     private final HttpStatus status;
     private final String code;

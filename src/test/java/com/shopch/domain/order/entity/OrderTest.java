@@ -4,7 +4,7 @@ import com.shopch.domain.member.entity.Member;
 import com.shopch.domain.order.constant.OrderStatus;
 import com.shopch.domain.orderProduct.entity.OrderProduct;
 import com.shopch.domain.product.entity.Product;
-import com.shopch.global.error.exception.BusinessException;
+import com.shopch.global.error.exception.AlreadyCanceledOrderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -136,7 +136,7 @@ class OrderTest {
 
         // when & then
         assertThatThrownBy(canceledOrder::cancel)
-                .isInstanceOf(BusinessException.class)
+                .isInstanceOf(AlreadyCanceledOrderException.class)
                 .hasMessage(ALREADY_CANCELED_ORDER.getMessage());
     }
 

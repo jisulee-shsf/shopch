@@ -8,8 +8,8 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@EntityListeners(value = AuditingEntityListener.class)
 @MappedSuperclass
+@EntityListeners(value = AuditingEntityListener.class)
 @Getter
 public abstract class BaseEntity extends BaseTimeEntity {
 

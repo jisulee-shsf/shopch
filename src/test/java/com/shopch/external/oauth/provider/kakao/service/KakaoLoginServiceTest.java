@@ -6,7 +6,7 @@ import com.shopch.external.oauth.provider.kakao.client.KakaoUserInfoClient;
 import com.shopch.external.oauth.provider.kakao.dto.request.KakaoTokenRequest;
 import com.shopch.external.oauth.provider.kakao.dto.response.KakaoTokenResponse;
 import com.shopch.external.oauth.provider.kakao.dto.response.KakaoUserInfoResponse;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,7 +93,7 @@ class KakaoLoginServiceTest {
 
         // when & then
         assertThatThrownBy(() -> kakaoLoginService.getUserInfo(INVALID_CODE))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(INVALID_AUTHORIZATION_CODE.getMessage());
     }
 

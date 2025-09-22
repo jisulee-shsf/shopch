@@ -7,14 +7,13 @@ import com.shopch.api.product.service.dto.response.ProductResponse;
 import com.shopch.domain.product.constant.ProductSellingStatus;
 import com.shopch.domain.product.entity.Product;
 import com.shopch.domain.product.repository.ProductRepository;
+import com.shopch.global.error.ErrorCode;
 import com.shopch.global.error.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.shopch.global.error.ErrorCode.PRODUCT_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,7 +37,7 @@ public class ProductService {
 
     public Product getProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     public PageResponse<ProductResponse> findSellingProducts(Pageable pageable) {

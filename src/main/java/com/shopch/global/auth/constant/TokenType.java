@@ -1,7 +1,7 @@
 package com.shopch.global.auth.constant;
 
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 
 import java.util.Arrays;
 
@@ -14,7 +14,7 @@ public enum TokenType {
         return Arrays.stream(values())
                 .filter(value -> value.name().equalsIgnoreCase(tokenType))
                 .findFirst()
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.INVALID_TOKEN_TYPE));
+                .orElseThrow(() -> new AuthException(ErrorCode.INVALID_TOKEN_TYPE));
     }
 
     public boolean isSame(TokenType tokenType) {

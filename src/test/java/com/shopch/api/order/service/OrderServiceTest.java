@@ -13,8 +13,8 @@ import com.shopch.domain.orderProduct.entity.OrderProduct;
 import com.shopch.domain.orderProduct.repository.OrderProductRepository;
 import com.shopch.domain.product.entity.Product;
 import com.shopch.domain.product.repository.ProductRepository;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.global.error.exception.EntityNotFoundException;
-import com.shopch.global.error.exception.ForbiddenException;
 import com.shopch.global.error.exception.InsufficientStockException;
 import com.shopch.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
@@ -252,7 +252,7 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         // when & then
         assertThatThrownBy(() -> orderService.cancelOrder(member2.getId(), order.getId()))
-                .isInstanceOf(ForbiddenException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(ORDER_ACCESS_DENIED.getMessage());
     }
 

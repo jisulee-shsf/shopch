@@ -2,7 +2,7 @@ package com.shopch.global.auth;
 
 import com.shopch.global.auth.constant.AuthenticationScheme;
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -20,11 +20,11 @@ public class BearerTokenExtractor {
 
     private void validateAuthorizationHeader(String authorizationHeader) {
         if (hasNoAuthorizationHeader(authorizationHeader)) {
-            throw new AuthenticationException(ErrorCode.MISSING_AUTHORIZATION_HEADER);
+            throw new AuthException(ErrorCode.MISSING_AUTHORIZATION_HEADER);
         }
 
         if (hasInvalidAuthenticationScheme(authorizationHeader)) {
-            throw new AuthenticationException(ErrorCode.INVALID_AUTHORIZATION_HEADER);
+            throw new AuthException(ErrorCode.INVALID_AUTHORIZATION_HEADER);
         }
     }
 

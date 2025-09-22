@@ -12,7 +12,7 @@ import com.shopch.external.oauth.constant.OAuthProvider;
 import com.shopch.external.oauth.provider.kakao.dto.request.KakaoTokenRequest;
 import com.shopch.external.oauth.provider.kakao.dto.response.KakaoTokenResponse;
 import com.shopch.external.oauth.provider.kakao.dto.response.KakaoUserInfoResponse;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 import com.shopch.global.error.exception.EntityNotFoundException;
 import com.shopch.support.IntegrationTestSupport;
 import io.jsonwebtoken.Jwts;
@@ -278,7 +278,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 
         // when & then
         assertThatThrownBy(() -> authService.refreshAccessToken(request, INSTANT_NOW))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(EXPIRED_TOKEN.getMessage());
     }
 
@@ -300,7 +300,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 
         // when & then
         assertThatThrownBy(() -> authService.refreshAccessToken(request, INSTANT_NOW))
-                .isInstanceOf(AuthenticationException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(EXPIRED_REFRESH_TOKEN.getMessage());
     }
 

@@ -1,7 +1,7 @@
 package com.shopch.domain.member.constant;
 
 import com.shopch.global.error.ErrorCode;
-import com.shopch.global.error.exception.AuthenticationException;
+import com.shopch.global.error.exception.AuthException;
 
 import java.util.Arrays;
 
@@ -14,6 +14,6 @@ public enum Role {
         return Arrays.stream(values())
                 .filter(value -> value.name().equalsIgnoreCase(role))
                 .findFirst()
-                .orElseThrow(() -> new AuthenticationException(ErrorCode.INVALID_ROLE));
+                .orElseThrow(() -> new AuthException(ErrorCode.INVALID_ROLE));
     }
 }
