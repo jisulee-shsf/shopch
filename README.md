@@ -8,7 +8,7 @@
 - 클린 코드 원칙과 객체 지향 패러다임을 적용해 코드 가독성 및 유지보수성 향상<br><br>
 
 ## Tech Stack
-![Image](https://github.com/user-attachments/assets/39abfeba-f4b6-4272-9f36-21215e9e77c3)<br><br>
+![Image](https://github.com/user-attachments/assets/6eedd459-e61d-4d2f-9c45-6ca98e8c0e6a)<br><br>
 
 ## Infrastructure
 <img src="https://github.com/user-attachments/assets/4185f76a-9f02-4d46-b298-f1f72869fbfa" width="811"><br><br>
