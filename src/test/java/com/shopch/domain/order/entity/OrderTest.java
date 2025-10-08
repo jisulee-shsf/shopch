@@ -65,7 +65,7 @@ class OrderTest {
                         INIT,
                         ORDERED_AT,
                         List.of(orderProduct),
-                        sumTotalPrice(order.getOrderProducts())
+                        calculateTotalPrice(order.getOrderProducts())
                 );
     }
 
@@ -220,7 +220,7 @@ class OrderTest {
                 .build();
     }
 
-    private int sumTotalPrice(List<OrderProduct> orderProducts) {
+    private int calculateTotalPrice(List<OrderProduct> orderProducts) {
         return orderProducts.stream()
                 .mapToInt(op -> op.getOrderPrice() * op.getOrderQuantity())
                 .sum();

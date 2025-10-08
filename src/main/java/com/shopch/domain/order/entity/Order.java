@@ -50,7 +50,7 @@ public class Order extends BaseEntity {
         this.member = member;
         this.orderStatus = orderStatus;
         this.orderedAt = orderedAt;
-        totalPrice = sumTotalPrice(orderProducts);
+        totalPrice = calculateTotalPrice(orderProducts);
         orderProducts.forEach(this::addOrderProduct);
     }
 
@@ -85,7 +85,7 @@ public class Order extends BaseEntity {
         orderProduct.assignOrder(this);
     }
 
-    private int sumTotalPrice(List<OrderProduct> orderProducts) {
+    private int calculateTotalPrice(List<OrderProduct> orderProducts) {
         return orderProducts.stream()
                 .mapToInt(OrderProduct::calculateSubTotalPrice)
                 .sum();

@@ -97,7 +97,7 @@ class OrderRepositoryImplTest extends IntegrationTestSupport {
                                 member1.getId(),
                                 CANCELED,
                                 ORDERED_AT,
-                                sumTotalPrice(order1.getOrderProducts()),
+                                calculateTotalPrice(order1.getOrderProducts()),
                                 List.of(orderProduct1.getId())
                         )
                 );
@@ -150,7 +150,7 @@ class OrderRepositoryImplTest extends IntegrationTestSupport {
                                 member2.getId(),
                                 INIT,
                                 ORDERED_AT.plus(ONE_SECOND_IN_MILLIS, MILLIS),
-                                sumTotalPrice(order2.getOrderProducts()),
+                                calculateTotalPrice(order2.getOrderProducts()),
                                 List.of(orderProduct2.getId())
                         )
                 );
@@ -203,14 +203,14 @@ class OrderRepositoryImplTest extends IntegrationTestSupport {
                                 member1.getId(),
                                 CANCELED,
                                 ORDERED_AT,
-                                sumTotalPrice(order1.getOrderProducts()),
+                                calculateTotalPrice(order1.getOrderProducts()),
                                 List.of(orderProduct1.getId())
                         ),
                         tuple(
                                 member2.getId(),
                                 INIT,
                                 ORDERED_AT.plus(ONE_SECOND_IN_MILLIS, MILLIS),
-                                sumTotalPrice(order2.getOrderProducts()),
+                                calculateTotalPrice(order2.getOrderProducts()),
                                 List.of(orderProduct2.getId())
                         )
                 );
@@ -257,7 +257,7 @@ class OrderRepositoryImplTest extends IntegrationTestSupport {
                 .build();
     }
 
-    private int sumTotalPrice(List<OrderProduct> orderProducts) {
+    private int calculateTotalPrice(List<OrderProduct> orderProducts) {
         return orderProducts.stream()
                 .mapToInt(op -> op.getOrderPrice() * op.getOrderQuantity())
                 .sum();
